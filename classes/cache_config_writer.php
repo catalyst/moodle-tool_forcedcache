@@ -1,0 +1,53 @@
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+
+class tool_forcedcache_cache_config_writer extends cache_config_writer {
+    //public function add_lock_instance() {}
+
+    //public function add_store_instance() {}
+
+    /**
+     * Overriding this means nothing gets Written.
+     */
+    public function config_save() {}
+
+    // PROBABLY A DECENT PLACE TO PUT ALL CONFIG
+    public static function create_default_configuration($forcesave = false) {}
+
+    //public function delete_lock_instance($name) {}
+
+    //public function delete_store_instance($name) {}
+
+    //public function edit_store_instance($name, $plugin, $configuration) {
+    //    return true;
+    //}
+
+    //public function set_definition_mappings($definition, $mappings) {}
+
+    //public function set_definition_sharing($definition, $mappings) {}
+
+    // PROBABLY A DECENT PLACE TO PUT RULESET CONFIG
+    //public function set_mode_mappings(array $modemappings) {
+    //    return true;
+    //}
+
+    //public static function update_default_config_stores() {}
+
+    //public static function update_definitions($coreonly = false) {}
+
+    //public static function update_site_identifier($siteidentifier)
+}
