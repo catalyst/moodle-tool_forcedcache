@@ -1,0 +1,34 @@
+{
+  "stores": {
+    "apcu1": {
+      "type": "apcu",
+      "name": "apcu1",
+      "prefix": "mdl"
+    },
+    "file1": {
+      "type": "file",
+      "name": "file1",
+      "path": "/tmp/hardcode"
+    }
+  },
+  "application": {
+    "local": {
+      "0": "apcu1",
+      "1": "file1"
+    },
+    "non-local": {
+      "0": "file1"
+    }
+  },
+  "session": {
+    "local": {
+      "0": "apcu1",
+      "1": "file1"
+    },
+    "non-local": {
+      "0": "file1"
+    }
+  },
+  "request": {},
+  "forcedmapping": {}
+}

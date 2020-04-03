@@ -14,7 +14,26 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-$string['pluginname'] = 'Forced Caching';
+/**
+ * Plugin version info.
+ *
+ * @package    tool_forcedcache
+ * @copyright  2020 Peter Burnett <peterburnett@catalyst-au.net>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
-// Page Strings.
-$string['page_rulesets'] = 'Caching Rulesets';
+require_once(__DIR__ . '/../../../config.php');
+require_once($CFG->libdir.'/adminlib.php');
+
+admin_externalpage_setup('tool_forcedcache_rulesets');
+
+$PAGE->set_title(get_string('page_rulesets', 'tool_factorreport'));
+$PAGE->set_heading(get_string('page_rulesets', 'tool_factorreport'));
+
+// Get configured stores and display theme
+$config = cache_config::instance();
+$installed_stores = $config->get_all_stores
+
+echo $OUTPUT->header();
+
+echo $OUTPUT->footer();
