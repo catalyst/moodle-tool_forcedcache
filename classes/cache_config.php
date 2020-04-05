@@ -40,8 +40,12 @@ class tool_forcedcache_cache_config extends cache_config {
         echo 'after';
         // GENERATE STORES CONFIG
         $stores = $this->generate_store_instance_config($config['stores']);
+
+        //GENERATE MODE MAPPINGS
+
         // GENERATE DEFINITIONS FROM RULESETS
 
+        // GENERATE SITEIDENTIFIER
     }
 
     // TODO safety around the reads
@@ -64,6 +68,9 @@ class tool_forcedcache_cache_config extends cache_config {
             $storearr['class'] = $classname;
 
             // Now for the derived config from the store information provided.
+            // Manually require the cache/lib.php file to get cache classes.
+            $cachepath = __DIR__.'/../../../../cache/stores/' . $store['type'] . '/lib.php';
+            require_once($cachepath);
             $storearr['features'] = $classname::get_supported_features();
             $storearr['modes'] = $classname::get_supported_modes();
 
@@ -78,5 +85,7 @@ class tool_forcedcache_cache_config extends cache_config {
 
             $storesarr[$name] = $storearr;
         }
+
+        return $storesarr;
     }
 }

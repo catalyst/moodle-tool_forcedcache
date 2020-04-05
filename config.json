@@ -3,12 +3,17 @@
     "apcu1": {
       "type": "apcu",
       "name": "apcu1",
-      "prefix": "mdl"
+      "config": {
+        "prefix": "mdl"
+      }
     },
     "file1": {
       "type": "file",
       "name": "file1",
-      "path": "/tmp/hardcode"
+      "config": {
+        "path": "/tmp/hardcode",
+        "autocreate": 1
+      }
     }
   },
   "application": {
