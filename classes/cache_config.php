@@ -24,12 +24,12 @@ class tool_forcedcache_cache_config extends cache_config {
 
     // INITIAL TESTING, POINT TO EXAMPLE FILE
     protected function include_configuration() {
-        include(__DIR__.'/../config.php');
+        /*include(__DIR__.'/../config.php');
         try {
             $this->generate_config_array();
         } catch(Exception $e) {
-        }
-        return $configuration;
+        }*/
+        return $this->generate_config_array();
     }
 
     private function generate_config_array() {
@@ -51,6 +51,17 @@ class tool_forcedcache_cache_config extends cache_config {
         $locks = $this->generate_locks();
 
         // GENERATE SITEIDENTIFIER
+        $siteidentifier = cache_helper::get_site_identifier();
+
+        //Throw it all into an array and return
+        return array(
+            'siteidentifier' => $siteidentifier,
+            'stores' => $stores,
+            'modemappings' => $modemappings,
+            'defintions' => $definitions,
+            'defintionmappings' => $definitionmappings,
+            'locks' => $locks
+        );
     }
 
     // TODO safety around the reads
@@ -203,8 +214,8 @@ class tool_forcedcache_cache_config extends cache_config {
                 // Now write to the master mapping array.
                 $defmappings[$num] = $mappingarr;
             }
-
         }
+        return $defmappings;
     }
 
     // TODO figure out whether locking needs to be added to this.
