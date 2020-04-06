@@ -16,24 +16,26 @@
       }
     }
   },
-  "application": {
-    "local": {
-      "0": "apcu1",
-      "1": "file1"
+  "rules": {
+    "application": {
+      "local": {
+        "0": "apcu1",
+        "1": "file1"
+      },
+      "non-local": {
+        "0": "file1"
+      }
     },
-    "non-local": {
-      "0": "file1"
-    }
-  },
-  "session": {
-    "local": {
-      "0": "apcu1",
-      "1": "file1"
+    "session": {
+      "local": {
+        "0": "apcu1",
+        "1": "file1"
+      },
+      "non-local": {
+        "0": "file1"
+      }
     },
-    "non-local": {
-      "0": "file1"
-    }
+    "request": {}
   },
-  "request": {},
   "forcedmapping": {}
 }

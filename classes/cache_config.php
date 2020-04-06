@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use core\log\reader;
-
 class tool_forcedcache_cache_config extends cache_config {
 
     //FOR NOW RETURN TRUE, LATER CHECK IF CONFIG TEMPLATE (or whatever) IS SETUP CORRECTLY
@@ -37,11 +35,11 @@ class tool_forcedcache_cache_config extends cache_config {
     private function generate_config_array() {
         // READFILE
         $config = $this->read_config_file();
-        echo 'after';
         // GENERATE STORES CONFIG
         $stores = $this->generate_store_instance_config($config['stores']);
 
         //GENERATE MODE MAPPINGS
+        $modemappings = $this->generate_mode_mapping($stores, $config['rules']);
 
         // GENERATE DEFINITIONS FROM RULESETS
 
@@ -75,7 +73,7 @@ class tool_forcedcache_cache_config extends cache_config {
             $storearr['modes'] = $classname::get_supported_modes();
 
             // Handle default in a separate case
-            $default = 'false';
+            $storearr['default'] = 'false';
 
             // Mappingsonly enabled as we will be using rulesets to bind all.
             $storearr['mappingsonly'] = 'true';
@@ -85,7 +83,58 @@ class tool_forcedcache_cache_config extends cache_config {
 
             $storesarr[$name] = $storearr;
         }
-
         return $storesarr;
+    }
+
+    private function generate_mode_mapping($stores, $rules) {
+        // Here we must decide on how the stores are going to be used
+        $modemappings = array();
+
+        $mappedstores = array();
+
+        // Check all 3 modes sequentially.
+        // Application
+        $applicationmappings = $rules['application'];
+
+        // TODO Check mode is supported by store and exception.
+        // TODO Check store exists before mapping it.
+        // TODO Ensure sorting isnt borked. Shouldnt matter, as we will explicitly bind it.
+        // TODO Ensure config.json is properly formed/ordered (indexes)
+
+        // Construct the local mappings, typically the most exhaustive list.
+        $sort = 0;
+        foreach ($applicationmappings['local'] as $key => $mapping) {
+            // Create the mapping.
+            $maparr = [];
+            $maparr['mode'] = cache_store::MODE_APPLICATION;
+            $maparr['store'] = $mapping;
+            $maparr['sort'] = $sort;
+            $modemappings[$sort] = $maparr;
+            $sort++;
+
+            // Now store the mapping name and mode to prevent duplication.
+            $mappedstores[$mapping] = cache_store::MODE_APPLICATION;
+        }
+
+        // Now we construct the non-locals, after checking they aren't already mapped.
+        foreach ($applicationmappings['non-local'] as $key => $mapping) {
+            if (array_key_exists($mapping, $mappedstores)
+                && $mappedstores[$mapping] === cache_store::MODE_APPLICATION) {
+                continue;
+            }
+
+            // Create the mapping.
+            $maparr = [];
+            $maparr['mode'] = cache_store::MODE_APPLICATION;
+            $maparr['store'] = $mapping;
+            $maparr['sort'] = $sort;
+            $modemappings[$sort] = $maparr;
+            $sort++;
+
+            // Now store the mapping name and mode to prevent duplication.
+            $mappedstores[$mapping] = cache_store::MODE_APPLICATION;
+        }
+
+        echo $modemappings;
     }
 }
