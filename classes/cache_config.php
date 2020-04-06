@@ -52,6 +52,7 @@ class tool_forcedcache_cache_config extends cache_config {
         return json_decode($filedata, true);
     }
 
+    // TODO, if no store exists for a mode, use the configured default.
     private function generate_store_instance_config($stores) {
         $storesarr = array();
         foreach ($stores as $name => $store) {
@@ -76,7 +77,7 @@ class tool_forcedcache_cache_config extends cache_config {
             $storearr['default'] = 'false';
 
             // Mappingsonly enabled as we will be using rulesets to bind all.
-            $storearr['mappingsonly'] = 'true';
+            $storearr['mappingsonly'] = 'false';
 
             // Force default locking... For now... (how mysterious).
             $storearr['lock'] = 'cachelock_file_default';
@@ -90,51 +91,65 @@ class tool_forcedcache_cache_config extends cache_config {
         // Here we must decide on how the stores are going to be used
         $modemappings = array();
 
-        $mappedstores = array();
 
         // Check all 3 modes sequentially.
-        // Application
-        $applicationmappings = $rules['application'];
-
         // TODO Check mode is supported by store and exception.
         // TODO Check store exists before mapping it.
         // TODO Ensure sorting isnt borked. Shouldnt matter, as we will explicitly bind it.
         // TODO Ensure config.json is properly formed/ordered (indexes)
 
-        // Construct the local mappings, typically the most exhaustive list.
         $sort = 0;
-        foreach ($applicationmappings['local'] as $key => $mapping) {
+        $modemappings = array_merge($modemappings,
+            $this->create_mappings($rules['application'], cache_store::MODE_APPLICATION, $sort));
+        $sort = count($modemappings);
+
+        // Now do the exact same for Session.
+        $modemappings = array_merge($modemappings,
+            $this->create_mappings($rules['session'], cache_store::MODE_SESSION, $sort));
+        $sort += count($modemappings);
+
+        // Finally for Request.
+        $modemappings = array_merge($modemappings,
+            $this->create_mappings($rules['request'], cache_store::MODE_REQUEST, $sort));
+        $sort += count($modemappings);
+
+        return $modemappings;
+    }
+
+    private function create_mappings($rules, $mode, $sortstart) {
+        $mappedstores = array();
+        $sort = $sortstart;
+        foreach ($rules['local'] as $key => $mapping) {
             // Create the mapping.
             $maparr = [];
-            $maparr['mode'] = cache_store::MODE_APPLICATION;
+            $maparr['mode'] = $mode;
             $maparr['store'] = $mapping;
             $maparr['sort'] = $sort;
             $modemappings[$sort] = $maparr;
             $sort++;
 
             // Now store the mapping name and mode to prevent duplication.
-            $mappedstores[$mapping] = cache_store::MODE_APPLICATION;
+            $mappedstores[] = $mapping;
         }
 
         // Now we construct the non-locals, after checking they aren't already mapped.
-        foreach ($applicationmappings['non-local'] as $key => $mapping) {
-            if (array_key_exists($mapping, $mappedstores)
-                && $mappedstores[$mapping] === cache_store::MODE_APPLICATION) {
+        foreach ($rules['non-local'] as $key => $mapping) {
+            if (in_array($mapping, $mappedstores)) {
                 continue;
             }
 
             // Create the mapping.
             $maparr = [];
-            $maparr['mode'] = cache_store::MODE_APPLICATION;
+            $maparr['mode'] = $mode;
             $maparr['store'] = $mapping;
             $maparr['sort'] = $sort;
             $modemappings[$sort] = $maparr;
             $sort++;
 
             // Now store the mapping name and mode to prevent duplication.
-            $mappedstores[$mapping] = cache_store::MODE_APPLICATION;
+            $mappedstores[] = $mapping;
         }
 
-        echo $modemappings;
+        return $modemappings;
     }
 }
