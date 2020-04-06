@@ -39,9 +39,16 @@ class tool_forcedcache_cache_config extends cache_config {
         $stores = $this->generate_store_instance_config($config['stores']);
 
         //GENERATE MODE MAPPINGS
-        $modemappings = $this->generate_mode_mapping($stores, $config['rules']);
+        $modemappings = $this->generate_mode_mapping($config['rules']);
+
+        // GENERATE DEFINITIONS
+        $definitions = tool_forcedcache_cache_config_writer::locate_definitions();
 
         // GENERATE DEFINITIONS FROM RULESETS
+        $definitionmappings = $this->generate_definition_mappings_from_rules($config['rules'], $definitions);
+
+        // GENERATE LOCKS
+        $locks = $this->generate_locks();
 
         // GENERATE SITEIDENTIFIER
     }
@@ -87,7 +94,7 @@ class tool_forcedcache_cache_config extends cache_config {
         return $storesarr;
     }
 
-    private function generate_mode_mapping($stores, $rules) {
+    private function generate_mode_mapping($rules) {
         // Here we must decide on how the stores are going to be used
         $modemappings = array();
 
@@ -151,5 +158,65 @@ class tool_forcedcache_cache_config extends cache_config {
         }
 
         return $modemappings;
+    }
+
+    private function generate_definition_mappings_from_rules($rules, $definitions) {
+        $defmappings = array();
+        $num = 1;
+        foreach ($definitions as $defname => $definition) {
+            // Find the mode of the definition to discover the mappings.
+            $mode = $definition['mode'];
+
+            // Decide on ruleset based on mode. NOT SURE IF NEEDED
+            switch ($mode) {
+                case cache_store::MODE_APPLICATION:
+                    $ruleset = $rules['application'];
+                    break;
+
+                case cache_store::MODE_SESSION:
+                    $ruleset = $rules['session'];
+                    break;
+
+                case cache_store::MODE_REQUEST:
+                    $ruleset = $rules['request'];
+            }
+
+            // Now decide if localised.
+            if (array_key_exists('canuselocalstore', $definition) &&
+                $definition->canuselocalstore) {
+                $ruleset = $ruleset['local'];
+            } else {
+                $ruleset = $ruleset['non-local'];
+            }
+
+            // Use the rulecount to construct the ordering.
+            $numrules = count($ruleset);
+
+            // Now foreach rule, create the mapping.
+            // TODO Ensure mapping exists
+            foreach ($ruleset as $key => $rule) {
+                $mappingarr = array();
+                $mappingarr['store'] = $rule;
+                $mappingarr['definition'] = $defname;
+                $mappingarr['sort'] = $numrules;
+
+                // Now write to the master mapping array.
+                $defmappings[$num] = $mappingarr;
+            }
+
+        }
+    }
+
+    // TODO figure out whether locking needs to be added to this.
+    // Taken from core default configuration.
+    private function generate_locks() {
+        return array(
+            'default_file_lock' => array(
+                'name' => 'cachelock_file_default',
+                'type' => 'cachelock_file',
+                'dir' => 'filelocks',
+                'default' => true
+            )
+        );
     }
 }

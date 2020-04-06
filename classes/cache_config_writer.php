@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+// Manually require locallib incase not loaded when required.
+require_once(__DIR__.'/../../../../cache/locallib.php');
 
 class tool_forcedcache_cache_config_writer extends cache_config_writer {
     //public function add_lock_instance() {}
@@ -28,6 +30,10 @@ class tool_forcedcache_cache_config_writer extends cache_config_writer {
     // PROBABLY A DECENT PLACE TO PUT ALL CONFIG
     public static function create_default_configuration($forcesave = false) {}
 
+    // This is a public wrapper for a protected function, needed from cache_config.php.
+    public static function locate_definitions($coreonly = false) {
+        return parent::locate_definitions($coreonly);
+    }
     //public function delete_lock_instance($name) {}
 
     //public function delete_store_instance($name) {}

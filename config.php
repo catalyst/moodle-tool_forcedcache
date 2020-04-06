@@ -1,13 +1,13 @@
 <?php defined('MOODLE_INTERNAL') || die();
  $configuration = array (
   'siteidentifier' => '5749e20dda09e50d410ef703d14aee65',
-  'stores' => 
+  'stores' =>
   array (
-    'default_application' => 
+    'default_application' =>
     array (
       'name' => 'default_application',
       'plugin' => 'file',
-      'configuration' => 
+      'configuration' =>
       array (
       ),
       'features' => 30,
@@ -16,11 +16,11 @@
       'class' => 'cachestore_file',
       'lock' => 'cachelock_file_default',
     ),
-    'default_session' => 
+    'default_session' =>
     array (
       'name' => 'default_session',
       'plugin' => 'session',
-      'configuration' => 
+      'configuration' =>
       array (
       ),
       'features' => 14,
@@ -29,11 +29,11 @@
       'class' => 'cachestore_session',
       'lock' => 'cachelock_file_default',
     ),
-    'default_request' => 
+    'default_request' =>
     array (
       'name' => 'default_request',
       'plugin' => 'static',
-      'configuration' => 
+      'configuration' =>
       array (
       ),
       'features' => 31,
@@ -42,11 +42,11 @@
       'class' => 'cachestore_static',
       'lock' => 'cachelock_file_default',
     ),
-    'apcu1' => 
+    'apcu1' =>
     array (
       'name' => 'apcu1',
       'plugin' => 'apcu',
-      'configuration' => 
+      'configuration' =>
       array (
         'prefix' => 'mdl_',
       ),
@@ -57,11 +57,11 @@
       'default' => false,
       'lock' => 'cachelock_file_default',
     ),
-    'local_files' => 
+    'local_files' =>
     array (
       'name' => 'local_files',
       'plugin' => 'file',
-      'configuration' => 
+      'configuration' =>
       array (
         'path' => '/tmp/mdl',
         'autocreate' => 1,
@@ -73,11 +73,11 @@
       'default' => false,
       'lock' => 'cachelock_file_default',
     ),
-    'test3' => 
+    'test3' =>
     array (
       'name' => 'test3',
       'plugin' => 'apcu',
-      'configuration' => 
+      'configuration' =>
       array (
         'prefix' => 'mdl2_',
       ),
@@ -89,30 +89,30 @@
       'lock' => 'cachelock_file_default',
     ),
   ),
-  'modemappings' => 
+  'modemappings' =>
   array (
-    0 => 
+    0 =>
     array (
       'mode' => 1,
       'store' => 'default_application',
       'sort' => -1,
     ),
-    1 => 
+    1 =>
     array (
       'mode' => 2,
       'store' => 'default_session',
       'sort' => -1,
     ),
-    2 => 
+    2 =>
     array (
       'mode' => 4,
       'store' => 'default_request',
       'sort' => -1,
     ),
   ),
-  'definitions' => 
+  'definitions' =>
   array (
-    'core/string' => 
+    'core/string' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -125,7 +125,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/langmenu' => 
+    'core/langmenu' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -137,10 +137,10 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/databasemeta' => 
+    'core/databasemeta' =>
     array (
       'mode' => 1,
-      'requireidentifiers' => 
+      'requireidentifiers' =>
       array (
         0 => 'dbfamily',
       ),
@@ -152,7 +152,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/eventinvalidation' => 
+    'core/eventinvalidation' =>
     array (
       'mode' => 1,
       'staticacceleration' => true,
@@ -163,7 +163,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/questiondata' => 
+    'core/questiondata' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -175,7 +175,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/htmlpurifier' => 
+    'core/htmlpurifier' =>
     array (
       'mode' => 1,
       'canuselocalstore' => true,
@@ -184,7 +184,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/config' => 
+    'core/config' =>
     array (
       'mode' => 1,
       'staticacceleration' => true,
@@ -194,7 +194,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/groupdata' => 
+    'core/groupdata' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -206,7 +206,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/calendar_subscriptions' => 
+    'core/calendar_subscriptions' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -217,12 +217,12 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/calendar_categories' => 
+    'core/calendar_categories' =>
     array (
       'mode' => 2,
       'simplekeys' => true,
       'simpledata' => true,
-      'invalidationevents' => 
+      'invalidationevents' =>
       array (
         0 => 'changesincoursecat',
         1 => 'changesincategoryenrolment',
@@ -233,7 +233,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/capabilities' => 
+    'core/capabilities' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -246,7 +246,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/yuimodules' => 
+    'core/yuimodules' =>
     array (
       'mode' => 1,
       'component' => 'core',
@@ -254,7 +254,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/observers' => 
+    'core/observers' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -266,7 +266,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/plugin_manager' => 
+    'core/plugin_manager' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -276,11 +276,11 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/coursecattree' => 
+    'core/coursecattree' =>
     array (
       'mode' => 1,
       'staticacceleration' => true,
-      'invalidationevents' => 
+      'invalidationevents' =>
       array (
         0 => 'changesincoursecat',
       ),
@@ -289,10 +289,10 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/coursecat' => 
+    'core/coursecat' =>
     array (
       'mode' => 2,
-      'invalidationevents' => 
+      'invalidationevents' =>
       array (
         0 => 'changesincoursecat',
         1 => 'changesincourse',
@@ -303,11 +303,11 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/coursecatrecords' => 
+    'core/coursecatrecords' =>
     array (
       'mode' => 4,
       'simplekeys' => true,
-      'invalidationevents' => 
+      'invalidationevents' =>
       array (
         0 => 'changesincoursecat',
       ),
@@ -316,7 +316,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/coursecontacts' => 
+    'core/coursecontacts' =>
     array (
       'mode' => 1,
       'staticacceleration' => true,
@@ -327,7 +327,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/repositories' => 
+    'core/repositories' =>
     array (
       'mode' => 4,
       'component' => 'core',
@@ -335,7 +335,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/externalbadges' => 
+    'core/externalbadges' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -345,7 +345,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/coursemodinfo' => 
+    'core/coursemodinfo' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -355,7 +355,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/userselections' => 
+    'core/userselections' =>
     array (
       'mode' => 2,
       'simplekeys' => true,
@@ -365,7 +365,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/completion' => 
+    'core/completion' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -378,7 +378,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/coursecompletion' => 
+    'core/coursecompletion' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -391,7 +391,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/navigation_expandcourse' => 
+    'core/navigation_expandcourse' =>
     array (
       'mode' => 2,
       'simplekeys' => true,
@@ -401,7 +401,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/suspended_userids' => 
+    'core/suspended_userids' =>
     array (
       'mode' => 4,
       'simplekeys' => true,
@@ -411,7 +411,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/roledefs' => 
+    'core/roledefs' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -423,7 +423,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/plugin_functions' => 
+    'core/plugin_functions' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -435,7 +435,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/tags' => 
+    'core/tags' =>
     array (
       'mode' => 4,
       'simplekeys' => true,
@@ -445,11 +445,11 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/grade_categories' => 
+    'core/grade_categories' =>
     array (
       'mode' => 2,
       'simplekeys' => true,
-      'invalidationevents' => 
+      'invalidationevents' =>
       array (
         0 => 'changesingradecategories',
       ),
@@ -458,7 +458,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/temp_tables' => 
+    'core/temp_tables' =>
     array (
       'mode' => 4,
       'simplekeys' => true,
@@ -468,7 +468,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/tagindexbuilder' => 
+    'core/tagindexbuilder' =>
     array (
       'mode' => 2,
       'simplekeys' => true,
@@ -476,7 +476,7 @@
       'staticacceleration' => true,
       'staticaccelerationsize' => 10,
       'ttl' => 900,
-      'invalidationevents' => 
+      'invalidationevents' =>
       array (
         0 => 'resettagindexbuilder',
       ),
@@ -485,7 +485,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/contextwithinsights' => 
+    'core/contextwithinsights' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -497,7 +497,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/message_processors_enabled' => 
+    'core/message_processors_enabled' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -509,7 +509,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/message_time_last_message_between_users' => 
+    'core/message_time_last_message_between_users' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -520,7 +520,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/fontawesomeiconmapping' => 
+    'core/fontawesomeiconmapping' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -532,7 +532,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/postprocessedcss' => 
+    'core/postprocessedcss' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -543,7 +543,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/user_group_groupings' => 
+    'core/user_group_groupings' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -554,7 +554,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/presignup' => 
+    'core/presignup' =>
     array (
       'mode' => 2,
       'simplekeys' => true,
@@ -565,7 +565,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/modelfirstanalyses' => 
+    'core/modelfirstanalyses' =>
     array (
       'mode' => 4,
       'simplekeys' => true,
@@ -575,7 +575,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/portfolio_add_button_portfolio_instances' => 
+    'core/portfolio_add_button_portfolio_instances' =>
     array (
       'mode' => 4,
       'simplekeys' => true,
@@ -585,7 +585,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/course_user_dates' => 
+    'core/course_user_dates' =>
     array (
       'mode' => 4,
       'simplekeys' => true,
@@ -596,7 +596,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/calculablesinfo' => 
+    'core/calculablesinfo' =>
     array (
       'mode' => 4,
       'simplekeys' => false,
@@ -606,7 +606,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/user_course_content_items' => 
+    'core/user_course_content_items' =>
     array (
       'mode' => 4,
       'simplekeys' => true,
@@ -615,7 +615,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/user_favourite_course_content_items' => 
+    'core/user_favourite_course_content_items' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -624,7 +624,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'core/recommendation_favourite_course_content_items' => 
+    'core/recommendation_favourite_course_content_items' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -633,7 +633,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'availability_grade/scores' => 
+    'availability_grade/scores' =>
     array (
       'mode' => 1,
       'staticacceleration' => true,
@@ -644,7 +644,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'availability_grade/items' => 
+    'availability_grade/items' =>
     array (
       'mode' => 1,
       'staticacceleration' => true,
@@ -655,7 +655,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'mod_forum/forum_is_tracked' => 
+    'mod_forum/forum_is_tracked' =>
     array (
       'mode' => 4,
       'simplekeys' => true,
@@ -666,7 +666,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'mod_glossary/concepts' => 
+    'mod_glossary/concepts' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -678,7 +678,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'repository_googledocs/folder' => 
+    'repository_googledocs/folder' =>
     array (
       'mode' => 1,
       'simplekeys' => false,
@@ -691,7 +691,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'repository_onedrive/folder' => 
+    'repository_onedrive/folder' =>
     array (
       'mode' => 1,
       'simplekeys' => false,
@@ -704,7 +704,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'repository_skydrive/foldername' => 
+    'repository_skydrive/foldername' =>
     array (
       'mode' => 2,
       'component' => 'repository_skydrive',
@@ -712,7 +712,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'tool_dataprivacy/purpose' => 
+    'tool_dataprivacy/purpose' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -724,7 +724,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'tool_dataprivacy/purpose_overrides' => 
+    'tool_dataprivacy/purpose_overrides' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -736,7 +736,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'tool_dataprivacy/contextlevel' => 
+    'tool_dataprivacy/contextlevel' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -748,7 +748,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'tool_mobile/plugininfo' => 
+    'tool_mobile/plugininfo' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -759,7 +759,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'tool_monitor/eventsubscriptions' => 
+    'tool_monitor/eventsubscriptions' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -771,7 +771,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'tool_policy/policy_optional' => 
+    'tool_policy/policy_optional' =>
     array (
       'mode' => 4,
       'component' => 'tool_policy',
@@ -779,7 +779,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'tool_uploadcourse/helper' => 
+    'tool_uploadcourse/helper' =>
     array (
       'mode' => 4,
       'component' => 'tool_uploadcourse',
@@ -787,7 +787,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'tool_usertours/tourdata' => 
+    'tool_usertours/tourdata' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -799,7 +799,7 @@
       'selectedsharingoption' => 2,
       'userinputsharingkey' => '',
     ),
-    'tool_usertours/stepdata' => 
+    'tool_usertours/stepdata' =>
     array (
       'mode' => 1,
       'simplekeys' => true,
@@ -812,18 +812,18 @@
       'userinputsharingkey' => '',
     ),
   ),
-  'definitionmappings' => 
+  'definitionmappings' =>
   array (
-    0 => 
+    0 =>
     array (
       'store' => 'local_files',
       'definition' => 'core/coursemodinfo',
       'sort' => 1,
     ),
   ),
-  'locks' => 
+  'locks' =>
   array (
-    'cachelock_file_default' => 
+    'cachelock_file_default' =>
     array (
       'name' => 'cachelock_file_default',
       'type' => 'cachelock_file',
