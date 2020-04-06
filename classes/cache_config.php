@@ -58,8 +58,8 @@ class tool_forcedcache_cache_config extends cache_config {
             'siteidentifier' => $siteidentifier,
             'stores' => $stores,
             'modemappings' => $modemappings,
-            'defintions' => $definitions,
-            'defintionmappings' => $definitionmappings,
+            'definitions' => $definitions,
+            'definitionmappings' => $definitionmappings,
             'locks' => $locks
         );
     }
@@ -92,7 +92,7 @@ class tool_forcedcache_cache_config extends cache_config {
             $storearr['modes'] = $classname::get_supported_modes();
 
             // Handle default in a separate case
-            $storearr['default'] = 'false';
+            $storearr['default'] = false;
 
             // Mappingsonly enabled as we will be using rulesets to bind all.
             $storearr['mappingsonly'] = 'false';
@@ -129,7 +129,6 @@ class tool_forcedcache_cache_config extends cache_config {
         // Finally for Request.
         $modemappings = array_merge($modemappings,
             $this->create_mappings($rules['request'], cache_store::MODE_REQUEST, $sort));
-        $sort += count($modemappings);
 
         return $modemappings;
     }
@@ -137,6 +136,11 @@ class tool_forcedcache_cache_config extends cache_config {
     private function create_mappings($rules, $mode, $sortstart) {
         $mappedstores = array();
         $sort = $sortstart;
+
+        if (count($rules) === 0) {
+            return array();
+        }
+
         foreach ($rules['local'] as $key => $mapping) {
             // Create the mapping.
             $maparr = [];
@@ -191,10 +195,12 @@ class tool_forcedcache_cache_config extends cache_config {
                 case cache_store::MODE_REQUEST:
                     $ruleset = $rules['request'];
             }
-
+            if (count($ruleset) === 0) {
+                continue;
+            }
             // Now decide if localised.
             if (array_key_exists('canuselocalstore', $definition) &&
-                $definition->canuselocalstore) {
+                $definition['canuselocalstore']) {
                 $ruleset = $ruleset['local'];
             } else {
                 $ruleset = $ruleset['non-local'];
@@ -213,6 +219,7 @@ class tool_forcedcache_cache_config extends cache_config {
 
                 // Now write to the master mapping array.
                 $defmappings[$num] = $mappingarr;
+                $num++;
             }
         }
         return $defmappings;
