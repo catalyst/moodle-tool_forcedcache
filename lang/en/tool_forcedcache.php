@@ -17,4 +17,11 @@
 $string['pluginname'] = 'Forced Caching';
 
 // Page Strings.
-$string['page_rulesets'] = 'Caching Rulesets';
+$string['page_status'] = 'Forced caching status';
+$string['page_config_ok'] = 'Forced cache config OK';
+$string['page_config_broken'] = 'Forced cache config broken';
+$string['page_config_broken_details'] = 'The reported error message is: {$a}';
+
+// Exception Strings.
+$string['config_json_parse_fail'] = 'Error parsing JSON to array. JSON syntax may be malformed.';
+$string['config_json_missing'] = 'Error reading specified JSON file. File may not exist, or path is incorrect.';

@@ -25,15 +25,24 @@
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
-admin_externalpage_setup('tool_forcedcache_rulesets');
+admin_externalpage_setup('tool_forcedcache_status');
 
-$PAGE->set_title(get_string('page_rulesets', 'tool_factorreport'));
-$PAGE->set_heading(get_string('page_rulesets', 'tool_factorreport'));
-
-// Get configured stores and display theme
-$config = cache_config::instance();
-$installed_stores = $config->get_all_stores
+$PAGE->set_title(get_string('page_status', 'tool_forcedcache'));
+$PAGE->set_heading(get_string('page_status', 'tool_forcedcache'));
 
 echo $OUTPUT->header();
+
+// Create a dummy cache config instance and check for errors in instantiation.
+$dummy = new tool_forcedcache_cache_config();
+$errors = $dummy->get_inclusion_errors();
+
+// TODO Make this prettier. Please.
+if (!empty($errors)) {
+    echo html_writer::tag('h3', get_string('page_config_broken', 'tool_forcedcache'));
+    $error = html_writer::tag('pre', $errors);
+    echo html_writer::tag('p', get_string('page_config_broken_details', 'tool_forcedcache', $error));
+} else {
+    echo html_writer::tag('h3', get_string('page_config_ok', 'tool_forcedcache'));
+}
 
 echo $OUTPUT->footer();

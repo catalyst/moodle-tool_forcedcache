@@ -16,14 +16,37 @@
 
 class tool_forcedcache_cache_config extends cache_config {
 
+    /**
+     * This is a wrapper function that simply wraps around include_configuration,
+     * and returns any exception messages.
+     */
+    public function get_inclusion_errors() {
+        global $SESSION;
+        $this->include_configuration();
+        if (!empty($SESSION->tool_forcedcache_caching_exception)) {
+            return $SESSION->tool_forcedcache_caching_exception;
+        } else {
+            return '';
+        }
+    }
+
     protected function include_configuration() {
         // TODO SAFETY HERE. Any exceptions, fallback to core.
-        return $this->generate_config_array();
+        try {
+            return $this->generate_config_array();
+        } catch (Exception $e) {
+            // Store the error message in session, helps with debugging from a frontend display.
+            // It also can be used as a canary for the writer to know if things are borked.
+            // This may be overwritten depeding on load order. Best to create a dummy cache instance then check.
+            global $SESSION;
+            $SESSION->tool_forcedcache_caching_exception = $e->getMessage();
+            return parent::include_configuration();
+        }
     }
 
     private function generate_config_array() {
         // READFILE
-        $config = $this->read_config_file();
+        $config = $this->read_config_file(__DIR__.'/../config3.json');
         // GENERATE STORES CONFIG
         $stores = $this->generate_store_instance_config($config['stores']);
 
@@ -53,10 +76,26 @@ class tool_forcedcache_cache_config extends cache_config {
         );
     }
 
-    // TODO safety around the reads
-    private function read_config_file() {
-        $filedata = file_get_contents(__DIR__.'/../config2.json');
-        return json_decode($filedata, true);
+    /**
+     * This reads the JSON file at $path and parses it for use in cache generation.
+     * Exceptions are thrown so that caching will fallback to core.
+     *
+     * @param string $path the path of the config file to read.
+     * @return array Associative array of configuration from JSON.
+     * @throws cache_exception
+     */
+    private function read_config_file($path) {
+        if (file_exists($path)) {
+            $filedata = file_get_contents($path);
+            $config = json_decode($filedata, true);
+            if (!empty($config)) {
+                return $config;
+            } else {
+                throw new cache_exception(get_string('config_json_parse_fail', 'tool_forcedcache'));
+            }
+        } else {
+            throw new cache_exception(get_string('config_json_missing', 'tool_forcedcache'));
+        }
     }
 
     // TODO, if no store exists for a mode, use the configured default.

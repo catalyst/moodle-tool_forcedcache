@@ -14,21 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-// Manually require locallib incase not loaded when required.
+// Manually require locallib in case it's not loaded when required.
 require_once(__DIR__.'/../../../../cache/locallib.php');
 
 class tool_forcedcache_cache_config_writer extends cache_config_writer {
-    //public function add_lock_instance() {}
-
     //public function add_store_instance() {}
 
     /**
      * Overriding this means nothing gets Written.
+     * This must still work if we fallback to core caching.
      */
-    public function config_save() {}
-
-    // PROBABLY A DECENT PLACE TO PUT ALL CONFIG
-    public static function create_default_configuration($forcesave = false) {}
+    public function config_save() {
+        global $SESSION;
+        if (!empty($SESSION->tool_forcedcache_caching_exception)) {
+            parent::config_save();
+        }
+    }
 
     // This is a public wrapper for a protected function, needed from cache_config.php.
     public static function locate_definitions($coreonly = false) {
@@ -39,6 +40,11 @@ class tool_forcedcache_cache_config_writer extends cache_config_writer {
     public static function get_default_stores() {
         return parent::get_default_stores();
     }
+
+
+    // TODO These should all be overridden with null/parent calls,
+    // Which should have marginal performance improvements when these get called.
+
     //public function delete_lock_instance($name) {}
 
     //public function delete_store_instance($name) {}
@@ -61,4 +67,9 @@ class tool_forcedcache_cache_config_writer extends cache_config_writer {
     //public static function update_definitions($coreonly = false) {}
 
     //public static function update_site_identifier($siteidentifier)
+
+    //public function add_lock_instance() {}
+
+    //public static function create_default_configuration($forcesave = false) {}
+
 }
