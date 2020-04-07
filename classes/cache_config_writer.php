@@ -25,8 +25,8 @@ class tool_forcedcache_cache_config_writer extends cache_config_writer {
      * This must still work if we fallback to core caching.
      */
     public function config_save() {
-        global $SESSION;
-        if (!empty($SESSION->tool_forcedcache_caching_exception)) {
+        global $CFG;
+        if (!empty($CFG->tool_forcedcache_config_broken) &&$CFG->tool_forcedcache_config_broken) {
             parent::config_save();
         }
     }

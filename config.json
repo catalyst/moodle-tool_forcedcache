@@ -38,6 +38,7 @@
       {
         "stores": ["file1"]
       }
-    ]
+    ],
+    "request": {}
   }
 }

@@ -31,12 +31,15 @@ class tool_forcedcache_cache_config extends cache_config {
      */
     public function get_inclusion_errors() {
         global $SESSION;
+        unset($SESSION->tool_forcedcache_caching_exception);
         $this->include_configuration();
         if (!empty($SESSION->tool_forcedcache_caching_exception)) {
-            return $SESSION->tool_forcedcache_caching_exception;
+            $data = $SESSION->tool_forcedcache_caching_exception;
+            unset($SESSION->tool_forcedcache_caching_exception);
         } else {
-            return '';
+            $data = '';
         }
+        return $data;
     }
 
     /**
@@ -47,14 +50,16 @@ class tool_forcedcache_cache_config extends cache_config {
      * @return array the configuration array.
      */
     protected function include_configuration() {
+        global $CFG, $SESSION;
+
         try {
             return $this->generate_config_array();
         } catch (Exception $e) {
             // Store the error message in session, helps with debugging from a frontend display.
-            // It also can be used as a canary for the writer to know if things are borked.
-            // This may be overwritten depeding on load order. Best to create a dummy cache instance then check.
-            global $SESSION;
+            // This may be overwritten depending on load order. Best to create a dummy cache instance then check.
             $SESSION->tool_forcedcache_caching_exception = $e->getMessage();
+            // Also store a canary for the writer to know if things are borked.
+            $CFG->tool_forcedcache_config_broken = true;
             return parent::include_configuration();
         }
     }

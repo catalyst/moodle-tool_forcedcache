@@ -36,6 +36,7 @@ echo $OUTPUT->header();
 $dummy = new tool_forcedcache_cache_config();
 $errors = $dummy->get_inclusion_errors();
 
+
 // TODO Make this prettier. Please.
 if (!empty($errors)) {
     echo html_writer::tag('h3', get_string('page_config_broken', 'tool_forcedcache'));
