@@ -150,7 +150,6 @@ class tool_forcedcache_cache_config extends cache_config {
             // Assume all configuration is correct.
             // If anything borks, we will fallback to core caching.
             $storearr['configuration'] = $store['config'];
-
             $classname = 'cachestore_'.$store['type'];
             $storearr['class'] = $classname;
 
@@ -164,13 +163,9 @@ class tool_forcedcache_cache_config extends cache_config {
             $storearr['features'] = $classname::get_supported_features();
             $storearr['modes'] = $classname::get_supported_modes();
 
-            // Handle default in a separate case
+            // Set these to a default value.
             $storearr['default'] = false;
-
-            // Mappingsonly enabled as we will be using rulesets to bind all.
             $storearr['mappingsonly'] = 'false';
-
-            // Force default locking... For now... (how mysterious).
             $storearr['lock'] = 'cachelock_file_default';
 
             // TODO cycle through any remaining config and instantiate it.
@@ -321,34 +316,37 @@ class tool_forcedcache_cache_config extends cache_config {
                 case cache_store::MODE_REQUEST:
                     $ruleset = $rules['request'];
             }
+
+            // If no rules are specified for a type,
+            // Skip this definition to fall through to defaults.
             if (count($ruleset) === 0) {
                 continue;
             }
 
+            // Now decide on the ruleset that matches.
             $stores = array();
             foreach ($ruleset as $rule) {
                 if (array_key_exists('conditions', $rule)) {
                     foreach ($rule['conditions'] as $condition => $value) {
-                        // Check if condition isn't present in definition or doesn't match.
                         // Precompute some checks to construct a clean bool condition.
-                        $conditionmatches = array_key_exists($condition, $definition)
-                            && $value === $definition[$condition];
-                        // Name condition is treated specially.
+                        $conditionmatches = array_key_exists($condition, $definition) && $value === $definition[$condition];
                         $namematches = ($condition === 'name') && ($defname === $value);
 
-                        // If nothing matches, jump out of this ruleset entirely, we're done.
+                        // Check if condition isn't present in definition or doesn't match.
+                        // If nothing matches, jump out of this ruleset entirely.
                         if (!($conditionmatches || $namematches)) {
                             continue 2;
                         }
                     }
                 }
 
-                // If we get here, there are no conditions, or every one was a match.
+                // If we get here, there are no conditions in this ruleset, or every one was a match.
                 // We can safely bind stores, then break.
                 $stores = $rule['stores'];
                 break;
             }
 
+            // Weirdness here. Some stuff sorts lowest as priority, Mappings sort highest as priority.
             $sort = count($stores);
             foreach ($stores as $store) {
                 //Create the mapping for the definition -> store and add to the master list.
