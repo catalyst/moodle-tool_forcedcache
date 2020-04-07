@@ -25,3 +25,5 @@ $string['page_config_broken_details'] = 'The reported error message is: {$a}';
 // Exception Strings.
 $string['config_json_parse_fail'] = 'Error parsing JSON to array. JSON syntax may be malformed.';
 $string['config_json_missing'] = 'Error reading specified JSON file. File may not exist, or path is incorrect.';
+$string['store_missing_fields'] = 'Error reading store {$a}, it may be missing fields or malformed.';
+$string['store_bad_type'] = 'Error loading store {$a}. Store may not exist or type is malformed.';

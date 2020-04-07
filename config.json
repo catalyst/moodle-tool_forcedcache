@@ -2,14 +2,12 @@
   "stores": {
     "apcu1": {
       "type": "apcu",
-      "name": "apcu1",
       "config": {
         "prefix": "mdl"
       }
     },
     "file1": {
       "type": "file",
-      "name": "file1",
       "config": {
         "path": "/tmp/hardcode",
         "autocreate": 1

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version info.
+ * Plugin status page.
  *
  * @package    tool_forcedcache
  * @copyright  2020 Peter Burnett <peterburnett@catalyst-au.net>

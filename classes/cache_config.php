@@ -30,8 +30,14 @@ class tool_forcedcache_cache_config extends cache_config {
         }
     }
 
+    /**
+     * This is where the magic happens. Instead of loading a file,
+     * this generates rulesets based on a JSON file, and binds them to definitions.
+     * If there are any errors during this process, it aborts and falls back to core configuration.
+     *
+     * @return array the configuration array.
+     */
     protected function include_configuration() {
-        // TODO SAFETY HERE. Any exceptions, fallback to core.
         try {
             return $this->generate_config_array();
         } catch (Exception $e) {
@@ -44,6 +50,12 @@ class tool_forcedcache_cache_config extends cache_config {
         }
     }
 
+    /**
+     * This is a glue function that grabs all of the different components of the configuration,
+     * and stitches them together.
+     *
+     * @return array the cache configuration array.
+     */
     private function generate_config_array() {
         // READFILE
         $config = $this->read_config_file(__DIR__.'/../config3.json');
@@ -98,10 +110,24 @@ class tool_forcedcache_cache_config extends cache_config {
         }
     }
 
-    // TODO, if no store exists for a mode, use the configured default.
+    /**
+     * This instantiates any stores defined in the config,
+     * and the default stores, which must always exist.
+     *
+     * @param array $stores the array of stores declared in the JSON file.
+     * @return array a mapped configuration array of store instances.
+     * @throws cache_exception
+     */
     private function generate_store_instance_config($stores) {
         $storesarr = array();
         foreach ($stores as $name => $store) {
+
+            // First check that all the required fields are present in the store.
+            if (!(array_key_exists('type', $store) ||
+                  array_key_exists('config', $store))) {
+                throw new cache_exception(get_string('store_missing_fields', 'tool_forcedcache', $name));
+            }
+
             $storearr = array();
             $storearr['name'] = $name;
             $storearr['plugin'] = $store['type'];
@@ -115,6 +141,9 @@ class tool_forcedcache_cache_config extends cache_config {
             // Now for the derived config from the store information provided.
             // Manually require the cache/lib.php file to get cache classes.
             $cachepath = __DIR__.'/../../../../cache/stores/' . $store['type'] . '/lib.php';
+            if (!file_exists($cachepath)) {
+                throw new cache_exception(get_string('store_bad_type', 'tool_forcedcache', $store['type']));
+            }
             require_once($cachepath);
             $storearr['features'] = $classname::get_supported_features();
             $storearr['modes'] = $classname::get_supported_modes();
@@ -127,6 +156,8 @@ class tool_forcedcache_cache_config extends cache_config {
 
             // Force default locking... For now... (how mysterious).
             $storearr['lock'] = 'cachelock_file_default';
+
+            // TODO cycle through any remaining config and instantiate it.
 
             $storesarr[$name] = $storearr;
         }
