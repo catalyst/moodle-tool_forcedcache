@@ -16,19 +16,8 @@
 
 class tool_forcedcache_cache_config extends cache_config {
 
-    //FOR NOW RETURN TRUE, LATER CHECK IF CONFIG TEMPLATE (or whatever) IS SETUP CORRECTLY
-    //public static function config_file_exists() {return true;}
-
-    //THIS IS THE JUICE. THIS WILL RETURN THE CONFIG WE SET FROM RULESETS ETC.
-    // MANY MORE FUNCTIONS WILL BE CALLED FROM HERE TO SETUP THE CONFIG
-
-    // INITIAL TESTING, POINT TO EXAMPLE FILE
     protected function include_configuration() {
-        /*include(__DIR__.'/../config.php');
-        try {
-            $this->generate_config_array();
-        } catch(Exception $e) {
-        }*/
+        // TODO SAFETY HERE. Any exceptions, fallback to core.
         return $this->generate_config_array();
     }
 
@@ -66,7 +55,7 @@ class tool_forcedcache_cache_config extends cache_config {
 
     // TODO safety around the reads
     private function read_config_file() {
-        $filedata = file_get_contents(__DIR__.'/../config.json');
+        $filedata = file_get_contents(__DIR__.'/../config2.json');
         return json_decode($filedata, true);
     }
 
@@ -102,6 +91,10 @@ class tool_forcedcache_cache_config extends cache_config {
 
             $storesarr[$name] = $storearr;
         }
+
+        // Now instantiate the default stores (Must always exist).
+        $storesarr = array_merge($storesarr, tool_forcedcache_cache_config_writer::get_default_stores());
+
         return $storesarr;
     }
 
@@ -116,8 +109,9 @@ class tool_forcedcache_cache_config extends cache_config {
         // TODO Ensure sorting isnt borked. Shouldnt matter, as we will explicitly bind it.
         // TODO Ensure config.json is properly formed/ordered (indexes)
 
-        $sort = 0;
-        $modemappings = array_merge($modemappings,
+        // LEAVE HERE. This needs rethinking re whether it is useful/what rules to apply this to.
+        //$sort = 0;
+        /*$modemappings = array_merge($modemappings,
             $this->create_mappings($rules['application'], cache_store::MODE_APPLICATION, $sort));
         $sort = count($modemappings);
 
@@ -129,6 +123,27 @@ class tool_forcedcache_cache_config extends cache_config {
         // Finally for Request.
         $modemappings = array_merge($modemappings,
             $this->create_mappings($rules['request'], cache_store::MODE_REQUEST, $sort));
+        */
+
+        // USE THIS IF NOT USING ABOVE
+        // TODO Finally, instantiate the defaults.
+        $modemappings = array_merge($modemappings, array(
+            array(
+                'mode' => cache_store::MODE_APPLICATION,
+                'store' => 'default_application',
+                'sort' => -1
+            ),
+            array(
+                'mode' => cache_store::MODE_SESSION,
+                'store' => 'default_session',
+                'sort' => -1
+            ),
+            array(
+                'mode' => cache_store::MODE_REQUEST,
+                'store' => 'default_request',
+                'sort' => -1
+            )
+            ));
 
         return $modemappings;
     }
@@ -198,27 +213,43 @@ class tool_forcedcache_cache_config extends cache_config {
             if (count($ruleset) === 0) {
                 continue;
             }
-            // Now decide if localised.
-            if (array_key_exists('canuselocalstore', $definition) &&
-                $definition['canuselocalstore']) {
-                $ruleset = $ruleset['local'];
-            } else {
-                $ruleset = $ruleset['non-local'];
+
+            $stores = array();
+            foreach ($ruleset as $rule) {
+                if (array_key_exists('conditions', $rule)) {
+                    foreach ($rule['conditions'] as $condition => $value) {
+                        // Check if condition isn't present in definition or doesn't match.
+                        // Precompute some checks to construct a clean bool condition.
+                        $conditionmatches = array_key_exists($condition, $definition)
+                            && $value === $definition[$condition];
+                        // Name condition is treated specially.
+                        $namematches = ($condition === 'name') && ($defname === $value);
+
+                        // If nothing matches, jump out of this ruleset entirely, we're done.
+                        if (!($conditionmatches || $namematches)) {
+                            continue 2;
+                        }
+                    }
+                }
+
+                // If we get here, there are no conditions, or every one was a match.
+                // We can safely bind stores, then break.
+                $stores = $rule['stores'];
+                break;
             }
 
-            // Use the rulecount to construct the ordering.
-            $numrules = count($ruleset);
-
-            // Now foreach rule, create the mapping.
-            // TODO Ensure mapping exists
-            foreach ($ruleset as $key => $rule) {
+            $sort = count($stores);
+            foreach ($stores as $store) {
+                //Create the mapping for the definition -> store and add to the master list.
                 $mappingarr = array();
-                $mappingarr['store'] = $rule;
+                $mappingarr['store'] = $store;
                 $mappingarr['definition'] = $defname;
-                $mappingarr['sort'] = $numrules;
+                $mappingarr['sort'] = $sort;
 
-                // Now write to the master mapping array.
                 $defmappings[$num] = $mappingarr;
+
+                // Increment the mapping counter, decrement local sorting counter for definition.
+                $sort--;
                 $num++;
             }
         }

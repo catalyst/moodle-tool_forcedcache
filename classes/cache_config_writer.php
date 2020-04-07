@@ -34,6 +34,11 @@ class tool_forcedcache_cache_config_writer extends cache_config_writer {
     public static function locate_definitions($coreonly = false) {
         return parent::locate_definitions($coreonly);
     }
+
+    // This is a public wrapper for a protected function, needed from cache_config.php.
+    public static function get_default_stores() {
+        return parent::get_default_stores();
+    }
     //public function delete_lock_instance($name) {}
 
     //public function delete_store_instance($name) {}
