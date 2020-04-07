@@ -13,7 +13,16 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+/**
+ * This cache_config class extends the first one, and generates the
+ * configuration array from reading a hardcoded JSON file instead of
+ * the configuration file on shared disk.
+ *
+ * @package     tool_forcedcache
+ * @author      Peter Burnett <peterburnett@catalyst-au.net>
+ * @copyright   Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class tool_forcedcache_cache_config extends cache_config {
 
     /**
@@ -57,8 +66,15 @@ class tool_forcedcache_cache_config extends cache_config {
      * @return array the cache configuration array.
      */
     private function generate_config_array() {
+        global $CFG;
         // READFILE
-        $config = $this->read_config_file(__DIR__.'/../config3.json');
+        // Path can only be hardcoded, to avoid concurrency issues between frontends.
+        if (!empty($CFG->tool_forcedcache_config_path)) {
+            $path = $CFG->tool_forcedcache_config_path;
+        } else {
+            $path = __DIR__.'/../config.json';
+        }
+        $config = $this->read_config_file($path);
         // GENERATE STORES CONFIG
         $stores = $this->generate_store_instance_config($config['stores']);
 
@@ -168,16 +184,15 @@ class tool_forcedcache_cache_config extends cache_config {
         return $storesarr;
     }
 
+    /**
+     * This function generates the default mappings for each cache mode.
+     *
+     * @param array $rules the rules array from the JSON.
+     * @return array the generated default mode mappings.
+     */
     private function generate_mode_mapping($rules) {
         // Here we must decide on how the stores are going to be used
         $modemappings = array();
-
-
-        // Check all 3 modes sequentially.
-        // TODO Check mode is supported by store and exception.
-        // TODO Check store exists before mapping it.
-        // TODO Ensure sorting isnt borked. Shouldnt matter, as we will explicitly bind it.
-        // TODO Ensure config.json is properly formed/ordered (indexes)
 
         // LEAVE HERE. This needs rethinking re whether it is useful/what rules to apply this to.
         //$sort = 0;
@@ -218,7 +233,23 @@ class tool_forcedcache_cache_config extends cache_config {
         return $modemappings;
     }
 
+    /**
+     * This generates an ordered list of default mappings for each mode,
+     * based on the declared stores, and the rules.
+     *
+     * @param array $rules the rules array from JSON.
+     * @param int $mode the mode the store will map to.
+     * @param int $sortstart the index to start creating array keys at in the return array.
+     * @return array an array of mapped stores->mode
+     * @throws cache_exception
+     */
     private function create_mappings($rules, $mode, $sortstart) {
+        // Check all 3 modes sequentially.
+        // TODO Check mode is supported by store and exception.
+        // TODO Check store exists before mapping it.
+        // TODO Ensure sorting isnt borked. Shouldnt matter, as we will explicitly bind it.
+        // TODO Ensure config.json is properly formed/ordered (indexes)
+
         $mappedstores = array();
         $sort = $sortstart;
 
@@ -260,6 +291,16 @@ class tool_forcedcache_cache_config extends cache_config {
         return $modemappings;
     }
 
+    /**
+     * This function takes the rules and definitions,
+     * and creates mappings from definition->store(s)
+     * based on a fallthrough pattern of the rules
+     * from the JSON file.
+     *
+     * @param array $rules the rules array from the JSON
+     * @param array $definitions a list of definitions to map.
+     * @return array an array of ordered mappings for every definition to its ruleset.
+     */
     private function generate_definition_mappings_from_rules($rules, $definitions) {
         $defmappings = array();
         $num = 1;
@@ -267,7 +308,7 @@ class tool_forcedcache_cache_config extends cache_config {
             // Find the mode of the definition to discover the mappings.
             $mode = $definition['mode'];
 
-            // Decide on ruleset based on mode. NOT SURE IF NEEDED
+            // Decide on ruleset based on mode.
             switch ($mode) {
                 case cache_store::MODE_APPLICATION:
                     $ruleset = $rules['application'];
@@ -326,8 +367,12 @@ class tool_forcedcache_cache_config extends cache_config {
         return $defmappings;
     }
 
-    // TODO figure out whether locking needs to be added to this.
-    // Taken from core default configuration.
+    /**
+     * This is a copy of the default locking configuration used by core.
+     * TODO figure out whether locking needs to be implemented in a robust way.
+     *
+     * @return array array of locks to use.
+     */
     private function generate_locks() {
         return array(
             'default_file_lock' => array(

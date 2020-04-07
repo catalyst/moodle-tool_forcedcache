@@ -2,12 +2,14 @@
   "stores": {
     "apcu1": {
       "type": "apcu",
+      "name": "apcu1",
       "config": {
         "prefix": "mdl"
       }
     },
     "file1": {
       "type": "file",
+      "name": "file1",
       "config": {
         "path": "/tmp/hardcode",
         "autocreate": 1
@@ -15,25 +17,27 @@
     }
   },
   "rules": {
-    "application": {
-      "local": {
-        "0": "apcu1",
-        "1": "file1"
+    "application": [
+      {
+        "conditions" : {
+          "canuselocalstore": true
+        },
+        "stores": ["apcu1","file1"]
       },
-      "non-local": {
-        "0": "file1"
+      {
+        "stores":["file1"]
       }
-    },
-    "session": {
-      "local": {
-        "0": "apcu1",
-        "1": "file1"
+    ],
+    "session": [
+      {
+        "conditions": {
+          "canuselocalstore": true
+        },
+        "stores": ["apcu1","file1"]
       },
-      "non-local": {
-        "0": "file1"
+      {
+        "stores": ["file1"]
       }
-    },
-    "request": {}
-  },
-  "forcedmapping": {}
+    ]
+  }
 }
