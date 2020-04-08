@@ -38,8 +38,8 @@ $errors = $dummy->get_inclusion_errors();
 
 
 // TODO Make this prettier. Please.
-if (empty($CFG->alternate_cache_class) ||
-    $CFG->alternate_cache_class !== 'tool_forcedcache' ||
+if (empty($CFG->alternative_cache_class) ||
+    $CFG->alternative_cache_class !== 'tool_forcedcache' ||
     !empty($errors)) {
 
     echo html_writer::tag('h3', get_string('page_not_active', 'tool_forcedcache'));
