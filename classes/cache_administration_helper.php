@@ -146,16 +146,16 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
      * This function performs all of the outputting for the cache admin page,
      * with some custom tweaks for the plugin.
      *
-     * @param array $storepluginsummaries
-     * @param array $storeinstancesummaries
-     * @param array $definitionsummaries
-     * @param array $defaultmodestores
-     * @param array $locks
      * @param core_cache_renderer $renderer
      * @return void
      */
-    public function output_admin_page($storepluginsummaries, $storeinstancesummaries, $definitionsummaries, $defaultmodestores, $locks, $renderer) {
+    public function output_admin_page($renderer) {
         $context = context_system::instance();
+
+        $storepluginsummaries = $this->get_store_plugin_summaries();
+        $storeinstancesummaries = $this->get_store_instance_summaries();
+        $definitionsummaries = $this->get_definition_summaries();
+        $locks = $this->get_lock_summaries();
 
         echo $renderer->store_plugin_summaries($storepluginsummaries);
         echo $renderer->store_instance_summariers($storeinstancesummaries, $storepluginsummaries);
