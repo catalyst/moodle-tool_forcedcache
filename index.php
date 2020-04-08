@@ -38,12 +38,30 @@ $errors = $dummy->get_inclusion_errors();
 
 
 // TODO Make this prettier. Please.
+if (empty($CFG->alternate_cache_class) ||
+    $CFG->alternate_cache_class !== 'tool_forcedcache' ||
+    !empty($errors)) {
+
+    echo html_writer::tag('h3', get_string('page_not_active', 'tool_forcedcache'));
+} else {
+    echo html_writer::tag('h3', get_string('page_active', 'tool_forcedcache'));
+}
+
+echo '<br>';
+
 if (!empty($errors)) {
     echo html_writer::tag('h3', get_string('page_config_broken', 'tool_forcedcache'));
     $error = html_writer::tag('pre', $errors);
     echo html_writer::tag('p', get_string('page_config_broken_details', 'tool_forcedcache', $error));
 } else {
     echo html_writer::tag('h3', get_string('page_config_ok', 'tool_forcedcache'));
+}
+
+echo '<br>';
+
+if (empty($errors)) {
+    $adminhelper = tool_forcedcache_cache_administration_helper::instance();
+    echo $adminhelper->get_ruleset_output();
 }
 
 echo $OUTPUT->footer();

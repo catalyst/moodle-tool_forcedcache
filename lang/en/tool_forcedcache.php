@@ -23,6 +23,8 @@ $string['page_config_broken'] = 'Forced cache config broken';
 $string['page_config_broken_details'] = 'The reported error message is: {$a}';
 $string['page_mode'] = 'Mode: {$a}';
 $string['page_rulesets'] = 'Caching Rules';
+$string['page_not_active'] = 'Forced cache configuration is NOT active.';
+$string['page_active'] = 'Forced cache configuration IS active.';
 
 // Exception Strings.
 $string['config_json_parse_fail'] = 'Error parsing JSON to array. JSON syntax may be malformed.';
