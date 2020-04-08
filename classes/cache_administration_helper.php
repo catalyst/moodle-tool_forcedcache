@@ -257,4 +257,32 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
         }
         return $html;
     }
+
+    /**
+     * This function processes the actions available on the cache_admin page.
+     * The only allowed actions are purges and rescans, as the config is read-only.
+     * forminfo is required for compatability with parent function signature.
+     *
+     * @param string $action the action to perform
+     * @param array $forminfo empty array to be passed through function
+     * @return array empty array
+     */
+    public function perform_cache_actions(string $action, array $forminfo) : array {
+        switch ($action) {
+            case 'rescandefinitions':
+                $this->action_rescan_definition();
+                break;
+
+            case 'purgedefinition':
+                $this->action_purgedefinition();
+                break;
+
+            case 'purgestore':
+            case 'purge':
+                $this->action_purge();
+                break;
+        }
+
+        return $forminfo;
+    }
 }
