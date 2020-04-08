@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * This class changes the actions that are available to various stores,
  * and changes the layout slightly
@@ -22,8 +23,6 @@
  * @copyright   Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-
 
 // Manually require locallib as class isn't autoloaded.
 require_once(__DIR__.'/../../../../cache/locallib.php');
