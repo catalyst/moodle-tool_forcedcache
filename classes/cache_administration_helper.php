@@ -147,21 +147,24 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
      * with some custom tweaks for the plugin.
      *
      * @param core_cache_renderer $renderer
-     * @return void
+     * @return string HTML for the page;
      */
-    public function output_admin_page(core_cache_renderer $renderer) {
+    public function generate_admin_page(core_cache_renderer $renderer) : string {
         $context = context_system::instance();
+        $html = '';
 
         $storepluginsummaries = $this->get_store_plugin_summaries();
         $storeinstancesummaries = $this->get_store_instance_summaries();
         $definitionsummaries = $this->get_definition_summaries();
         $locks = $this->get_lock_summaries();
 
-        echo $renderer->store_plugin_summaries($storepluginsummaries);
-        echo $renderer->store_instance_summariers($storeinstancesummaries, $storepluginsummaries);
-        echo $renderer->definition_summaries($definitionsummaries, $context);
-        echo $this->lock_summaries($locks);
-        echo $this->get_ruleset_output();
+        $html .= $renderer->store_plugin_summaries($storepluginsummaries);
+        $html .= $renderer->store_instance_summariers($storeinstancesummaries, $storepluginsummaries);
+        $html .= $renderer->definition_summaries($definitionsummaries, $context);
+        $html .= $this->lock_summaries($locks);
+        $html .= $this->get_ruleset_output();
+
+        return $html;
     }
 
     /**
