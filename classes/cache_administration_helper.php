@@ -37,7 +37,7 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
      * @param array $plugindetails details of the plugin.
      * @return array array of plugin actions.
      */
-    public function get_store_plugin_actions($name, array $plugindetails) {
+    public function get_store_plugin_actions(string $name, array $plugindetails) : array {
         return array();
     }
 
@@ -45,10 +45,10 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
      * The only action allowed for stores is purge.
      *
      * @param string $name The store instance name.
-     * @param array $storedetails details of the store instance
-     * @return void
+     * @param array $storedetails details of the store instance.
+     * @return array array of store instance actions.
      */
-    public function get_store_instance_actions($name, array $storedetails) {
+    public function get_store_instance_actions(string $name, array $storedetails) : array {
         $actions = array();
         if (has_capability('moodle/site:config', context_system::instance())) {
             $baseurl = new moodle_url('/cache/admin.php', array('store' => $name, 'sesskey' => sesskey()));
@@ -63,11 +63,11 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
     /**
      * The only action allowed for definitions is purge.
      *
-     * @param context $context
-     * @param array $definitionsummary
-     * @return void
+     * @param context $context the context for the definition.
+     * @param array $definitionsummary summary of definition.
+     * @return array array of definition actions.
      */
-    public function get_definition_actions(context $context, array $definitionsummary) {
+    public function get_definition_actions(context $context, array $definitionsummary) : array {
         $actions = array();
         if (has_capability('moodle/site:config', $context)) {
             $actions[] = array(
@@ -81,9 +81,9 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
     /**
      * We dont wish any locks to be addable.
      *
-     * @return array
+     * @return array empty array
      */
-    public function get_addable_lock_options() {
+    public function get_addable_lock_options() : array {
         return array();
     }
 
@@ -149,7 +149,7 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
      * @param core_cache_renderer $renderer
      * @return void
      */
-    public function output_admin_page($renderer) {
+    public function output_admin_page(core_cache_renderer $renderer) {
         $context = context_system::instance();
 
         $storepluginsummaries = $this->get_store_plugin_summaries();
