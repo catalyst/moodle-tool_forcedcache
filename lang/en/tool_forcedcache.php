@@ -34,3 +34,4 @@ $string['store_bad_type'] = 'Error loading store {$a}. Store may not exist or ty
 $string['rule_priority'] = 'Priority';
 $string['rule_ruleset'] = 'Ruleset';
 $string['rule_noconditions'] = 'No conditions set';
+$string['rule_no_rulesets'] = 'No rulesets are defined for this mode.';

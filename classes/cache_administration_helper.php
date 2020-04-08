@@ -87,14 +87,80 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
         return array();
     }
 
+    /**
+     * This an alternate output method from the cache_renderer.
+     * It is identical but removes the select from the end of the HTML
+     *
+     * @param array $locks the array of configured locks.
+     * @return string the HTML for the lock summaries
+     */
+    public function lock_summaries(array $locks) : string {
+        global $OUTPUT;
+
+        $table = new html_table();
+        $table->colclasses = array(
+            'name',
+            'type',
+            'default',
+            'uses',
+            'actions'
+        );
+        $table->rowclasses = array(
+            'lock_name',
+            'lock_type',
+            'lock_default',
+            'lock_uses',
+            'lock_actions',
+        );
+        $table->head = array(
+            get_string('lockname', 'cache'),
+            get_string('locktype', 'cache'),
+            get_string('lockdefault', 'cache'),
+            get_string('lockuses', 'cache'),
+            get_string('actions', 'cache')
+        );
+        $table->data = array();
+        $tick = $OUTPUT->pix_icon('i/valid', '');
+        foreach ($locks as $lock) {
+            $actions = array();
+            if ($lock['uses'] === 0 && !$lock['default']) {
+                $url = new moodle_url('/cache/admin.php', array('lock' => $lock['name'], 'action' => 'deletelock', 'sesskey' => sesskey()));
+                $actions[] = html_writer::link($url, get_string('delete', 'cache'));
+            }
+            $table->data[] = new html_table_row(array(
+                new html_table_cell($lock['name']),
+                new html_table_cell($lock['type']),
+                new html_table_cell($lock['default'] ? $tick : ''),
+                new html_table_cell($lock['uses']),
+                new html_table_cell(join(' ', $actions))
+            ));
+        }
+
+        $html = html_writer::start_tag('div', array('id' => 'core-cache-lock-summary'));
+        $html .= $OUTPUT->heading(get_string('locksummary', 'cache'), 3);
+        $html .= html_writer::table($table) . '<br>';
+        return $html;
+    }
+
+    /**
+     * This function performs all of the outputting for the cache admin page,
+     * with some custom tweaks for the plugin.
+     *
+     * @param array $storepluginsummaries
+     * @param array $storeinstancesummaries
+     * @param array $definitionsummaries
+     * @param array $defaultmodestores
+     * @param array $locks
+     * @param core_cache_renderer $renderer
+     * @return void
+     */
     public function output_admin_page($storepluginsummaries, $storeinstancesummaries, $definitionsummaries, $defaultmodestores, $locks, $renderer) {
         $context = context_system::instance();
 
         echo $renderer->store_plugin_summaries($storepluginsummaries);
         echo $renderer->store_instance_summariers($storeinstancesummaries, $storepluginsummaries);
         echo $renderer->definition_summaries($definitionsummaries, $context);
-        echo $renderer->lock_summaries($locks);
-
+        echo $this->lock_summaries($locks);
         echo $this->get_ruleset_output();
     }
 
@@ -103,7 +169,7 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
      *
      * @return string HTML to display the currently active rulesets.
      */
-    public function get_ruleset_output() {
+    public function get_ruleset_output() : string {
         global $CFG;
 
         $html = html_writer::tag('h3', get_string('page_rulesets', 'tool_forcedcache'));
@@ -124,7 +190,14 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
         return $html . $applicationtable . $sessiontable . $requesttable;
     }
 
-    private function generate_mode_table($mode, $config) {
+    /**
+     * Generates a ruleset table for the selected caching mode.
+     *
+     * @param integer $mode the mode to generate the table for.
+     * @param array $config the config array from the JSON.
+     * @return string HTML for the table.
+     */
+    private function generate_mode_table(int $mode, array $config) : string {
         $html = '';
 
         $rules = $config['rules'];
@@ -174,10 +247,14 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
         }
 
         // Now output a header and the table
-        $ruletype = ucwords($ruletype);
-        $html .= html_writer::tag('h4', get_string('page_mode', 'tool_forcedcache', $ruletype));
-        $html .= html_writer::table($table);
+        $formattedruletype = ucwords($ruletype);
+        $html .= html_writer::tag('h4', get_string('page_mode', 'tool_forcedcache', $formattedruletype));
 
+        if (count($rules[$ruletype]) === 0) {
+            $html .= html_writer::tag('h5', get_string('rule_no_rulesets', 'tool_forcedcache'));
+        } else {
+            $html .= html_writer::table($table);
+        }
         return $html;
     }
 }
