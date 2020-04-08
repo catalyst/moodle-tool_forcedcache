@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-// Manually require locallib in case it's not loaded when required.
+// Manually require locallib as it isn't autoloaded.
 require_once(__DIR__.'/../../../../cache/locallib.php');
 
 class tool_forcedcache_cache_config_writer extends cache_config_writer {

@@ -79,7 +79,7 @@ class tool_forcedcache_cache_config extends cache_config {
         } else {
             $path = __DIR__.'/../config.json';
         }
-        $config = $this->read_config_file($path);
+        $config = self::read_config_file($path);
         // GENERATE STORES CONFIG
         $stores = $this->generate_store_instance_config($config['stores']);
 
@@ -117,7 +117,7 @@ class tool_forcedcache_cache_config extends cache_config {
      * @return array Associative array of configuration from JSON.
      * @throws cache_exception
      */
-    private function read_config_file($path) {
+    public static function read_config_file($path) {
         if (file_exists($path)) {
             $filedata = file_get_contents($path);
             $config = json_decode($filedata, true);
