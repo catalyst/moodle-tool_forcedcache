@@ -92,8 +92,8 @@ class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
         $storearr1 = $method->invoke($config, $store_missingfields['input']);
         $this->assertNull($storearr1);
 
-        // TODO Test store with bad config.
-        // TODO Test reading in extra value for store instances.
+        // Now test store with where store isn't ready, don't instantiate (APCu doesn't work from CLI).
+        $this->assertEquals($store_reqsnotmet['expected'], $method->invoke($config, $store_reqsnotmet['input']));
     }
 
     function test_mode_mappings () {

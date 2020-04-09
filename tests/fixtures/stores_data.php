@@ -2,29 +2,31 @@
 
 $store_one = array (
     'input' => array (
-        'apcu-test' => array (
-            'type' => 'apcu',
+        'filetest' => array (
+            'type' => 'file',
             'config' => array (
-                'prefix' => 'test'
+                'path' => '/tmp/hardcode',
+                'autocreate' => 1
             )
         )
     ),
     'expected' => array (
-        'apcu-test' =>
+        'filetest' =>
             array (
-                'name' => 'apcu-test',
-                'plugin' => 'apcu',
+                'name' => 'filetest',
+                'plugin' => 'file',
                 'configuration' =>
                     array (
-                    'prefix' => 'test',
-                ),
-                'features' => 4,
+                        'path' => '/tmp/hardcode',
+                        'autocreate' => 1,
+                    ),
+                'features' => 30,
                 'modes' => 3,
                 'mappingsonly' => false,
-                'class' => 'cachestore_apcu',
+                'class' => 'cachestore_file',
                 'default' => false,
                 'lock' => 'cachelock_file_default',
-            ),
+                ),
         'default_application' =>
             array (
                 'name' => 'default_application',
@@ -69,39 +71,25 @@ $store_one = array (
 
 $store_two = array (
     'input' => array (
-        'apcu-test' => array (
-            'type' => 'apcu',
-            'config' => array (
-                'prefix' => 'test'
-            )
-        ),
-        'file-test' => array (
+        'filetest' => array (
             'type' => 'file',
             'config' => array (
                 'path' => '/tmp/hardcode',
                 'autocreate' => 1
             )
+        ),
+        'filetest2' => array (
+            'type' => 'file',
+            'config' => array (
+                'path' => '/tmp/hardcode2',
+                'autocreate' => 1
+            )
         )
     ),
     'expected' => array (
-        'apcu-test' =>
+        'filetest' =>
             array (
-                'name' => 'apcu-test',
-                'plugin' => 'apcu',
-                'configuration' =>
-                    array (
-                        'prefix' => 'test',
-                ),
-                'features' => 4,
-                'modes' => 3,
-                'mappingsonly' => false,
-                'class' => 'cachestore_apcu',
-                'default' => false,
-                'lock' => 'cachelock_file_default',
-            ),
-        'file-test' =>
-            array (
-                'name' => 'file-test',
+                'name' => 'filetest',
                 'plugin' => 'file',
                 'configuration' =>
                     array (
@@ -114,7 +102,23 @@ $store_two = array (
                 'class' => 'cachestore_file',
                 'default' => false,
                 'lock' => 'cachelock_file_default',
-                ),
+            ),
+        'filetest2' =>
+            array (
+                'name' => 'filetest2',
+                'plugin' => 'file',
+                'configuration' =>
+                    array (
+                        'path' => '/tmp/hardcode2',
+                        'autocreate' => 1,
+                    ),
+                'features' => 30,
+                'modes' => 3,
+                'mappingsonly' => false,
+                'class' => 'cachestore_file',
+                'default' => false,
+                'lock' => 'cachelock_file_default',
+            ),
         'default_application' =>
             array (
                 'name' => 'default_application',
@@ -205,7 +209,7 @@ $store_zero = array (
 
 $store_badtype = array (
     'input' => array (
-        'apcu-test' => array (
+        'apcutest' => array (
             'type' => 'faketype',
             'config' => array (
                 'prefix' => 'test'
@@ -216,8 +220,60 @@ $store_badtype = array (
 
 $store_missingfield = array (
     'input' => array (
-        'apcu-test' => array (
+        'apcutest' => array (
             'type' => 'faketype',
         )
+    )
+);
+
+$store_reqsnotmet = array (
+    'input' => array (
+        'apcutest' => array (
+            'type' => 'apcu',
+            'config' => array (
+                'prefix' => 'test_',
+            )
+        )
+    ),
+    'expected' => array (
+        'default_application' =>
+            array (
+                'name' => 'default_application',
+                'plugin' => 'file',
+                'configuration' =>
+                    array (
+                    ),
+                'features' => 30,
+                'modes' => 3,
+                'default' => true,
+                'class' => 'cachestore_file',
+                'lock' => 'cachelock_file_default',
+            ),
+        'default_session' =>
+            array (
+                'name' => 'default_session',
+                'plugin' => 'session',
+                'configuration' =>
+                array (
+                ),
+                'features' => 14,
+                'modes' => 2,
+                'default' => true,
+                'class' => 'cachestore_session',
+                'lock' => 'cachelock_file_default',
+            ),
+        'default_request' =>
+            array (
+                'name' => 'default_request',
+                'plugin' => 'static',
+                'configuration' =>
+                array (
+                ),
+                'features' => 31,
+                'modes' => 4,
+                'default' => true,
+                'class' => 'cachestore_static',
+                'lock' => 'cachelock_file_default',
+            )
     )
 );

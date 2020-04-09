@@ -173,11 +173,11 @@ class tool_forcedcache_cache_config extends cache_config {
             $storearr['mappingsonly'] = false;
             $storearr['lock'] = 'cachelock_file_default';
 
-            // TODO cycle through any remaining config and instantiate it.
-
-            $storesarr[$name] = $storearr;
-
-            // TODO Create instance form this definition and confirm it instantiates correctly.
+            // Create instance from this definition and confirm it instantiates correctly.
+            $classinstance = new $classname($storearr['name'], $storearr);
+            if ($classinstance->is_ready()) {
+                $storesarr[$name] = $storearr;
+            }
         }
 
         // Now instantiate the default stores (Must always exist).
