@@ -176,6 +176,8 @@ class tool_forcedcache_cache_config extends cache_config {
             // TODO cycle through any remaining config and instantiate it.
 
             $storesarr[$name] = $storearr;
+
+            // TODO Create instance form this definition and confirm it instantiates correctly.
         }
 
         // Now instantiate the default stores (Must always exist).
@@ -211,7 +213,6 @@ class tool_forcedcache_cache_config extends cache_config {
         */
 
         // USE THIS IF NOT USING ABOVE
-        // TODO Finally, instantiate the defaults.
         $modemappings = array_merge($modemappings, array(
             array(
                 'mode' => cache_store::MODE_APPLICATION,
