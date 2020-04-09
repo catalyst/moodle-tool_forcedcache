@@ -40,7 +40,6 @@ class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
         // First use the default json file.
         $path = __DIR__ . '/../config.json';
         $configarr1 = $method->invoke($config, $path);
-        $this->assertIsArray($configarr1);
         $this->assertEquals(2, count($configarr1));
         $this->assertArrayHasKey('rules', $configarr1);
         $this->assertArrayHasKey('stores', $configarr1);
