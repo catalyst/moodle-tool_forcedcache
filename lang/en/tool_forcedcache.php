@@ -37,3 +37,5 @@ $string['rule_priority'] = 'Priority';
 $string['rule_ruleset'] = 'Ruleset';
 $string['rule_noconditions'] = 'No conditions set';
 $string['rule_no_rulesets'] = 'No rulesets are defined for this mode.';
+
+$string['privacy:metadata'] = 'The forced caching plugin does not store any data for any reason.';
