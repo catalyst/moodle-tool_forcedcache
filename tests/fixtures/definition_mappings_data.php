@@ -1,6 +1,6 @@
 <?php defined('MOODLE_INTERNAL') || die();
 
-$definition_match_top_ruleset = array (
+$definitionmatchtopruleset = array (
     'definition' => array (
         'core/string' =>
         array (
@@ -54,7 +54,7 @@ $definition_match_top_ruleset = array (
     )
 );
 
-$definition_non_match_top_ruleset = array (
+$definitionnonmatchtopruleset = array (
     'definition' => array (
         'core/string' =>
         array (
@@ -102,7 +102,7 @@ $definition_non_match_top_ruleset = array (
     )
 );
 
-$definition_bottom_ruleset = array (
+$definitionbottomruleset = array (
     'definition' => array (
         'core/string' =>
         array (
@@ -160,7 +160,7 @@ $definition_bottom_ruleset = array (
     )
 );
 
-$definition_no_ruleset = array (
+$definitionnoruleset = array (
     'definition' => array (
         'core/string' =>
         array (

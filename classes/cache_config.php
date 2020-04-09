@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * This cache_config class extends the first one, and generates the
  * configuration array from reading a hardcoded JSON file instead of
@@ -23,6 +24,9 @@
  * @copyright   Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die();
+
 class tool_forcedcache_cache_config extends cache_config {
 
     /**
@@ -70,9 +74,9 @@ class tool_forcedcache_cache_config extends cache_config {
      *
      * @return array the cache configuration array.
      */
-    private function generate_config_array() {
+    private function generate_config_array() : array {
         global $CFG;
-        // READFILE
+        // Read the config file.
         // Path can only be hardcoded, to avoid concurrency issues between frontends.
         if (!empty($CFG->tool_forcedcache_config_path)) {
             $path = $CFG->tool_forcedcache_config_path;
@@ -80,25 +84,26 @@ class tool_forcedcache_cache_config extends cache_config {
             $path = __DIR__.'/../config.json';
         }
         $config = self::read_config_file($path);
-        // GENERATE STORES CONFIG
+
+        // Generate the stores config.
         $stores = $this->generate_store_instance_config($config['stores']);
 
-        //GENERATE MODE MAPPINGS
+        // Generate the mode mappings.
         $modemappings = $this->generate_mode_mapping($config['rules']);
 
-        // GENERATE DEFINITIONS
+        // Get the definitions.
         $definitions = tool_forcedcache_cache_config_writer::locate_definitions();
 
-        // GENERATE DEFINITIONS FROM RULESETS
+        // Generate definition mappings from rulesets.
         $definitionmappings = $this->generate_definition_mappings_from_rules($config['rules'], $definitions);
 
-        // GENERATE LOCKS
+        // Generate locks.
         $locks = $this->generate_locks();
 
-        // GENERATE SITEIDENTIFIER
+        // Get the siteidentifier.
         $siteidentifier = cache_helper::get_site_identifier();
 
-        //Throw it all into an array and return
+        // Throw it all into an array and return.
         return array(
             'siteidentifier' => $siteidentifier,
             'stores' => $stores,
@@ -117,7 +122,7 @@ class tool_forcedcache_cache_config extends cache_config {
      * @return array Associative array of configuration from JSON.
      * @throws cache_exception
      */
-    public static function read_config_file($path) {
+    public static function read_config_file(string $path) : array {
         if (file_exists($path)) {
             $filedata = file_get_contents($path);
             $config = json_decode($filedata, true);
@@ -139,7 +144,7 @@ class tool_forcedcache_cache_config extends cache_config {
      * @return array a mapped configuration array of store instances.
      * @throws cache_exception
      */
-    private function generate_store_instance_config($stores) {
+    private function generate_store_instance_config(array $stores) : array {
         $storesarr = array();
         foreach ($stores as $name => $store) {
 
@@ -189,31 +194,11 @@ class tool_forcedcache_cache_config extends cache_config {
     /**
      * This function generates the default mappings for each cache mode.
      *
-     * @param array $rules the rules array from the JSON.
      * @return array the generated default mode mappings.
      */
-    private function generate_mode_mapping($rules) {
-        // Here we must decide on how the stores are going to be used
-        $modemappings = array();
-
-        // LEAVE HERE. This needs rethinking re whether it is useful/what rules to apply this to.
-        //$sort = 0;
-        /*$modemappings = array_merge($modemappings,
-            $this->create_mappings($rules['application'], cache_store::MODE_APPLICATION, $sort));
-        $sort = count($modemappings);
-
-        // Now do the exact same for Session.
-        $modemappings = array_merge($modemappings,
-            $this->create_mappings($rules['session'], cache_store::MODE_SESSION, $sort));
-        $sort += count($modemappings);
-
-        // Finally for Request.
-        $modemappings = array_merge($modemappings,
-            $this->create_mappings($rules['request'], cache_store::MODE_REQUEST, $sort));
-        */
-
-        // USE THIS IF NOT USING ABOVE
-        $modemappings = array_merge($modemappings, array(
+    private function generate_mode_mapping() : array {
+        // Use the defaults from core.
+        $modemappings = array(
             array(
                 'mode' => cache_store::MODE_APPLICATION,
                 'store' => 'default_application',
@@ -229,65 +214,7 @@ class tool_forcedcache_cache_config extends cache_config {
                 'store' => 'default_request',
                 'sort' => -1
             )
-            ));
-
-        return $modemappings;
-    }
-
-    /**
-     * This generates an ordered list of default mappings for each mode,
-     * based on the declared stores, and the rules.
-     *
-     * @param array $rules the rules array from JSON.
-     * @param int $mode the mode the store will map to.
-     * @param int $sortstart the index to start creating array keys at in the return array.
-     * @return array an array of mapped stores->mode
-     * @throws cache_exception
-     */
-    private function create_mappings($rules, $mode, $sortstart) {
-        // Check all 3 modes sequentially.
-        // TODO Check mode is supported by store and exception.
-        // TODO Check store exists before mapping it.
-        // TODO Ensure sorting isnt borked. Shouldnt matter, as we will explicitly bind it.
-        // TODO Ensure config.json is properly formed/ordered (indexes)
-
-        $mappedstores = array();
-        $sort = $sortstart;
-
-        if (count($rules) === 0) {
-            return array();
-        }
-
-        foreach ($rules['local'] as $key => $mapping) {
-            // Create the mapping.
-            $maparr = [];
-            $maparr['mode'] = $mode;
-            $maparr['store'] = $mapping;
-            $maparr['sort'] = $sort;
-            $modemappings[$sort] = $maparr;
-            $sort++;
-
-            // Now store the mapping name and mode to prevent duplication.
-            $mappedstores[] = $mapping;
-        }
-
-        // Now we construct the non-locals, after checking they aren't already mapped.
-        foreach ($rules['non-local'] as $key => $mapping) {
-            if (in_array($mapping, $mappedstores)) {
-                continue;
-            }
-
-            // Create the mapping.
-            $maparr = [];
-            $maparr['mode'] = $mode;
-            $maparr['store'] = $mapping;
-            $maparr['sort'] = $sort;
-            $modemappings[$sort] = $maparr;
-            $sort++;
-
-            // Now store the mapping name and mode to prevent duplication.
-            $mappedstores[] = $mapping;
-        }
+        );
 
         return $modemappings;
     }
@@ -302,7 +229,7 @@ class tool_forcedcache_cache_config extends cache_config {
      * @param array $definitions a list of definitions to map.
      * @return array an array of ordered mappings for every definition to its ruleset.
      */
-    private function generate_definition_mappings_from_rules($rules, $definitions) {
+    private function generate_definition_mappings_from_rules(array $rules, array $definitions) : array {
         $defmappings = array();
         $num = 1;
         foreach ($definitions as $defname => $definition) {
@@ -355,7 +282,7 @@ class tool_forcedcache_cache_config extends cache_config {
             // Weirdness here. Some stuff sorts lowest as priority, Mappings sort highest as priority.
             $sort = count($stores);
             foreach ($stores as $store) {
-                //Create the mapping for the definition -> store and add to the master list.
+                // Create the mapping for the definition -> store and add to the master list.
                 $mappingarr = array();
                 $mappingarr['store'] = $store;
                 $mappingarr['definition'] = $defname;
@@ -377,7 +304,7 @@ class tool_forcedcache_cache_config extends cache_config {
      *
      * @return array array of locks to use.
      */
-    private function generate_locks() {
+    private function generate_locks() : array {
         return array(
             'default_file_lock' => array(
                 'name' => 'cachelock_file_default',

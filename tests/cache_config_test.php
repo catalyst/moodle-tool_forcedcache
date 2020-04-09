@@ -60,7 +60,7 @@ class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
         $this->assertNull($configarr3);
     }
 
-    function test_generate_store_instance_config() {
+    public function test_generate_store_instance_config() {
         // Directly create a config.
         $config = new \tool_forcedcache_cache_config();
 
@@ -72,31 +72,31 @@ class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
         include(__DIR__ . '/fixtures/stores_data.php');
 
         // First test with 1 store.
-        $this->assertEquals($store_one['expected'], $method->invoke($config, $store_one['input']));
+        $this->assertEquals($storeone['expected'], $method->invoke($config, $storeone['input']));
 
         // Now a second store.
-        $this->assertEquals($store_two['expected'], $method->invoke($config, $store_two['input']));
+        $this->assertEquals($storetwo['expected'], $method->invoke($config, $storetwo['input']));
 
         // Now test with 0 stores declared and confirm its just the defaults.
-        $this->assertEquals($store_zero['expected'], $method->invoke($config, $store_zero['input']));
+        $this->assertEquals($storezero['expected'], $method->invoke($config, $storezero['input']));
 
         // Now test a store with a bad type.
         $this->expectException(\cache_exception::class);
         $this->expectExceptionMessage(get_string('store_bad_type', 'tool_forcedcache', 'faketype'));
-        $storearr1 = $method->invoke($config, $store_badtype['input']);
+        $storearr1 = $method->invoke($config, $storebadtype['input']);
         $this->assertNull($storearr1);
 
         // Now test a store with a missing required field.
         $this->expectException(\cache_exception::class);
         $this->expectExceptionMessage(get_string('store_missing_fields', 'tool_forcedcache', 'apcu-test'));
-        $storearr1 = $method->invoke($config, $store_missingfields['input']);
+        $storearr1 = $method->invoke($config, $storemissingfields['input']);
         $this->assertNull($storearr1);
 
         // Now test store with where store isn't ready, don't instantiate (APCu doesn't work from CLI).
-        $this->assertEquals($store_reqsnotmet['expected'], $method->invoke($config, $store_reqsnotmet['input']));
+        $this->assertEquals($storereqsnotmet['expected'], $method->invoke($config, $storereqsnotmet['input']));
     }
 
-    function test_mode_mappings () {
+    public function test_mode_mappings () {
         // TODO decide if we want mapping defaults forced, then test them here.
 
         $config = new \tool_forcedcache_cache_config();
@@ -107,10 +107,10 @@ class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
         // Read in the fixtures file for data.
         include(__DIR__ . '/fixtures/mode_mappings_data.php');
 
-        $this->assertEquals($defaults_expected, $method->invoke($config, array()));
+        $this->assertEquals($defaultsexpected, $method->invoke($config, array()));
     }
 
-    function test_generate_definition_mappings_from_rules() {
+    public function test_generate_definition_mappings_from_rules() {
         $config = new \tool_forcedcache_cache_config();
 
         // Setup reflection for private function.
@@ -120,20 +120,20 @@ class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
         // Read in the fixtures file for data.
         include(__DIR__ . '/fixtures/definition_mappings_data.php');
 
-        // Test when a condition and the name match
-        $this->assertEquals($definition_match_top_ruleset['expected'],
-            $method->invoke($config, $definition_match_top_ruleset['rules'], $definition_match_top_ruleset['definition']));
+        // Test when a condition and the name match.
+        $this->assertEquals($definitionmatchtopruleset['expected'],
+            $method->invoke($config, $definitionmatchtopruleset['rules'], $definitionmatchtopruleset['definition']));
 
         // Test when 1 condition fails in a set, fallthrough occurs.
-        $this->assertEquals($definition_non_match_top_ruleset['expected'],
-            $method->invoke($config, $definition_non_match_top_ruleset['rules'], $definition_non_match_top_ruleset['definition']));
+        $this->assertEquals($definitionnonmatchtopruleset['expected'],
+            $method->invoke($config, $definitionnonmatchtopruleset['rules'], $definitionnonmatchtopruleset['definition']));
 
-        // Test when failing 2 rulesets, fall through to 3rd
-        $this->assertEquals($definition_bottom_ruleset['expected'],
-            $method->invoke($config, $definition_bottom_ruleset['rules'], $definition_bottom_ruleset['definition']));
+        // Test when failing 2 rulesets, fall through to 3rd.
+        $this->assertEquals($definitionbottomruleset['expected'],
+            $method->invoke($config, $definitionbottomruleset['rules'], $definitionbottomruleset['definition']));
 
-        // Test when all rulesets fail (no mappings)
-        $this->assertEquals($definition_no_ruleset['expected'],
-            $method->invoke($config, $definition_no_ruleset['rules'], $definition_no_ruleset['definition']));
+        // Test when all rulesets fail (no mappings).
+        $this->assertEquals($definitionnoruleset['expected'],
+            $method->invoke($config, $definitionnoruleset['rules'], $definitionnoruleset['definition']));
     }
 }

@@ -1,6 +1,6 @@
 <?php defined('MOODLE_INTERNAL') || die();
 
-$store_one = array (
+$storeone = array (
     'input' => array (
         'filetest' => array (
             'type' => 'file',
@@ -69,7 +69,7 @@ $store_one = array (
     )
 );
 
-$store_two = array (
+$storetwo = array (
     'input' => array (
         'filetest' => array (
             'type' => 'file',
@@ -161,7 +161,7 @@ $store_two = array (
     )
 );
 
-$store_zero = array (
+$storezero = array (
     'input' => array (
     ),
     'expected' => array (
@@ -207,7 +207,7 @@ $store_zero = array (
     )
 );
 
-$store_badtype = array (
+$storebadtype = array (
     'input' => array (
         'apcutest' => array (
             'type' => 'faketype',
@@ -218,7 +218,7 @@ $store_badtype = array (
     )
 );
 
-$store_missingfield = array (
+$storemissingfield = array (
     'input' => array (
         'apcutest' => array (
             'type' => 'faketype',
@@ -226,7 +226,7 @@ $store_missingfield = array (
     )
 );
 
-$store_reqsnotmet = array (
+$storereqsnotmet = array (
     'input' => array (
         'apcutest' => array (
             'type' => 'apcu',

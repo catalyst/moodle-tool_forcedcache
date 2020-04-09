@@ -14,6 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * This cache_factory swaps the cache_config and cache_config_writer.
+ *
+ * @package     tool_forcedcache
+ * @author      Peter Burnett <peterburnett@catalyst-au.net>
+ * @copyright   Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 class tool_forcedcache_cache_factory extends cache_factory {
 
     /**
@@ -53,7 +64,6 @@ class tool_forcedcache_cache_factory extends cache_factory {
             // Create the default configuration.
             // Update the state, we are now initialising the cache.
             self::set_state(self::STATE_INITIALISING);
-            /** @var cache_config_writer $class */
             $configuration = $class::create_default_configuration();
             if ($configuration !== true) {
                 // Failed to create the default configuration. Disable the cache stores and update the state.

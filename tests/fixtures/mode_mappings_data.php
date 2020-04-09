@@ -1,6 +1,6 @@
 <?php defined('MOODLE_INTERNAL') || die();
 
-$defaults_expected = array(
+$defaultsexpected = array(
     array(
         'mode' => cache_store::MODE_APPLICATION,
         'store' => 'default_application',

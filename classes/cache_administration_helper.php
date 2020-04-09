@@ -24,6 +24,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
 // Manually require locallib as class isn't autoloaded.
 require_once(__DIR__.'/../../../../cache/locallib.php');
 
@@ -123,7 +124,8 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
         foreach ($locks as $lock) {
             $actions = array();
             if ($lock['uses'] === 0 && !$lock['default']) {
-                $url = new moodle_url('/cache/admin.php', array('lock' => $lock['name'], 'action' => 'deletelock', 'sesskey' => sesskey()));
+                $url = new moodle_url('/cache/admin.php', array('lock' => $lock['name'],
+                    'action' => 'deletelock', 'sesskey' => sesskey()));
                 $actions[] = html_writer::link($url, get_string('delete', 'cache'));
             }
             $table->data[] = new html_table_row(array(
@@ -203,7 +205,7 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
         $html = '';
 
         $rules = $config['rules'];
-        // Assign a bitmask to rule keys
+        // Assign a bitmask to rule keys.
         switch ($mode) {
             case cache_store::MODE_APPLICATION:
                 $ruletype = 'application';
@@ -220,7 +222,7 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
 
         $table = new html_table();
         $table->id = $mode . '_rule_table';
-        //$table->attributes['class'] = 'generaltable table table-bordered'; Might look ugly
+        $table->attributes['class'] = 'generaltable table table-bordered';
         $table->head = array (
             get_string('rule_priority', 'tool_forcedcache'),
             get_string('rule_ruleset', 'tool_forcedcache'),
@@ -248,7 +250,7 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
             $counter++;
         }
 
-        // Now output a header and the table
+        // Now output a header and the table.
         $formattedruletype = ucwords($ruletype);
         $html .= html_writer::tag('h4', get_string('page_mode', 'tool_forcedcache', $formattedruletype));
 

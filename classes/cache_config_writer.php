@@ -14,15 +14,26 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * This config_writer is readonly, and provides public access to some protected methods.
+ *
+ * @package     tool_forcedcache
+ * @author      Peter Burnett <peterburnett@catalyst-au.net>
+ * @copyright   Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+defined('MOODLE_INTERNAL') || die();
 // Manually require locallib as it isn't autoloaded.
 require_once(__DIR__.'/../../../../cache/locallib.php');
 
 class tool_forcedcache_cache_config_writer extends cache_config_writer {
-    //public function add_store_instance() {}
 
     /**
      * Overriding this means nothing gets Written.
      * This must still work if we fallback to core caching.
+     *
+     * @return void
      */
     public function config_save() {
         global $CFG;
@@ -31,14 +42,25 @@ class tool_forcedcache_cache_config_writer extends cache_config_writer {
         }
     }
 
-    // This is a public wrapper for a protected function, needed from cache_config.php.
+    // @codingStandardsIgnoreStart Required as this appears as a useless override, but its not.
+    /**
+     * This is a public wrapper for a protected function, needed from cache_config.php.
+     *
+     * @param bool $coreonly
+     * @return array array of located definitions.
+     */
     public static function locate_definitions($coreonly = false) {
         return parent::locate_definitions($coreonly);
     }
+    // @codingStandardsIgnoreEnd
 
-    // This is a public wrapper for a protected function, needed from cache_config.php.
+    /**
+     * This is a public wrapper for a protected function, needed from cache_config.php.
+     *
+     * @return array array of default store configurations.
+     */
     public static function get_default_stores() {
-        $defaults =  parent::get_default_stores();
+        $defaults = parent::get_default_stores();
         // Get default stores doesn't append some info to the default caches.
         $defaults['default_application']['class'] = 'cachestore_file';
         $defaults['default_session']['class'] = 'cachestore_session';
@@ -49,36 +71,4 @@ class tool_forcedcache_cache_config_writer extends cache_config_writer {
 
         return $defaults;
     }
-
-
-    // TODO These should all be overridden with null/parent calls,
-    // Which should have marginal performance improvements when these get called.
-
-    //public function delete_lock_instance($name) {}
-
-    //public function delete_store_instance($name) {}
-
-    //public function edit_store_instance($name, $plugin, $configuration) {
-    //    return true;
-    //}
-
-    //public function set_definition_mappings($definition, $mappings) {}
-
-    //public function set_definition_sharing($definition, $mappings) {}
-
-    // PROBABLY A DECENT PLACE TO PUT RULESET CONFIG
-    //public function set_mode_mappings(array $modemappings) {
-    //    return true;
-    //}
-
-    //public static function update_default_config_stores() {}
-
-    //public static function update_definitions($coreonly = false) {}
-
-    //public static function update_site_identifier($siteidentifier)
-
-    //public function add_lock_instance() {}
-
-    //public static function create_default_configuration($forcesave = false) {}
-
 }
