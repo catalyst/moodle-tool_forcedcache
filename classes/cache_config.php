@@ -170,7 +170,7 @@ class tool_forcedcache_cache_config extends cache_config {
 
             // Set these to a default value.
             $storearr['default'] = false;
-            $storearr['mappingsonly'] = 'false';
+            $storearr['mappingsonly'] = false;
             $storearr['lock'] = 'cachelock_file_default';
 
             // TODO cycle through any remaining config and instantiate it.

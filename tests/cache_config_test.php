@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Test file for tool_forcedcache_cache_factory.
+ * Test file for tool_forcedcache_cache_config.
  *
  * @package     tool_forcedcache
  * @author      Peter Burnett <peterburnett@catalyst-au.net>
@@ -58,5 +58,38 @@ class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
         $this->expectExceptionMessage(get_string('config_json_missing', 'tool_forcedcache'));
         $configarr3 = $method->invoke($config, $path);
         $this->assertNull($configarr3);
+    }
+
+    function test_generate_store_instance_config() {
+        // Directly create a config.
+        $config = new \tool_forcedcache_cache_config();
+
+        // Setup reflection for private function.
+        $method = new \ReflectionMethod($config, 'generate_store_instance_config');
+        $method->setAccessible(true);
+
+        // Read in the fixtures file for data.
+        include (__DIR__ . '/fixtures/stores_data.php');
+
+        // First test with 1 store.
+        $this->assertEquals($store_one['expected'], $method->invoke($config, $store_one['input']));
+
+        // Now a second store.
+        $this->assertEquals($store_two['expected'], $method->invoke($config, $store_two['input']));
+
+        // Now test with 0 stores declared and confirm its just the defaults.
+        $this->assertEquals($store_zero['expected'], $method->invoke($config, $store_zero['input']));
+
+        // Now test a store with a bad type.
+        $this->expectException(\cache_exception::class);
+        $this->expectExceptionMessage(get_string('store_bad_type', 'tool_forcedcache', 'faketype'));
+        $storearr1 = $method->invoke($config, $store_badtype['input']);
+        $this->assertNull($storearr1);
+
+        // Now test a store with a missing required field.
+        $this->expectException(\cache_exception::class);
+        $this->expectExceptionMessage(get_string('store_missing_fields', 'tool_forcedcache', 'apcu-test'));
+        $storearr1 = $method->invoke($config, $store_missingfields['input']);
+        $this->assertNull($storearr1);
     }
 }

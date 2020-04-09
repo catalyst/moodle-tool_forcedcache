@@ -38,7 +38,16 @@ class tool_forcedcache_cache_config_writer extends cache_config_writer {
 
     // This is a public wrapper for a protected function, needed from cache_config.php.
     public static function get_default_stores() {
-        return parent::get_default_stores();
+        $defaults =  parent::get_default_stores();
+        // Get default stores doesn't append some info to the default caches.
+        $defaults['default_application']['class'] = 'cachestore_file';
+        $defaults['default_session']['class'] = 'cachestore_session';
+        $defaults['default_request']['class'] = 'cachestore_static';
+        $defaults['default_application']['lock'] = 'cachelock_file_default';
+        $defaults['default_session']['lock'] = 'cachelock_file_default';
+        $defaults['default_request']['lock'] = 'cachelock_file_default';
+
+        return $defaults;
     }
 
 
