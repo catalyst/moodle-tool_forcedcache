@@ -54,13 +54,14 @@ All of the plugin configuration is deliberately performed in code, through modif
 If creating a new JSON file, it must match to a certain structure, or the plugin will not activate.
 
 #### Stores
-```"stores": {
-        "apcu-example": {
-        "type": "apcu",
-        "config": {
-            "prefix": "mdl"
-        }
+```
+"stores": {
+  "apcu-example": {
+    "type": "apcu",
+    "config": {
+        "prefix": "mdl"
     }
+  }
 }
 ```
 
@@ -180,7 +181,7 @@ If every condition defined in the conditions array is satisfied, the definition 
 ### $CFG settings
 Once a JSON has been defined to control the caching, a variable inserted into config.php can be used to control the path the plugin uses as a configuration file.
 ```
-$CFG->tool_forcedcache_config_path = $CFG->dirroot . '/config.json';
+$CFG->tool_forcedcache_config_path = 'path/to/config.json';
 ```
 If this is not supplied, the plugin will default to `config.json` inside of the plugin directory.
 Once the path is decided on, the configuration can be viewed. See [Debugging](#debugging) for more information.
