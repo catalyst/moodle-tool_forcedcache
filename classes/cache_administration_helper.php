@@ -38,17 +38,6 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
     }
 
     /**
-     * We don't wish any actions to be allowed on stores.
-     *
-     * @param string $name the store name.
-     * @param array $plugindetails details of the plugin.
-     * @return array array of plugin actions.
-     */
-    public function get_store_plugin_actions(string $name, array $plugindetails) : array {
-        return array();
-    }
-
-    /**
      * The only action allowed for stores is purge.
      *
      * @param string $name The store instance name.
@@ -83,15 +72,6 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
             );
         }
         return $actions;
-    }
-
-    /**
-     * We dont wish any locks to be addable.
-     *
-     * @return array empty array
-     */
-    public function get_addable_lock_options() : array {
-        return array();
     }
 
     /**
