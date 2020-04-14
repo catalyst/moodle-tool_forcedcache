@@ -179,7 +179,7 @@ class tool_forcedcache_cache_config extends cache_config {
             $storearr['lock'] = 'cachelock_file_default';
 
             // Create instance from this definition and confirm it instantiates correctly.
-            $classinstance = new $classname($storearr['name'], $storearr);
+            $classinstance = new $classname($storearr['name'], $storearr['configuration']);
             if ($classinstance->is_ready()) {
                 $storesarr[$name] = $storearr;
             }

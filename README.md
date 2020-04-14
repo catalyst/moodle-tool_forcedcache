@@ -105,7 +105,77 @@ E.g. Definitions will be checked against the top ruleset, then 2 etc. Inside eac
 If every condition defined in the conditions array is satisfied, the definition will be mapped to each of the stores, with the first store taking preference. If not, the definition will be checked against the next ruleset in the list. `conditions` is not required in a ruleset. If it is omitted, every definition will map to the stores in that ruleset, if they have not already been mapped to a higher ruleset. `stores` is required in every ruleset. If there are no rulesets defined for a mode, or there are no rulesets that a definition can match, the definition will fall through to the default store instance used for that mode.
 
 #### Preinstalled Cache Required Config
-TBA
+##### APCu
+```
+"apcu1": {
+      "type": "apcu",
+      "config": {
+        "prefix": "mdl"
+      }
+    }
+```
+
+##### File Cache
+```
+"file1": {
+      "type": "file",
+      "config": {
+        "path": "/tmp/filecache",
+        "autocreate": 1
+      }
+    }
+```
+
+##### Memcached
+```"memcached1": {
+      "type": "memcached",
+      "config": {
+        "servers": {
+          "0": {
+            "0": "127.0.0.1",
+            "1": "11211"
+          }
+        },
+        "compression": 1,
+        "serialiser": 1,
+        "prefix": "mdl",
+        "hash": 0,
+        "bufferwrites": 0,
+        "clustered": false,
+        "setservers": [],
+        "isshared": 0
+      }
+    }
+```
+
+##### MongoDB
+```
+"mongodb1": {
+      "type": "mongodb",
+      "config": {
+        "server": "mongodb://127.0.0.1:27017",
+        "database": "mcache",
+        "extendedmode": false,
+        "username": "username",
+        "password": "password",
+        "usesafe": true
+      }
+    }
+```
+
+##### Redis
+```
+"redis1": {
+      "type": "redis",
+      "config": {
+        "server": "127.0.0.1:6379",
+        "prefix": "mdl_",
+        "password": "password",
+        "serializer": 1,
+        "compressor": 0
+      }
+    }
+```
 
 ### $CFG settings
 Once a JSON has been defined to control the caching, a variable inserted into config.php can be used to control the path the plugin uses as a configuration file.
