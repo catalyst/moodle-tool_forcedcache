@@ -36,10 +36,6 @@ class tool_forcedcache_cache_config_writer extends cache_config_writer {
      * @return void
      */
     public function config_save() {
-        global $CFG;
-        if (!empty($CFG->tool_forcedcache_config_broken) &&$CFG->tool_forcedcache_config_broken) {
-            parent::config_save();
-        }
     }
 
     // @codingStandardsIgnoreStart Required as this appears as a useless override, but its not.

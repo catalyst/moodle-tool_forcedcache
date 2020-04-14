@@ -62,9 +62,11 @@ class tool_forcedcache_cache_config extends cache_config {
             // Store the error message in session, helps with debugging from a frontend display.
             // This may be overwritten depending on load order. Best to create a dummy cache instance then check.
             $SESSION->tool_forcedcache_caching_exception = $e->getMessage();
-            // Also store a canary for the writer to know if things are borked.
-            $CFG->tool_forcedcache_config_broken = true;
-            return parent::include_configuration();
+
+            // If plugin is supposed to be active, rethrow exception, can't continue with broken config.
+            if (!empty($CFG->alternative_cache_factory_class) && $CFG->alternative_cache_factory_class === 'tool_forcedcache_cache_factory') {
+                throw $e;
+            }
         }
     }
 
@@ -180,9 +182,10 @@ class tool_forcedcache_cache_config extends cache_config {
 
             // Create instance from this definition and confirm it instantiates correctly.
             $classinstance = new $classname($storearr['name'], $storearr['configuration']);
-            if ($classinstance->is_ready()) {
-                $storesarr[$name] = $storearr;
+            if (!$classinstance->is_ready()) {
+                throw new cache_exception(get_string('store_not_ready', 'tool_forcedcache', $name));
             }
+            $storesarr[$name] = $storearr;
         }
 
         // Now instantiate the default stores (Must always exist).
