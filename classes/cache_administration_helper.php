@@ -75,63 +75,6 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
     }
 
     /**
-     * This an alternate output method from the cache_renderer.
-     * It is identical but removes the select from the end of the HTML
-     *
-     * @param array $locks the array of configured locks.
-     * @return string the HTML for the lock summaries
-     */
-    public function lock_summaries(array $locks) : string {
-        global $OUTPUT;
-
-        $table = new html_table();
-        $table->colclasses = array(
-            'name',
-            'type',
-            'default',
-            'uses',
-            'actions'
-        );
-        $table->rowclasses = array(
-            'lock_name',
-            'lock_type',
-            'lock_default',
-            'lock_uses',
-            'lock_actions',
-        );
-        $table->head = array(
-            get_string('lockname', 'cache'),
-            get_string('locktype', 'cache'),
-            get_string('lockdefault', 'cache'),
-            get_string('lockuses', 'cache'),
-            get_string('actions', 'cache')
-        );
-        $table->data = array();
-        $tick = $OUTPUT->pix_icon('i/valid', '');
-        foreach ($locks as $lock) {
-            $actions = array();
-            if ($lock['uses'] === 0 && !$lock['default']) {
-                $url = new moodle_url('/cache/admin.php', array('lock' => $lock['name'],
-                    'action' => 'deletelock', 'sesskey' => sesskey()));
-                $actions[] = html_writer::link($url, get_string('delete', 'cache'));
-            }
-            $table->data[] = new html_table_row(array(
-                new html_table_cell($lock['name']),
-                new html_table_cell($lock['type']),
-                new html_table_cell($lock['default'] ? $tick : ''),
-                new html_table_cell($lock['uses']),
-                new html_table_cell(join(' ', $actions))
-            ));
-        }
-
-        $html = html_writer::start_tag('div', array('id' => 'core-cache-lock-summary'));
-        $html .= $OUTPUT->heading(get_string('locksummary', 'cache'), 3);
-        $html .= html_writer::table($table) . '<br>';
-        $html .= html_writer::end_div();
-        return $html;
-    }
-
-    /**
      * This function performs all of the outputting for the cache admin page,
      * with some custom tweaks for the plugin.
      *
@@ -150,7 +93,7 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
         $html .= $renderer->store_plugin_summaries($storepluginsummaries);
         $html .= $renderer->store_instance_summariers($storeinstancesummaries, $storepluginsummaries);
         $html .= $renderer->definition_summaries($definitionsummaries, $context);
-        $html .= $this->lock_summaries($locks);
+        $html .= $renderer->lock_summaries($locks);
         $html .= $this->get_ruleset_output();
 
         return $html;
@@ -164,7 +107,8 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
     public function get_ruleset_output() : string {
         global $CFG;
 
-        $html = html_writer::tag('h3', get_string('page_rulesets', 'tool_forcedcache'));
+        $html = '<br>';
+        $html .= html_writer::tag('h3', get_string('page_rulesets', 'tool_forcedcache'));
 
         if (!empty($CFG->tool_forcedcache_config_path)) {
             $path = $CFG->tool_forcedcache_config_path;
@@ -179,7 +123,7 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
         $sessiontable = $this->generate_mode_table(cache_store::MODE_SESSION, $config);
         $requesttable = $this->generate_mode_table(cache_store::MODE_REQUEST, $config);
 
-        return $html . $applicationtable . $sessiontable . $requesttable;
+        return html_writer::tag('div', $html . $applicationtable . $sessiontable . $requesttable);
     }
 
     /**
