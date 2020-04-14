@@ -1,5 +1,5 @@
-<a href="https://travis-ci.org/Peterburnett/moodle-tool_forcedcache">
-<img src="https://travis-ci.org/Peterburnett/moodle-tool_forcedcache.svg?branch=master">
+<a href="https://travis-ci.org/catalyst/moodle-tool_forcedcache">
+<img src="https://travis-ci.org/catalyst/moodle-tool_forcedcache.svg?branch=master">
 </a>
 
 # moodle-tool_forcedcache
