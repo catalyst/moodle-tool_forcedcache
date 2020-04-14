@@ -88,4 +88,26 @@ class tool_forcedcache_cache_factory extends cache_factory {
         // Return the instance.
         return $this->configs[$class];
     }
+
+    /**
+     * Returns an instance of the tool_forcedcache administration helper,
+     * only if forcedcaching config is OK.
+     *
+     * @return cache_administration_helper
+     */
+    public static function get_administration_display_helper() : cache_administration_helper {
+        // Check if there was a config error.
+        global $SESSION;
+
+        if (is_null(self::$displayhelper)) {
+            if (!empty($SESSION->tool_forcedcache_caching_exception)) {
+                self::$displayhelper = new cache_administration_display_helper();
+            } else {
+                self::$displayhelper = new tool_forcedcache_cache_administration_helper();
+            }
+        }
+        // Unset session error so checks are fresh.
+        unset($SESSION->tool_forcedcache_caching_exception);
+        return self::$displayhelper;
+    }
 }

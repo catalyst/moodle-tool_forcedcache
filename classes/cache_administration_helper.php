@@ -30,6 +30,10 @@ require_once(__DIR__.'/../../../../cache/locallib.php');
 
 class tool_forcedcache_cache_administration_helper extends cache_administration_helper {
 
+    public function __construct() {
+        // Nothing to do here.
+    }
+
     /**
      * We don't wish any actions to be allowed on stores.
      *
@@ -140,6 +144,7 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
         $html = html_writer::start_tag('div', array('id' => 'core-cache-lock-summary'));
         $html .= $OUTPUT->heading(get_string('locksummary', 'cache'), 3);
         $html .= html_writer::table($table) . '<br>';
+        $html .= html_writer::end_div();
         return $html;
     }
 
@@ -259,7 +264,7 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
         } else {
             $html .= html_writer::table($table);
         }
-        return $html;
+        return html_writer::tag('p', $html);
     }
 
     /**
@@ -272,18 +277,21 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
      * @return array empty array
      */
     public function perform_cache_actions(string $action, array $forminfo) : array {
+        // Purge actions will statically reference the core implementation.
+        $corehelper = new cache_administration_display_helper;
+
         switch ($action) {
             case 'rescandefinitions':
-                $this->action_rescan_definition();
+                $corehelper->action_rescan_definition();
                 break;
 
             case 'purgedefinition':
-                $this->action_purgedefinition();
+                $corehelper->action_purgedefinition();
                 break;
 
             case 'purgestore':
             case 'purge':
-                $this->action_purge();
+                $corehelper->action_purge();
                 break;
         }
 
