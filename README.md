@@ -201,7 +201,7 @@ If the plugin has been enabled, you can also visit `cache/admin.php` to view the
 ## Support
 If you have issues please log them in github here
 
-https://github.com/catalyst/moodle-auth_forcedcache/issues
+https://github.com/catalyst/moodle-tool_forcedcache/issues
 
 Please note our time is limited, so if you need urgent support or want to
 sponsor a new feature then please contact Catalyst IT Australia:
