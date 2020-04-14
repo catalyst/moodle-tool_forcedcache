@@ -38,8 +38,8 @@ $errors = $dummy->get_inclusion_errors();
 
 
 // TODO Make this prettier. Please.
-if (empty($CFG->alternative_cache_class) ||
-    $CFG->alternative_cache_class !== 'tool_forcedcache' ||
+if (empty($CFG->alternative_cache_factory_class) ||
+    $CFG->alternative_cache_factory_class !== 'tool_forcedcache_cache_factory' ||
     !empty($errors)) {
 
     echo html_writer::tag('h3', get_string('page_not_active', 'tool_forcedcache'));
@@ -60,7 +60,7 @@ if (!empty($errors)) {
 echo '<br>';
 
 if (empty($errors)) {
-    $adminhelper = tool_forcedcache_cache_administration_helper::instance();
+    $adminhelper = new tool_forcedcache_cache_administration_helper();
     echo $adminhelper->get_ruleset_output();
 }
 

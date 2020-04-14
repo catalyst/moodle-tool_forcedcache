@@ -30,6 +30,9 @@ require_once(__DIR__.'/../../../../cache/locallib.php');
 
 class tool_forcedcache_cache_administration_helper extends cache_administration_helper {
 
+    /**
+     * Empty constructor so cache_helper::__construct isn't called.
+     */
     public function __construct() {
         // Nothing to do here.
     }
