@@ -45,12 +45,13 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
      * @return array array of store instance actions.
      */
     public function get_store_instance_actions(string $name, array $storedetails) : array {
+        global $OUTPUT;
         $actions = array();
         if (has_capability('moodle/site:config', context_system::instance())) {
             $baseurl = new moodle_url('/cache/admin.php', array('store' => $name, 'sesskey' => sesskey()));
-            $actions[] = array(
-                'text' => get_string('purge', 'cache'),
-                'url' => new moodle_url($baseurl, array('action' => 'purgestore'))
+            $actions[] = $OUTPUT->action_link(
+                new moodle_url($baseurl, array('action' => 'purgestore')),
+                get_string('purge', 'cache')
             );
         }
         return $actions;
@@ -64,11 +65,13 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
      * @return array array of definition actions.
      */
     public function get_definition_actions(context $context, array $definitionsummary) : array {
+        global $OUTPUT;
         $actions = array();
         if (has_capability('moodle/site:config', $context)) {
-            $actions[] = array(
-                'text' => get_string('purge', 'cache'),
-                'url' => new moodle_url('/cache/admin.php', array('action' => 'purgedefinition', 'sesskey' => sesskey()))
+            $actions[] = $OUTPUT->action_link(
+                new moodle_url('/cache/admin.php', array('action' => 'purgedefinition',
+                    'definition' => $definitionsummary['id'], 'sesskey' => sesskey())),
+                get_string('purge', 'cache')
             );
         }
         return $actions;
