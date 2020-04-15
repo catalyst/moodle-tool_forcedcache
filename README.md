@@ -9,7 +9,7 @@
 * [Installation](#installation)
 * [Configuration](#configuration)
 * [Debugging](#debugging)
-* [Support](#Support)
+* [Support](#support)
 
 ## What is this?
 
@@ -185,6 +185,57 @@ $CFG->tool_forcedcache_config_path = 'path/to/config.json';
 ```
 If this is not supplied, the plugin will default to `config.json` inside of the plugin directory.
 Once the path is decided on, the configuration can be viewed. See [Debugging](#debugging) for more information.
+
+Alternatively, config can be set inside of config.php, by creating an associative PHP array with an identical structure to the JSON.
+
+```
+$CFG->tool_forcedcache_config_array = [
+  'stores' => [
+    'apcu2' => [
+      'type' => 'apcu',
+      'config' => [
+        'prefix' => 'mdl_'
+      ]
+    ],
+    'file2' => [
+      'type' => 'file',
+      'config' => [
+        'path' => '/tmp/hardcode',
+        'autocreate' => 1
+      ]
+    ]
+  ],
+  'rules' => [
+    'application' => [
+      [
+        'conditions' => [
+          'canuselocalstore' => true
+        ],
+        'stores' => ['apcu2', 'file2']
+      ],
+      [
+        'stores' => ['file2']
+      ]
+    ],
+    'session' => [
+      [
+        'conditions' => [
+          'canuselocalstore' => true
+        ],
+        'stores' => ['apcu2', 'file2']
+      ],
+      [
+        'stores' => ['file2']
+      ]
+    ],
+    'request' => []
+  ]
+];
+```
+
+This will have identical behaviour to reading this config from the JSON.
+*Note: Only an array OR a path can be specified. It is not valid to declare both at once.*
+
 
 When the configuration is suitable, the plugin can be enabled by setting a second config variable inside config.php
 ```

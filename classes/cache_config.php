@@ -64,7 +64,8 @@ class tool_forcedcache_cache_config extends cache_config {
             $SESSION->tool_forcedcache_caching_exception = $e->getMessage();
 
             // If plugin is supposed to be active, rethrow exception, can't continue with broken config.
-            if (!empty($CFG->alternative_cache_factory_class) && $CFG->alternative_cache_factory_class === 'tool_forcedcache_cache_factory') {
+            if (!empty($CFG->alternative_cache_factory_class)
+                && $CFG->alternative_cache_factory_class === 'tool_forcedcache_cache_factory') {
                 throw $e;
             }
         }
@@ -78,14 +79,8 @@ class tool_forcedcache_cache_config extends cache_config {
      */
     private function generate_config_array() : array {
         global $CFG;
-        // Read the config file.
-        // Path can only be hardcoded, to avoid concurrency issues between frontends.
-        if (!empty($CFG->tool_forcedcache_config_path)) {
-            $path = $CFG->tool_forcedcache_config_path;
-        } else {
-            $path = __DIR__.'/../config.json';
-        }
-        $config = self::read_config_file($path);
+
+        $config = self::read_config_file();
 
         // Generate the stores config.
         $stores = $this->generate_store_instance_config($config['stores']);
@@ -120,11 +115,34 @@ class tool_forcedcache_cache_config extends cache_config {
      * This reads the JSON file at $path and parses it for use in cache generation.
      * Exceptions are thrown so that caching will fallback to core.
      *
-     * @param string $path the path of the config file to read.
-     * @return array Associative array of configuration from JSON.
+     * @return array Associative array of configuration from JSON or config.
      * @throws cache_exception
      */
-    public static function read_config_file(string $path) : array {
+    public static function read_config_file() : array {
+        global $CFG;
+        $arrayexists = !empty($CFG->tool_forcedcache_config_array);
+        $pathexists = !empty($CFG->tool_forcedcache_config_path);
+
+        // If path and array are defined, explode, only one can exist.
+        if ($arrayexists && $pathexists) {
+            throw new cache_exception(get_string('config_path_and_array', 'tool_forcedcache'));
+        } else if ($arrayexists) {
+            // Check that atleast stores and rules are defined.
+            $array = $CFG->tool_forcedcache_config_array;
+            if (!array_key_exists('stores', $array) || !array_key_exists('rules', $array)) {
+                throw new cache_exception(get_string('config_array_parse_fail', 'tool_forcedcache'));
+            }
+            // Return config array.
+            return $array;
+
+        } else if ($pathexists) {
+            // Else decide on the path, then try to load it.
+            $path = $CFG->tool_forcedcache_config_path;
+        } else {
+            $path = __DIR__.'/../config.json';
+        }
+
+        // Now try to load the JSON.
         if (file_exists($path)) {
             $filedata = file_get_contents($path);
             $config = json_decode($filedata, true);

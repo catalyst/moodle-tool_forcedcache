@@ -30,32 +30,39 @@ defined('MOODLE_INTERNAL') || die();
 class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
 
     public function test_read_config_file() {
+        global $CFG;
+        $this->resetAfterTest(true);
+
         // Directly create a config.
         $config = new \tool_forcedcache_cache_config();
+
+        // Lets unset anything that may be forced from config.php.
+        unset($CFG->tool_forcedcache_config_path);
+        unset($CFG->tool_forcedcache_config_array);
 
         // Setup reflection for private function.
         $method = new \ReflectionMethod($config, 'read_config_file');
         $method->setAccessible(true);
 
         // First use the default json file.
-        $path = __DIR__ . '/../config.json';
-        $configarr1 = $method->invoke($config, $path);
+        $CFG->tool_forcedcache_config_path = __DIR__ . '/../config.json';
+        $configarr1 = $method->invoke($config);
         $this->assertEquals(2, count($configarr1));
         $this->assertArrayHasKey('rules', $configarr1);
         $this->assertArrayHasKey('stores', $configarr1);
 
         // Now lets point to a garbled file.
-        $path = __DIR__ . '/../classes/cache_factory.php';
+        $CFG->tool_forcedcache_config_path = __DIR__ . '/../classes/cache_factory.php';
         $this->expectException(\cache_exception::class);
         $this->expectExceptionMessage(get_string('config_json_parse_fail', 'tool_forcedcache'));
-        $configarr2 = $method->invoke($config, $path);
+        $configarr2 = $method->invoke($config);
         $this->assertNull($configarr2);
 
         // Now try a non-existent file.
-        $path = __DIR__ . '/fake.json';
+        $CFG->tool_forcedcache_config_path = __DIR__ . '/fake.json';
         $this->expectException(\cache_exception::class);
         $this->expectExceptionMessage(get_string('config_json_missing', 'tool_forcedcache'));
-        $configarr3 = $method->invoke($config, $path);
+        $configarr3 = $method->invoke($config);
         $this->assertNull($configarr3);
     }
 
