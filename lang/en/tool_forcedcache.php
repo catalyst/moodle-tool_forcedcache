@@ -28,7 +28,9 @@ $string['page_active'] = 'Forced cache configuration IS active.';
 
 // Exception Strings.
 $string['config_json_parse_fail'] = 'Error parsing JSON to array. JSON syntax may be malformed.';
+$string['config_array_parse_fail'] = 'Error parsing configuration array. Array syntax may be malformed.';
 $string['config_json_missing'] = 'Error reading specified JSON file. File may not exist, or path is incorrect.';
+$string['config_path_and_array'] = 'Detected both path to file and config array. Only one can be specified.';
 $string['store_missing_fields'] = 'Error reading store {$a}, it may be missing fields or malformed.';
 $string['store_bad_type'] = 'Error loading store {$a}. Store may not exist or type is malformed.';
 $string['store_not_ready'] = 'Error creating store {$a}, config may be incorrect or missing required fields.';
