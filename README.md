@@ -54,7 +54,7 @@ All of the plugin configuration is deliberately performed in code, through modif
 If creating a new JSON file, it must match to a certain structure, or the plugin will not activate.
 
 #### Stores
-```
+```json
 "stores": {
   "apcu-example": {
     "type": "apcu",
@@ -70,7 +70,7 @@ The example store here is an APCu store called named `apcu-example`. The type is
 `cachestore_apcu` -> `apcu`. `config` is a keyed array containing the name of the specific controls used to configure the plugin.
 
 #### Rules
-```
+```json
 "rules": {
     "application": [
       {
@@ -107,7 +107,7 @@ If every condition defined in the conditions array is satisfied, the definition 
 
 #### Preinstalled Cache Required Config
 ##### APCu
-```
+```json
 "apcu1": {
       "type": "apcu",
       "config": {
@@ -117,8 +117,8 @@ If every condition defined in the conditions array is satisfied, the definition 
 ```
 
 ##### File Cache
-```
-"file1": {
+```json
+  "file1": {
       "type": "file",
       "config": {
         "path": "/tmp/filecache",
@@ -128,7 +128,8 @@ If every condition defined in the conditions array is satisfied, the definition 
 ```
 
 ##### Memcached
-```"memcached1": {
+```json
+  "memcached1": {
       "type": "memcached",
       "config": {
         "servers": {
@@ -150,8 +151,8 @@ If every condition defined in the conditions array is satisfied, the definition 
 ```
 
 ##### MongoDB
-```
-"mongodb1": {
+```json
+  "mongodb1": {
       "type": "mongodb",
       "config": {
         "server": "mongodb://127.0.0.1:27017",
@@ -165,8 +166,8 @@ If every condition defined in the conditions array is satisfied, the definition 
 ```
 
 ##### Redis
-```
-"redis1": {
+```json
+  "redis1": {
       "type": "redis",
       "config": {
         "server": "127.0.0.1:6379",
@@ -188,7 +189,7 @@ Once the path is decided on, the configuration can be viewed. See [Debugging](#d
 
 Alternatively, config can be set inside of config.php, by creating an associative PHP array with an identical structure to the JSON.
 
-```
+```php
 $CFG->tool_forcedcache_config_array = [
   'stores' => [
     'apcu2' => [
@@ -238,7 +239,7 @@ This will have identical behaviour to reading this config from the JSON.
 
 
 When the configuration is suitable, the plugin can be enabled by setting a second config variable inside config.php
-```
+```php
 $CFG->alternative_cache_factory_class = 'tool_forcedcache_cache_factory';
 ```
 This will set caching to be readonly, and force the configuration specified in the JSON.
