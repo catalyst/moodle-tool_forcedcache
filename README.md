@@ -54,20 +54,46 @@ All of the plugin configuration is deliberately performed in code, through modif
 If creating a new JSON file, it must match to a certain structure, or the plugin will not activate.
 
 #### Stores
-```
-"stores": {
-  "apcu-example": {
-    "type": "apcu",
-    "config": {
-        "prefix": "mdl"
-    }
-  }
-}
+
+```php
+$CFG->tool_forcedcache_config_array = [
+    'stores' => [
+        'APCu' => [
+            'type' => 'apcu',
+            'config' => [
+                'prefix' => 'apcu_',
+            ],
+        ],
+        'redis' => [
+            'type' => 'redis',
+            'config' => [
+                'server' => '...',
+                'prefix' => 'redis_',
+                'password' => '',
+                'serializer' => 1,
+                'compressor' => 2,
+            ],
+        ],
+        'local_file' => [
+            'type' => 'file',
+            'config' => [
+                'path' => '/tmp/muc',
+                'autocreate' => 1,
+            ],
+        ],
+        'stacked_file' => [
+            'type' => 'file',
+            'config' => [
+                'path' => '/var/lib/sitedata/cache/stacked',
+                'autocreate' => 1,
+            ],
+        ],
+    ],
 ```
 
 A field called `stores` must be defined as an array. Inside, each store can be declared as an indexed array of name -> values.
-The example store here is an APCu store called named `apcu-example`. The type is the plugin name of the matching store plugin.
-`cachestore_apcu` -> `apcu`. `config` is a keyed array containing the name of the specific controls used to configure the plugin.
+The example stores above are a great production base of 4 stores available for different cache definitions.
+The type is the plugin name of the matching store plugin and the config is a keyed array specific to each cache store plugin.
 
 #### Rules
 ```
