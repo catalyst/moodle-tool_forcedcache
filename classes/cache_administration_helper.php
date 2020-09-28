@@ -25,10 +25,8 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-// Manually require locallib as class isn't autoloaded.
-require_once(__DIR__.'/../../../../cache/locallib.php');
 
-class tool_forcedcache_cache_administration_helper extends cache_administration_helper {
+class tool_forcedcache_cache_administration_helper extends core_cache\administration_helper {
 
     /**
      * Empty constructor so cache_helper::__construct isn't called.
@@ -208,7 +206,7 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
      */
     public function perform_cache_actions(string $action, array $forminfo) : array {
         // Purge actions will statically reference the core implementation.
-        $corehelper = new cache_administration_display_helper;
+        $corehelper = new core_cache\local\administration_display_helper();
 
         switch ($action) {
             case 'rescandefinitions':
@@ -233,9 +231,9 @@ class tool_forcedcache_cache_administration_helper extends cache_administration_
      * This shouldn't be called directly, use cache_administration_helper::instance()
      * This is used by the plugin status page to get some renderer functionality.
      *
-     * @return cache_administration_helper
+     * @return core_cache\administration_helper
      */
-    public static function instance() : cache_administration_helper {
+    public static function instance() : core_cache\administration_helper {
         if (is_null(self::$instance)) {
             self::$instance = new tool_forcedcache_cache_administration_helper();
         }

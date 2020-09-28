@@ -93,15 +93,15 @@ class tool_forcedcache_cache_factory extends cache_factory {
      * Returns an instance of the tool_forcedcache administration helper,
      * only if forcedcaching config is OK.
      *
-     * @return cache_administration_helper
+     * @return core_cache\administration_helper
      */
-    public static function get_administration_display_helper() : cache_administration_helper {
+    public static function get_administration_display_helper() : core_cache\administration_helper {
         // Check if there was a config error.
         global $SESSION;
 
         if (is_null(self::$displayhelper)) {
             if (!empty($SESSION->tool_forcedcache_caching_exception)) {
-                self::$displayhelper = new cache_administration_display_helper();
+                self::$displayhelper = new core_cache\administration_helper();
             } else {
                 self::$displayhelper = new tool_forcedcache_cache_administration_helper();
             }
