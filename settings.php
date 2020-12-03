@@ -28,6 +28,8 @@ defined('MOODLE_INTERNAL') || die();
 if ($hassiteconfig) {
     $ADMIN->add('tools', new admin_category('toolforcedcachefolder',
         new lang_string('pluginname', 'tool_forcedcache'), false));
+
+    // $ADMIN->add('cache', new admin_externalpage('tool_forcedcache_status',
     $ADMIN->add('toolforcedcachefolder', new admin_externalpage('tool_forcedcache_status',
         get_string('page_status', 'tool_forcedcache'),
         new moodle_url('/admin/tool/forcedcache/index.php')));

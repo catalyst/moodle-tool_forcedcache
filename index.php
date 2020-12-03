@@ -37,27 +37,21 @@ $dummy = new tool_forcedcache_cache_config();
 $errors = $dummy->get_inclusion_errors();
 
 
-// TODO Make this prettier. Please.
 if (empty($CFG->alternative_cache_factory_class) ||
     $CFG->alternative_cache_factory_class !== 'tool_forcedcache_cache_factory' ||
     !empty($errors)) {
-
-    echo html_writer::tag('h3', get_string('page_not_active', 'tool_forcedcache'));
+    echo $OUTPUT->notification(get_string('page_not_active', 'tool_forcedcache'), \core\output\notification::NOTIFY_ERROR);
 } else {
-    echo html_writer::tag('h3', get_string('page_active', 'tool_forcedcache'));
+    echo $OUTPUT->notification(get_string('page_active', 'tool_forcedcache'), \core\output\notification::NOTIFY_SUCCESS);
 }
-
-echo '<br>';
 
 if (!empty($errors)) {
     echo html_writer::tag('h3', get_string('page_config_broken', 'tool_forcedcache'));
     $error = html_writer::tag('pre', $errors);
     echo html_writer::tag('p', get_string('page_config_broken_details', 'tool_forcedcache', $error));
 } else {
-    echo html_writer::tag('h3', get_string('page_config_ok', 'tool_forcedcache'));
+    echo $OUTPUT->notification(get_string('page_config_ok', 'tool_forcedcache'), \core\output\notification::NOTIFY_SUCCESS);
 }
-
-echo '<br>';
 
 if (empty($errors)) {
     $adminhelper = new tool_forcedcache_cache_administration_helper();

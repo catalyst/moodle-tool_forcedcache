@@ -106,10 +106,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
      * @return string HTML to display the currently active rulesets.
      */
     public function get_ruleset_output() : string {
-        global $CFG;
-
-        $html = '<br>';
-        $html .= html_writer::tag('h3', get_string('page_rulesets', 'tool_forcedcache'));
+        global $CFG, $OUTPUT;
 
         if (!empty($CFG->tool_forcedcache_config_path)) {
             $path = $CFG->tool_forcedcache_config_path;
@@ -120,12 +117,47 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         // Its already been included and working.
         $config = tool_forcedcache_cache_config::read_config_file($path);
 
-        $applicationtable = $this->generate_mode_table(cache_store::MODE_APPLICATION, $config);
-        $sessiontable = $this->generate_mode_table(cache_store::MODE_SESSION, $config);
-        $requesttable = $this->generate_mode_table(cache_store::MODE_REQUEST, $config);
+        $html .= $OUTPUT->heading(get_string('stores', 'cache'), 2);
+        foreach ($config['stores'] as $name => $store) {
+            $html .= $this->generate_store_table($name, $store);
+        }
 
-        return html_writer::tag('div', $html . $applicationtable . $sessiontable . $requesttable);
+        $html .= $OUTPUT->heading(get_string('page_rulesets', 'tool_forcedcache'), 2);
+
+        $html .= $this->generate_mode_table(cache_store::MODE_APPLICATION, $config);
+        $html .= $this->generate_mode_table(cache_store::MODE_SESSION, $config);
+        $html .= $this->generate_mode_table(cache_store::MODE_REQUEST, $config);
+        return html_writer::tag('div', $html);
     }
+
+    /**
+     * Generates a config table for the selected caching store
+     *
+     * @param integer $mode the mode to generate the table for.
+     * @param array $config the config array from the JSON.
+     * @return string HTML for the table.
+     */
+    private function generate_store_table(string $name, array $config) : string {
+        global $OUTPUT;
+
+        $html = $OUTPUT->heading(get_string('page_store', 'tool_forcedcache', [name => $name, type => $config['type']]), 3);
+
+        $table = new html_table();
+        $table->id = $mode . '_rule_table';
+        $table->attributes['class'] = 'generaltable table table-bordered table-sm w-auto';
+        $table->head = array (
+            get_string('store_config', 'tool_forcedcache'),
+            get_string('store_value', 'tool_forcedcache'),
+        );
+        $table->data = [];
+        foreach ($config['config'] as $key => $value) {
+            $table->data[] = [$key, $value];
+        }
+        $html .= html_writer::table($table);
+
+        return html_writer::tag('div', $html);
+    }
+
 
     /**
      * Generates a ruleset table for the selected caching mode.
@@ -135,6 +167,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
      * @return string HTML for the table.
      */
     private function generate_mode_table(int $mode, array $config) : string {
+        global $OUTPUT;
         $html = '';
 
         $rules = $config['rules'];
@@ -155,7 +188,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
 
         $table = new html_table();
         $table->id = $mode . '_rule_table';
-        $table->attributes['class'] = 'generaltable table table-bordered';
+        $table->attributes['class'] = 'generaltable table table-bordered table-sm w-auto';
         $table->head = array (
             get_string('rule_priority', 'tool_forcedcache'),
             get_string('rule_ruleset', 'tool_forcedcache'),
@@ -185,10 +218,10 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
 
         // Now output a header and the table.
         $formattedruletype = ucwords($ruletype);
-        $html .= html_writer::tag('h4', get_string('page_mode', 'tool_forcedcache', $formattedruletype));
+        $html .= $OUTPUT->heading(get_string('page_mode', 'tool_forcedcache', $formattedruletype), 3);
 
         if (count($rules[$ruletype]) === 0) {
-            $html .= html_writer::tag('h5', get_string('rule_no_rulesets', 'tool_forcedcache'));
+            $html .= $OUTPUT->notification(get_string('rule_no_rulesets', 'tool_forcedcache'),  \core\output\notification::NOTIFY_WARNING);
         } else {
             $html .= html_writer::table($table);
         }

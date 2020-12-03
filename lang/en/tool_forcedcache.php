@@ -22,6 +22,7 @@ $string['page_config_ok'] = 'Forced cache config OK';
 $string['page_config_broken'] = 'Forced cache config broken';
 $string['page_config_broken_details'] = 'The reported error message is: {$a}';
 $string['page_mode'] = 'Mode: {$a}';
+$string['page_store'] = 'Store: {$a->name} ({$a->type})';
 $string['page_rulesets'] = 'Caching Rules';
 $string['page_not_active'] = 'Forced cache configuration is NOT active.';
 $string['page_active'] = 'Forced cache configuration IS active.';
@@ -34,6 +35,8 @@ $string['config_path_and_array'] = 'Detected both path to file and config array.
 $string['store_missing_fields'] = 'Error reading store {$a}, it may be missing fields or malformed.';
 $string['store_bad_type'] = 'Error loading store {$a}. Store may not exist or type is malformed.';
 $string['store_not_ready'] = 'Error creating store {$a}, config may be incorrect or missing required fields.';
+$string['store_config'] = 'Name';
+$string['store_value'] = 'Value';
 
 // Table Strings.
 $string['rule_priority'] = 'Priority';
