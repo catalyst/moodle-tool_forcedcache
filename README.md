@@ -179,6 +179,17 @@ If every condition defined in the conditions array is satisfied, the definition 
     }
 ```
 
+#### Definition overrides
+A field called `definitionoverrides` can be created inside of the top level of the configuration array. In here, you can specify any config overrides that should be applied to specific definitions. This is not always a safe operation, and the plugin makes no effort to ensure this won't cause issues. The definition overrides should be set using key value pairs for config and value, inside of an array matching the definition name.
+
+```json
+  "definitionoverrides": {
+    "core/databasemeta": {
+        "canuselocalstore": true
+    }
+  }
+```
+
 ### $CFG settings
 Once a JSON has been defined to control the caching, a variable inserted into config.php can be used to control the path the plugin uses as a configuration file.
 ```

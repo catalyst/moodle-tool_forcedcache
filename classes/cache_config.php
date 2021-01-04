@@ -30,6 +30,13 @@ defined('MOODLE_INTERNAL') || die();
 class tool_forcedcache_cache_config extends cache_config {
 
     /**
+     * Array to track errors thrown during store instantiation.
+     *
+     * @var array
+     */
+    private $storeerrors;
+
+    /**
      * This is a wrapper function that simply wraps around include_configuration,
      * and returns any exception messages.
      */
@@ -61,7 +68,9 @@ class tool_forcedcache_cache_config extends cache_config {
         } catch (Exception $e) {
             // Store the error message in session, helps with debugging from a frontend display.
             // This may be overwritten depending on load order. Best to create a dummy cache instance then check.
-            $SESSION->tool_forcedcache_caching_exception = $e->getMessage();
+            if (!empty($SESSION)) {
+                $SESSION->tool_forcedcache_caching_exception = $e->getMessage();
+            }
 
             // If plugin is supposed to be active, rethrow exception, can't continue with broken config.
             if (!empty($CFG->alternative_cache_factory_class)
@@ -82,6 +91,9 @@ class tool_forcedcache_cache_config extends cache_config {
 
         $config = self::read_config_file();
 
+        // Initialise the error store array.
+        $this->storeerrors = [];
+
         // Generate the stores config.
         $stores = $this->generate_store_instance_config($config['stores']);
 
@@ -89,10 +101,16 @@ class tool_forcedcache_cache_config extends cache_config {
         $modemappings = $this->generate_mode_mapping($config['rules']);
 
         // Get the definitions.
-        $definitions = tool_forcedcache_cache_config_writer::locate_definitions();
+        $definitions = $this->apply_definition_overrides(tool_forcedcache_cache_config_writer::locate_definitions(),
+            $config['definitionoverrides']);
 
         // Generate definition mappings from rulesets.
         $definitionmappings = $this->generate_definition_mappings_from_rules($config['rules'], $definitions);
+
+        // We can now remove the errored stores from the store array entirely.
+        foreach ($this->storeerrors as $store) {
+            unset($stores[$store]);
+        }
 
         // Generate locks.
         $locks = $this->generate_locks();
@@ -132,6 +150,12 @@ class tool_forcedcache_cache_config extends cache_config {
             if (!array_key_exists('stores', $array) || !array_key_exists('rules', $array)) {
                 throw new cache_exception(get_string('config_array_parse_fail', 'tool_forcedcache'));
             }
+
+            // If definitionoverrides is missing (optional), instantiate as empty.
+            if (!array_key_exists('definitionoverrides', $array)) {
+                $array['definitionoverrides'] = [];
+            }
+
             // Return config array.
             return $array;
 
@@ -147,6 +171,11 @@ class tool_forcedcache_cache_config extends cache_config {
             $filedata = file_get_contents($path);
             $config = json_decode($filedata, true);
             if (!empty($config)) {
+                // If definitionoverrides is missing (optional), instantiate as empty.
+                if (!array_key_exists('definitionoverrides', $config)) {
+                    $config['definitionoverrides'] = [];
+                }
+
                 return $config;
             } else {
                 throw new cache_exception(get_string('config_json_parse_fail', 'tool_forcedcache'));
@@ -178,7 +207,6 @@ class tool_forcedcache_cache_config extends cache_config {
             $storearr['name'] = $name;
             $storearr['plugin'] = $store['type'];
             // Assume all configuration is correct.
-            // If anything borks, we will fallback to core caching.
             $storearr['configuration'] = $store['config'];
             $classname = 'cachestore_'.$store['type'];
             $storearr['class'] = $classname;
@@ -201,7 +229,9 @@ class tool_forcedcache_cache_config extends cache_config {
             // Create instance from this definition and confirm it instantiates correctly.
             $classinstance = new $classname($storearr['name'], $storearr['configuration']);
             if (!$classinstance->is_ready()) {
-                throw new cache_exception(get_string('store_not_ready', 'tool_forcedcache', $name));
+                // Store the errored store here. Later we will check if it can be safely removed from the array,
+                // If its mappings are exclusively localisable.
+                $this->storeerrors[] = $name;
             }
             $storesarr[$name] = $storearr;
         }
@@ -316,6 +346,31 @@ class tool_forcedcache_cache_config extends cache_config {
                 $num++;
             }
         }
+
+        // We must now check any stores that were not ready during instantiation.
+        // If *ONLY* localisable definitions are mapped, we can drop those mappings from the config.
+        foreach ($this->storeerrors as $storename) {
+            foreach ($defmappings as $key => $mapping) {
+                // Check if the mapping is to the naughty store.
+                if ($mapping['store'] !== $storename) {
+                    continue;
+                }
+
+                // Check if this can be localised.
+                $definition = $definitions[$mapping['definition']];
+                if (empty($definition['canuselocalstore']) || !$definition['canuselocalstore']){
+                    throw new cache_exception(get_string('store_not_ready', 'tool_forcedcache', $storename));
+                } else {
+                    // This mapping can be deleted, and the default fallthrough used.
+                    // If the above exception is ever thrown, the config is hosed anyway.
+                    unset($defmappings[$key]);
+                }
+            }
+
+            // Now reset the array keys for the main array, and move on.
+            $defmappings = array_values($defmappings);
+        }
+
         return $defmappings;
     }
 
@@ -334,5 +389,27 @@ class tool_forcedcache_cache_config extends cache_config {
                 'default' => true
             )
         );
+    }
+
+    /**
+     * Takes the definitions array, and forces that specified config into the definition.
+     * This may be unsafe, we are trusting that the configuration here is sane. Unforseen errors may arise.
+     *
+     * @param array $definitions the definitions to override.
+     * @param array $overrides the overrides to apply
+     * @return array the overridden definition values.
+     */
+    private function apply_definition_overrides(array $definitions, array $overrides) : array {
+        foreach ($overrides as $definition => $overrideitems) {
+            if (array_key_exists($definition, $definitions)) {
+                foreach ($overrideitems as $key => $item) {
+                    $definitions[$definition][$key] = $item;
+                }
+            } else {
+                throw new cache_exception(get_string('definition_not_found', 'tool_forcedcache', $definition));
+            }
+        }
+
+        return $definitions;
     }
 }

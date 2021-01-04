@@ -32,16 +32,21 @@ $string['config_json_parse_fail'] = 'Error parsing JSON to array. JSON syntax ma
 $string['config_array_parse_fail'] = 'Error parsing configuration array. Array syntax may be malformed.';
 $string['config_json_missing'] = 'Error reading specified JSON file. File may not exist, or path is incorrect.';
 $string['config_path_and_array'] = 'Detected both path to file and config array. Only one can be specified.';
+$string['definition_not_found'] = 'Definition not defined for configuration override: {$a}.';
 $string['store_missing_fields'] = 'Error reading store {$a}, it may be missing fields or malformed.';
 $string['store_bad_type'] = 'Error loading store {$a}. Store may not exist or type is malformed.';
 $string['store_not_ready'] = 'Error creating store {$a}, config may be incorrect or missing required fields.';
-$string['store_config'] = 'Name';
-$string['store_value'] = 'Value';
+
 
 // Table Strings.
+$string['definition_overrides_title'] = 'Definition overrides';
+$string['definition_name'] = 'Definition';
+$string['definition_overrides'] = 'Overrides';
 $string['rule_priority'] = 'Priority';
 $string['rule_ruleset'] = 'Ruleset';
 $string['rule_noconditions'] = 'No conditions set';
 $string['rule_no_rulesets'] = 'No rulesets are defined for this mode.';
+$string['store_config'] = 'Name';
+$string['store_value'] = 'Value';
 
 $string['privacy:metadata'] = 'The forced caching plugin does not store any data for any reason.';
