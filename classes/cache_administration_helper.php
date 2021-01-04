@@ -117,7 +117,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         // Its already been included and working.
         $config = tool_forcedcache_cache_config::read_config_file($path);
 
-        $html .= $OUTPUT->heading(get_string('stores', 'cache'), 2);
+        $html = $OUTPUT->heading(get_string('stores', 'cache'), 2);
         foreach ($config['stores'] as $name => $store) {
             $html .= $this->generate_store_table($name, $store);
         }
@@ -127,6 +127,8 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         $html .= $this->generate_mode_table(cache_store::MODE_APPLICATION, $config);
         $html .= $this->generate_mode_table(cache_store::MODE_SESSION, $config);
         $html .= $this->generate_mode_table(cache_store::MODE_REQUEST, $config);
+
+        $html .= $this->generate_override_table($config['definitionoverrides']);
         return html_writer::tag('div', $html);
     }
 
@@ -140,10 +142,10 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
     private function generate_store_table(string $name, array $config) : string {
         global $OUTPUT;
 
-        $html = $OUTPUT->heading(get_string('page_store', 'tool_forcedcache', [name => $name, type => $config['type']]), 3);
+        $html = $OUTPUT->heading(get_string('page_store', 'tool_forcedcache', ['name' => $name, 'type' => $config['type']]), 3);
 
         $table = new html_table();
-        $table->id = $mode . '_rule_table';
+        $table->id = $name . '_def_table';
         $table->attributes['class'] = 'generaltable table table-bordered table-sm w-auto';
         $table->head = array (
             get_string('store_config', 'tool_forcedcache'),
@@ -158,6 +160,41 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         return html_writer::tag('div', $html);
     }
 
+    /**
+     * Generates a config table for the definition overrides.
+     *
+     * @param array $overrides the overrides array from the JSON.
+     * @return string HTML for the table.
+     */
+    private function generate_override_table(array $overrides) : string {
+        global $OUTPUT;
+
+        if (empty($overrides)) {
+            return '';
+        }
+
+        $html = $OUTPUT->heading(get_string('definition_overrides_title', 'tool_forcedcache'), 3);
+
+        $table = new html_table();
+        $table->id = 'def_override_table';
+        $table->attributes['class'] = 'generaltable table table-bordered table-sm w-auto';
+        $table->head = array (
+            get_string('definition_name', 'tool_forcedcache'),
+            get_string('definition_overrides', 'tool_forcedcache'),
+        );
+        $table->data = [];
+        foreach ($overrides as $definition => $items) {
+            $itemstring = '';
+            foreach ($items as $setting => $value) {
+                $itemstring .= "{$setting}: {$value} <br>";
+            }
+
+            $table->data[] = [$definition, $itemstring];
+        }
+        $html .= html_writer::table($table);
+
+        return html_writer::tag('div', $html);
+    }
 
     /**
      * Generates a ruleset table for the selected caching mode.

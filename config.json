@@ -40,5 +40,10 @@
       }
     ],
     "request": {}
+  },
+  "definitionoverrides": {
+    "core/databasemeta": {
+        "canuselocalstore": true
+    }
   }
 }
