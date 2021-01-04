@@ -47,9 +47,10 @@ class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
         // First use the default json file.
         $CFG->tool_forcedcache_config_path = __DIR__ . '/../config.json';
         $configarr1 = $method->invoke($config);
-        $this->assertEquals(2, count($configarr1));
+        $this->assertEquals(3, count($configarr1));
         $this->assertArrayHasKey('rules', $configarr1);
         $this->assertArrayHasKey('stores', $configarr1);
+        $this->assertArrayHasKey('definitionoverrides', $configarr1);
 
         // Now lets point to a garbled file.
         $CFG->tool_forcedcache_config_path = __DIR__ . '/../classes/cache_factory.php';

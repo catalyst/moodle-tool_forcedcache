@@ -349,26 +349,28 @@ class tool_forcedcache_cache_config extends cache_config {
 
         // We must now check any stores that were not ready during instantiation.
         // If *ONLY* localisable definitions are mapped, we can drop those mappings from the config.
-        foreach ($this->storeerrors as $storename) {
-            foreach ($defmappings as $key => $mapping) {
-                // Check if the mapping is to the naughty store.
-                if ($mapping['store'] !== $storename) {
-                    continue;
+        if (!empty($this->storeerrors)) {
+            foreach ($this->storeerrors as $storename) {
+                foreach ($defmappings as $key => $mapping) {
+                    // Check if the mapping is to the naughty store.
+                    if ($mapping['store'] !== $storename) {
+                        continue;
+                    }
+
+                    // Check if this can be localised.
+                    $definition = $definitions[$mapping['definition']];
+                    if (empty($definition['canuselocalstore']) || !$definition['canuselocalstore']) {
+                        throw new cache_exception(get_string('store_not_ready', 'tool_forcedcache', $storename));
+                    } else {
+                        // This mapping can be deleted, and the default fallthrough used.
+                        // If the above exception is ever thrown, the config is hosed anyway.
+                        unset($defmappings[$key]);
+                    }
                 }
 
-                // Check if this can be localised.
-                $definition = $definitions[$mapping['definition']];
-                if (empty($definition['canuselocalstore']) || !$definition['canuselocalstore']){
-                    throw new cache_exception(get_string('store_not_ready', 'tool_forcedcache', $storename));
-                } else {
-                    // This mapping can be deleted, and the default fallthrough used.
-                    // If the above exception is ever thrown, the config is hosed anyway.
-                    unset($defmappings[$key]);
-                }
+                // Now reset the array keys for the main array, and move on.
+                $defmappings = array_values($defmappings);
             }
-
-            // Now reset the array keys for the main array, and move on.
-            $defmappings = array_values($defmappings);
         }
 
         return $defmappings;

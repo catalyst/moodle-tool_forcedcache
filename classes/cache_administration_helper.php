@@ -258,7 +258,8 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         $html .= $OUTPUT->heading(get_string('page_mode', 'tool_forcedcache', $formattedruletype), 3);
 
         if (count($rules[$ruletype]) === 0) {
-            $html .= $OUTPUT->notification(get_string('rule_no_rulesets', 'tool_forcedcache'),  \core\output\notification::NOTIFY_WARNING);
+            $html .= $OUTPUT->notification(get_string('rule_no_rulesets', 'tool_forcedcache'),
+                \core\output\notification::NOTIFY_WARNING);
         } else {
             $html .= html_writer::table($table);
         }
