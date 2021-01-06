@@ -414,4 +414,16 @@ class tool_forcedcache_cache_config extends cache_config {
 
         return $definitions;
     }
+
+    /**
+     * Overridden config file check.
+     *
+     * It does not matter if a file is present, so tell Moodle it always is to prevent attempts to create one.
+     * There seems to be an edge case where this can cause the readonly to initialise badly based on factory state.
+     *
+     * @return bool
+     */
+    public static function config_file_exists() {
+        return true;
+    }
 }
