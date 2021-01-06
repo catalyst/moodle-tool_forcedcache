@@ -49,28 +49,10 @@ class tool_forcedcache_cache_factory extends cache_factory {
             $class = 'cache_config_testing';
         }
 
-        // Check if we need to create a config file with defaults.
-        $needtocreate = !$class::config_file_exists();
-
-        if ($writer || $needtocreate) {
+        if ($writer) {
             require_once($CFG->dirroot.'/cache/locallib.php');
             if (!$testing) {
                 $class .= '_writer';
-            }
-        }
-
-        $error = false;
-        if ($needtocreate) {
-            // Create the default configuration.
-            // Update the state, we are now initialising the cache.
-            self::set_state(self::STATE_INITIALISING);
-            $configuration = $class::create_default_configuration();
-            if ($configuration !== true) {
-                // Failed to create the default configuration. Disable the cache stores and update the state.
-                self::set_state(self::STATE_ERROR_INITIALISING);
-                $this->configs[$class] = new $class;
-                $this->configs[$class]->load($configuration);
-                $error = true;
             }
         }
 
@@ -80,10 +62,7 @@ class tool_forcedcache_cache_factory extends cache_factory {
             $this->configs[$class]->load();
         }
 
-        if (!$error) {
-            // The cache is now ready to use. Update the state.
-            self::set_state(self::STATE_READY);
-        }
+        $this->set_state(self::STATE_READY);
 
         // Return the instance.
         return $this->configs[$class];
@@ -109,5 +88,19 @@ class tool_forcedcache_cache_factory extends cache_factory {
         // Unset session error so checks are fresh.
         unset($SESSION->tool_forcedcache_caching_exception);
         return self::$displayhelper;
+    }
+
+    /**
+     * This factory is readonly, so the state can never be updating.
+     * This should prevent instances where the configs are dropped
+     * as the factory believes it needs to update.
+     *
+     * @return bool
+     */
+    public function updating_started() {
+        if ($this->state !== self::STATE_READY) {
+            return false;
+        }
+        return true;
     }
 }
