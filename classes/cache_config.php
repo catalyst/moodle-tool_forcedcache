@@ -115,8 +115,13 @@ class tool_forcedcache_cache_config extends cache_config {
         // Generate locks.
         $locks = $this->generate_locks();
 
-        // Get the siteidentifier.
-        $siteidentifier = cache_helper::get_site_identifier();
+        // Get the siteidentifier. Copies pattern from cache_config.
+        // Uses 'forcedcache' if not known.
+        if (!empty($CFG->siteidentifier)) {
+            $siteidentifier = md5((string) $CFG->siteidentifier);
+        } else {
+            $siteidentifier = 'forcedcache';
+        }
 
         // Throw it all into an array and return.
         return array(
