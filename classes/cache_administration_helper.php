@@ -42,7 +42,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
      * @param array $storedetails details of the store instance.
      * @return array array of store instance actions.
      */
-    public function get_store_instance_actions(string $name, array $storedetails) : array {
+    public function get_store_instance_actions(string $name, array $storedetails): array {
         global $OUTPUT;
         $actions = array();
         if (has_capability('moodle/site:config', context_system::instance())) {
@@ -62,7 +62,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
      * @param array $definitionsummary summary of definition.
      * @return array array of definition actions.
      */
-    public function get_definition_actions(context $context, array $definitionsummary) : array {
+    public function get_definition_actions(context $context, array $definitionsummary): array {
         global $OUTPUT;
         $actions = array();
         if (has_capability('moodle/site:config', $context)) {
@@ -82,7 +82,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
      * @param core_cache_renderer $renderer
      * @return string HTML for the page;
      */
-    public function generate_admin_page(core_cache_renderer $renderer) : string {
+    public function generate_admin_page(core_cache_renderer $renderer): string {
         $context = context_system::instance();
         $html = '';
 
@@ -105,7 +105,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
      *
      * @return string HTML to display the currently active rulesets.
      */
-    public function get_ruleset_output() : string {
+    public function get_ruleset_output(): string {
         global $CFG, $OUTPUT;
 
         if (!empty($CFG->tool_forcedcache_config_path)) {
@@ -139,7 +139,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
      * @param array $config the config array from the JSON.
      * @return string HTML for the table.
      */
-    private function generate_store_table(string $name, array $config) : string {
+    private function generate_store_table(string $name, array $config): string {
         global $OUTPUT;
 
         $html = $OUTPUT->heading(get_string('page_store', 'tool_forcedcache', ['name' => $name, 'type' => $config['type']]), 3);
@@ -166,7 +166,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
      * @param array $overrides the overrides array from the JSON.
      * @return string HTML for the table.
      */
-    private function generate_override_table(array $overrides) : string {
+    private function generate_override_table(array $overrides): string {
         global $OUTPUT;
 
         if (empty($overrides)) {
@@ -203,7 +203,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
      * @param array $config the config array from the JSON.
      * @return string HTML for the table.
      */
-    private function generate_mode_table(int $mode, array $config) : string {
+    private function generate_mode_table(int $mode, array $config): string {
         global $OUTPUT;
         $html = '';
 
@@ -275,7 +275,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
      * @param array $forminfo empty array to be passed through function
      * @return array empty array
      */
-    public function perform_cache_actions(string $action, array $forminfo) : array {
+    public function perform_cache_actions(string $action, array $forminfo): array {
         // Purge actions will statically reference the core implementation.
         $corehelper = new core_cache\local\administration_display_helper();
 
@@ -304,7 +304,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
      *
      * @return core_cache\administration_helper
      */
-    public static function instance() : core_cache\administration_helper {
+    public static function instance(): core_cache\administration_helper {
         if (is_null(self::$instance)) {
             self::$instance = new tool_forcedcache_cache_administration_helper();
         }
