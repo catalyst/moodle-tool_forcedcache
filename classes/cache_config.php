@@ -431,4 +431,14 @@ class tool_forcedcache_cache_config extends cache_config {
     public static function config_file_exists() {
         return true;
     }
+
+    /**
+     * Hack alert. Wrapper needed for protected function, as we cannot do multiple
+     * inheritance and the writer needs to also be able to load the config.
+     *
+     * @return array
+     */
+    public function include_configuration_wrapper() : array {
+        return $this->include_configuration();
+    }
 }
