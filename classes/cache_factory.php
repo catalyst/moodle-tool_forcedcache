@@ -103,4 +103,14 @@ class tool_forcedcache_cache_factory extends cache_factory {
         }
         return true;
     }
+
+    /**
+     * Don't care about disabled caching, the writer is just here to provide purging.
+     *
+     * @return cache_config_writer
+     */
+    public static function get_disabled_writer(): cache_config_writer {
+        $factoryinstance = new tool_forcedcache_cache_factory();
+        return $factoryinstance->create_config_instance(true);
+    }
 }

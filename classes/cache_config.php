@@ -86,7 +86,7 @@ class tool_forcedcache_cache_config extends cache_config {
      *
      * @return array the cache configuration array.
      */
-    private function generate_config_array() : array {
+    private function generate_config_array(): array {
         global $CFG;
 
         $config = self::read_config_file();
@@ -141,7 +141,7 @@ class tool_forcedcache_cache_config extends cache_config {
      * @return array Associative array of configuration from JSON or config.
      * @throws cache_exception
      */
-    public static function read_config_file() : array {
+    public static function read_config_file(): array {
         global $CFG;
         $arrayexists = !empty($CFG->tool_forcedcache_config_array);
         $pathexists = !empty($CFG->tool_forcedcache_config_path);
@@ -198,7 +198,7 @@ class tool_forcedcache_cache_config extends cache_config {
      * @return array a mapped configuration array of store instances.
      * @throws cache_exception
      */
-    private function generate_store_instance_config(array $stores) : array {
+    private function generate_store_instance_config(array $stores): array {
         $storesarr = array();
         foreach ($stores as $name => $store) {
 
@@ -285,7 +285,7 @@ class tool_forcedcache_cache_config extends cache_config {
      * @param array $definitions a list of definitions to map.
      * @return array an array of ordered mappings for every definition to its ruleset.
      */
-    private function generate_definition_mappings_from_rules(array $rules, array $definitions) : array {
+    private function generate_definition_mappings_from_rules(array $rules, array $definitions): array {
         $defmappings = array();
         $num = 1;
         foreach ($definitions as $defname => $definition) {
@@ -406,7 +406,7 @@ class tool_forcedcache_cache_config extends cache_config {
      * @param array $overrides the overrides to apply
      * @return array the overridden definition values.
      */
-    private function apply_definition_overrides(array $definitions, array $overrides) : array {
+    private function apply_definition_overrides(array $definitions, array $overrides): array {
         foreach ($overrides as $definition => $overrideitems) {
             if (array_key_exists($definition, $definitions)) {
                 foreach ($overrideitems as $key => $item) {
@@ -430,5 +430,15 @@ class tool_forcedcache_cache_config extends cache_config {
      */
     public static function config_file_exists() {
         return true;
+    }
+
+    /**
+     * Hack alert. Wrapper needed for protected function, as we cannot do multiple
+     * inheritance and the writer needs to also be able to load the config.
+     *
+     * @return array
+     */
+    public function include_configuration_wrapper(): array {
+        return $this->include_configuration();
     }
 }

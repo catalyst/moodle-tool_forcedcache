@@ -67,4 +67,14 @@ class tool_forcedcache_cache_config_writer extends cache_config_writer {
 
         return $defaults;
     }
+
+    /**
+     * Override to use the same loader as the forcedcache cache config.
+     *
+     * @return array
+     */
+    protected function include_configuration() {
+        $config = new tool_forcedcache_cache_config();
+        return $config->include_configuration_wrapper();
+    }
 }
