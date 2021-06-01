@@ -76,7 +76,12 @@ class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
         $method->setAccessible(true);
 
         // Read in the fixtures file for data.
-        include(__DIR__ . '/fixtures/stores_data.php');
+        if (defined('TEST_CACHESTORE_REDIS_TESTSERVERS')
+            && class_exists('cachestore_redis') && \cachestore_redis::are_requirements_met()) {
+            include(__DIR__ . '/fixtures/stores_data_redis.php');
+        } else {
+            include(__DIR__ . '/fixtures/stores_data.php');
+        }
 
         // First test with 1 store.
         $this->assertEquals($storeone['expected'], $method->invoke($config, $storeone['input']));
