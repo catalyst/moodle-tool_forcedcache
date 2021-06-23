@@ -25,6 +25,7 @@ For all Moodle branches please use the master branch.
 ## Installation
 
 To install this plugin, MDL-41492 is required to be backported to create the interface points for the plugin.
+It is also recommended to have MDL-70233 installed to prevent default cache creation during CACHING_DISABLED conditions such as system upgrade.
 
 Step 1: Clone the plugin
 ------------------------
