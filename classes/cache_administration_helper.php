@@ -96,6 +96,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         $html .= $renderer->definition_summaries($definitionsummaries, $context);
         $html .= $renderer->lock_summaries($locks);
         $html .= $this->get_ruleset_output();
+        $html .= $this->get_mode_mappings_output();
 
         return $html;
     }
@@ -264,6 +265,39 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
             $html .= html_writer::table($table);
         }
         return html_writer::tag('p', $html);
+    }
+
+    public function get_mode_mappings_output() {
+        global $OUTPUT;
+        $defaultmodestores = $this->get_default_mode_stores();
+        $applicationstore = join(', ', $defaultmodestores[cache_store::MODE_APPLICATION]);
+        $sessionstore = join(', ', $defaultmodestores[cache_store::MODE_SESSION]);
+        $requeststore = join(', ', $defaultmodestores[cache_store::MODE_REQUEST]);
+        $table = new html_table();
+        $table->colclasses = array(
+            'mode',
+            'mapping',
+        );
+        $table->rowclasses = array(
+            'mode_application',
+            'mode_session',
+            'mode_request'
+        );
+        $table->head = array(
+            get_string('mode', 'cache'),
+            get_string('mappings', 'cache'),
+        );
+        $table->data = array(
+            array(get_string('mode_'.cache_store::MODE_APPLICATION, 'cache'), $applicationstore),
+            array(get_string('mode_'.cache_store::MODE_SESSION, 'cache'), $sessionstore),
+            array(get_string('mode_'.cache_store::MODE_REQUEST, 'cache'), $requeststore)
+        );
+
+        $html = html_writer::start_tag('div', array('id' => 'core-cache-mode-mappings'));
+        $html .= $OUTPUT->heading(get_string('defaultmappings', 'cache'), 3);
+        $html .= html_writer::table($table);
+        $html .= html_writer::end_tag('div');
+        return $html;
     }
 
     /**

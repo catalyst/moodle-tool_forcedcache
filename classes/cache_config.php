@@ -98,7 +98,10 @@ class tool_forcedcache_cache_config extends cache_config {
         $stores = $this->generate_store_instance_config($config['stores']);
 
         // Generate the mode mappings.
-        $modemappings = $this->generate_mode_mapping($config['rules']);
+        if (!isset($config['modemappings'])) {
+            $config['modemappings'] = [];
+        }
+        $modemappings = $this->generate_mode_mapping($config['modemappings']);
 
         // Get the definitions.
         $definitions = $this->apply_definition_overrides(tool_forcedcache_cache_config_writer::locate_definitions(),
@@ -252,7 +255,7 @@ class tool_forcedcache_cache_config extends cache_config {
      *
      * @return array the generated default mode mappings.
      */
-    private function generate_mode_mapping() : array {
+    private function generate_mode_mapping($mappings) : array {
         // Use the defaults from core.
         $modemappings = array(
             array(
@@ -271,6 +274,18 @@ class tool_forcedcache_cache_config extends cache_config {
                 'sort' => -1
             )
         );
+
+        $modetostr = [
+            cache_store::MODE_APPLICATION => 'application',
+            cache_store::MODE_SESSION => 'session',
+            cache_store::MODE_REQUEST => 'request',
+        ];
+        foreach ($modemappings as $key => $map) {
+            $mode = $modetostr[$map['mode']];
+            if (isset($mappings[$mode])) {
+                $modemappings[$key]['store'] = $mappings[$mode];
+            }
+        }
 
         return $modemappings;
     }
