@@ -113,7 +113,10 @@ class tool_forcedcache_cache_config extends cache_config {
         }
 
         // Generate locks.
-        $locks = $this->generate_locks();
+        if (!isset($config['locks'])) {
+            $config['locks'] = [];
+        }
+        $locks = $this->generate_locks($config['locks']);
 
         // Get the siteidentifier. Copies pattern from cache_config.
         // Uses 'forcedcache' if not known.
@@ -387,15 +390,33 @@ class tool_forcedcache_cache_config extends cache_config {
      *
      * @return array array of locks to use.
      */
-    private function generate_locks() : array {
-        return array(
-            'default_file_lock' => array(
-                'name' => 'cachelock_file_default',
-                'type' => 'cachelock_file',
-                'dir' => 'filelocks',
-                'default' => true
-            )
-        );
+    private function generate_locks(array $locks) : array {
+        if (empty($locks)) {
+            return array(
+                'default_file_lock' => array(
+                    'name' => 'cachelock_file_default',
+                    'type' => 'cachelock_file',
+                    'dir' => 'filelocks',
+                    'default' => true
+                )
+            );
+        }
+
+        foreach ($locks as $key => $lock) {
+            // First check that all the required fields are present in the lock.
+            if (!(array_key_exists('name', $lock) || array_key_exists('type', $lock))) {
+                throw new cache_exception(get_string('lock_missing_fields', 'tool_forcedcache', $key));
+            }
+
+            // Then check the lock plugins exist.
+            $pluginname = substr($lock['type'], 10);
+            $cachepath = __DIR__.'/../../../../cache/locks/' . $pluginname . '/lib.php';
+            if (!file_exists($cachepath)) {
+                throw new cache_exception(get_string('lock_bad_type', 'tool_forcedcache', $pluginname));
+            }
+        }
+
+        return $locks;
     }
 
     /**
