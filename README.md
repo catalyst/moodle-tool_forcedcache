@@ -34,7 +34,7 @@ For all Moodle branches please use the master branch.
 2. Apply core patches (if required)
 3. Enable the plugin
 4. Wire up the configuration (if required)
-5. Update the cache configurations
+5. Update cache configurations as needed
 
 Step 1: Clone the plugin
 ------------------------
@@ -45,7 +45,7 @@ Using git from the root directory of your moodle:
 git clone https://github.com/catalyst/moodle-tool_forcedcache.git admin/tool/forcedcache
 ```
 
-Then run the Moodle upgrade as normal.
+Then run the Moodle install or upgrade as normal.
 
 https://docs.moodle.org/en/Installing_plugins
 
@@ -73,7 +73,7 @@ All configuration in this plugin is declared in code. You could do one of the fo
 - Create your own configuration file (JSON), and specify the `path` to it in config.php
 - Or set your configuration directly in a PHP `array` in config.php
 - Or by updating the config.json that comes with the plugin,
-    - as the plugin loads this by default, you may skip this section as the following would not apply to you.
+    - as the plugin loads this by default, you may skip to the next section as the following would not apply to you.
 
 *Note: Only an `array` OR a `path` can be specified. It is not valid to declare both at once.*
 
@@ -137,18 +137,15 @@ $CFG->tool_forcedcache_config_array = [
 ```
 
 
-Step 5: Update Configuration
----------------------
-All configuration in this plugin is declared in code. You could do one of the following:
-- Create your own configuration file (JSON), and apply it in by specifying the path to it in config.php
-- Or set your configuration directly (PHP) in config.php
-- Or by updating the config.json that comes with the plugin.
+Configuration
+-------------
 
-#### Configuration Fields
-When creating a new configuration object, it must match to a certain structure, or the plugin will not activate. The configuration object should have:
+#### Configuration Object
+When creating a new configuration object, it must match to a certain structure, or the plugin will not activate. The configuration object must have:
 - a list of `stores` - which holds the list of cache stores available and their configuration.
 - a list of `rules` - which defines the cache controls you want for different aspects of the system, such as caching at the application level, session level and request level.
-- a list of `definitionoverrides` - which lets you overide the configuration of a particular cache definition.
+- a list of `definitionoverrides` - which lets you overide the configuration of a particular [cache definitions](https://docs.moodle.org/en/Caching#Known_cache_definitions).
+
 
 #### Stores
 ```json
@@ -169,7 +166,6 @@ The example store here is an APCu store with an `instance-name` of `apcu-example
 `instance-configuration` fields:
 - `type` is the plugin name of the matching store plugin, __without__ the `cachestore_` prefix. For example, `cachestore_apcu` would just be `apcu`.
 - `config` is a hashmap containing the key and value of settings that would be mapped `1:1` to control the store's instance configuration.
-
 
 
 #### Rules
@@ -208,19 +204,33 @@ The example store here is an APCu store with an `instance-name` of `apcu-example
     - __order matters__, the first matching set of conditions for a given ruleset will apply the stores configured.
     - If there are no rulesets defined for a cache type, or there are no rulesets that a definition can match, the definition will fall through to the default store instance used for that cache type.
 
-
-
 `ruleset` fields:
 - `stores`: a flat array of store `instance-names` as defined in the [previous section](#Stores).
     - __order matters__, the stores will be applied are preferred in the order defined, the first taking preference.
 - `conditions` (optional) - a list of conditions which determines whether the list of `stores` defined in the same ruleset will apply.
     - The format for each condition is `name -> value`.
-    -  Each condition is checked against the cache defintiion's properties, which could be the `name`, `canuselocalstore`, or a combination of other cache definition properties.
+    -  Each condition is checked against the [cache definitions](https://docs.moodle.org/en/Caching#Known_cache_definitions)'s properties, which could be the `name`, `canuselocalstore`, or a combination of other cache definition properties.
 
+
+#### Definition overrides
+```json
+"definitionoverrides": {
+    "core/databasemeta": {
+        "canuselocalstore": true
+    }
+}
+```
+`definitionoverrides` fields:
+- a hashmap of `cache-definition -> properties (to be overridden)`
+
+`properties` fields:
+- a hashmap of `name -> value`, which aligns with the property's name and value.
+
+You can specify any config overrides here that should be applied to specific [cache definitions](https://docs.moodle.org/en/Caching#Known_cache_definitions). This is not always a safe operation, and the plugin makes no effort to ensure this won't cause issues.
 
 
 #### Cache Stores Examples
-Below are a list of cache stores and configuration boilerplates for stores that come pre-installed with Moodle.
+Below are a list of cache stores and configuration boilerplates for cache stores that come pre-installed with Moodle.
 
 ##### APCu
 ```json
@@ -291,17 +301,6 @@ Below are a list of cache stores and configuration boilerplates for stores that 
         "password": "password",
         "serializer": 1,
         "compressor": 0
-    }
-}
-```
-
-#### Definition overrides
-A field called `definitionoverrides` can be created inside of the top level of the configuration array. In here, you can specify any config overrides that should be applied to specific [cache definitions](https://docs.moodle.org/en/Caching#Known_cache_definitions). This is not always a safe operation, and the plugin makes no effort to ensure this won't cause issues. The definition overrides should be set using key value pairs for config and value, inside of an array matching the definition name.
-
-```json
-"definitionoverrides": {
-    "core/databasemeta": {
-        "canuselocalstore": true
     }
 }
 ```
