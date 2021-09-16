@@ -32,8 +32,9 @@ For all Moodle branches please use the master branch.
 
 1. Clone the plugin
 2. Apply core patches (if required)
-3. Configure the cache settings
-4. Enable the plugin
+3. Enable the plugin
+4. Wire up the configuration (if required)
+5. Update the cache configurations
 
 Step 1: Clone the plugin
 ------------------------
@@ -55,12 +56,92 @@ Step 2: Apply core patches (if required)
 This plugin relies on [MDL-41492](https://tracker.moodle.org/browse/MDL-41492), so this patch must be applied to any Moodle prior
 to 3.9. Patches have been bundled with this plugin, to allow for quick application of the patch for various supported Moodle versions.
 
+Step 3: Enable the plugin
+-------------------------
+Once the plugin is installed, it can be enabled by setting a configuration variable inside `config.php`
+```php
+$CFG->alternative_cache_factory_class = 'tool_forcedcache_cache_factory';
+```
+This will set cache configurations to be readonly, and force the configuration specified in the code.
 
-Step 3: Configuration
+Once this has been set, you can test whether or not the plugin is enabled by visiting `admin/tool/forcedcache/index.php`. Assuming a clean install, this will apply the default plugin configurations defined in `admin/tool/forcedcache/config.json`. If there are issues at this stage, we recommend you check the previous steps, and the [Debugging](#Debugging) section below.
+
+
+Step 4: Wire up the configuration (if required)
+-----------------------------------------------
+All configuration in this plugin is declared in code. You could do one of the following:
+- Create your own configuration file (JSON), and specify the `path` to it in config.php
+- Or set your configuration directly in a PHP `array` in config.php
+- Or by updating the config.json that comes with the plugin,
+    - as the plugin loads this by default, you may skip this section as the following would not apply to you.
+
+*Note: Only an `array` OR a `path` can be specified. It is not valid to declare both at once.*
+
+#### Set a `path` to the JSON configuration
+If you choose to define your cache configuration in a JSON file, you will need to set this to a `$CFG` variable in `config.php` as shown below, to allow the plugin to use this as the preferred path to the configuration:
+```
+$CFG->tool_forcedcache_config_path = 'path/to/config.json';
+```
+If this is not supplied, the plugin will default to `config.json` inside of the plugin directory.
+Once the path is decided on, the configuration can be viewed. See [Debugging](#debugging) for more information.
+
+
+#### Defining the configuration `array` in PHP
+Alternatively, the caching configuration can be set inside of `config.php`, by creating an associative PHP array with an identical structure to the JSON.
+
+This will have identical behaviour to loading this config from a JSON file.
+
+```php
+$CFG->tool_forcedcache_config_array = [
+  'stores' => [
+    'apcu2' => [
+      'type' => 'apcu',
+      'config' => [
+        'prefix' => 'mdl_'
+      ]
+    ],
+    'file2' => [
+      'type' => 'file',
+      'config' => [
+        'path' => '/tmp/hardcode',
+        'autocreate' => 1
+      ]
+    ]
+  ],
+  'rules' => [
+    'application' => [
+      [
+        'conditions' => [
+          'canuselocalstore' => true
+        ],
+        'stores' => ['apcu2', 'file2']
+      ],
+      [
+        'stores' => ['file2']
+      ]
+    ],
+    'session' => [
+      [
+        'conditions' => [
+          'canuselocalstore' => true
+        ],
+        'stores' => ['apcu2', 'file2']
+      ],
+      [
+        'stores' => ['file2']
+      ]
+    ],
+    'request' => []
+  ]
+];
+```
+
+
+Step 5: Update Configuration
 ---------------------
 All configuration in this plugin is declared in code. You could do one of the following:
-- Create your own configuration file, and apply it in by specifying the path to it in config.php
-- Or set your configuration directly in config.php (See $CFG).
+- Create your own configuration file (JSON), and apply it in by specifying the path to it in config.php
+- Or set your configuration directly (PHP) in config.php
 - Or by updating the config.json that comes with the plugin.
 
 #### Configuration Fields
@@ -215,7 +296,7 @@ Below are a list of cache stores and configuration boilerplates for stores that 
 ```
 
 #### Definition overrides
-A field called `definitionoverrides` can be created inside of the top level of the configuration array. In here, you can specify any config overrides that should be applied to specific definitions. This is not always a safe operation, and the plugin makes no effort to ensure this won't cause issues. The definition overrides should be set using key value pairs for config and value, inside of an array matching the definition name.
+A field called `definitionoverrides` can be created inside of the top level of the configuration array. In here, you can specify any config overrides that should be applied to specific [cache definitions](https://docs.moodle.org/en/Caching#Known_cache_definitions). This is not always a safe operation, and the plugin makes no effort to ensure this won't cause issues. The definition overrides should be set using key value pairs for config and value, inside of an array matching the definition name.
 
 ```json
 "definitionoverrides": {
@@ -224,72 +305,6 @@ A field called `definitionoverrides` can be created inside of the top level of t
     }
 }
 ```
-
-#### $CFG settings
-Once a JSON has been defined to control the caching, a variable inserted into config.php can be used to control the path the plugin uses as a configuration file.
-```
-$CFG->tool_forcedcache_config_path = 'path/to/config.json';
-```
-If this is not supplied, the plugin will default to `config.json` inside of the plugin directory.
-Once the path is decided on, the configuration can be viewed. See [Debugging](#debugging) for more information.
-
-Alternatively, config can be set inside of config.php, by creating an associative PHP array with an identical structure to the JSON.
-
-```php
-$CFG->tool_forcedcache_config_array = [
-  'stores' => [
-    'apcu2' => [
-      'type' => 'apcu',
-      'config' => [
-        'prefix' => 'mdl_'
-      ]
-    ],
-    'file2' => [
-      'type' => 'file',
-      'config' => [
-        'path' => '/tmp/hardcode',
-        'autocreate' => 1
-      ]
-    ]
-  ],
-  'rules' => [
-    'application' => [
-      [
-        'conditions' => [
-          'canuselocalstore' => true
-        ],
-        'stores' => ['apcu2', 'file2']
-      ],
-      [
-        'stores' => ['file2']
-      ]
-    ],
-    'session' => [
-      [
-        'conditions' => [
-          'canuselocalstore' => true
-        ],
-        'stores' => ['apcu2', 'file2']
-      ],
-      [
-        'stores' => ['file2']
-      ]
-    ],
-    'request' => []
-  ]
-];
-```
-
-This will have identical behaviour to reading this config from the JSON.
-*Note: Only an array OR a path can be specified. It is not valid to declare both at once.*
-
-Step 4: Enable the plugin
----------------------
-Once the configuration is suitable, the plugin can be enabled by setting a configuration variable inside `config.php`
-```php
-$CFG->alternative_cache_factory_class = 'tool_forcedcache_cache_factory';
-```
-This will set caching to be readonly, and force the configuration defined in code to be applied.
 
 ## Debugging
 To assist in debugging the configuration, `admin/tool/forcedcache/index.php` will display some information about the status of the plugin.
