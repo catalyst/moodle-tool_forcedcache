@@ -30,11 +30,11 @@ For all Moodle branches please use the master branch.
 #### Recommendations:
 - We recommended to have [MDL-70233](https://tracker.moodle.org/browse/MDL-70233), installed to prevent default cache creation during CACHING_DISABLED conditions such as system upgrade.
 
-1. Clone the plugin
-2. Apply core patches (if required)
-3. Wire up the configuration (if required)
-4. Update cache configurations as needed
-5. Apply the new cache rules
+1. [Clone the plugin](#step-1-clone-the-plugin)
+2. [Apply core patches (if required)](#step-2-apply-core-patches-if-required)
+3. [Wire up the configuration (if required)](#step-3-wire-up-the-configuration-if-required)
+4. [Update cache configurations as needed](#step-4-configure-the-cache-settings)
+5. [Apply the new cache rules](#step-5-apply-the-cache-rules)
 
 Step 1: Clone the plugin
 ------------------------
