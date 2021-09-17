@@ -32,9 +32,9 @@ For all Moodle branches please use the master branch.
 
 1. Clone the plugin
 2. Apply core patches (if required)
-3. Enable the plugin
-4. Wire up the configuration (if required)
-5. Update cache configurations as needed
+3. Wire up the configuration (if required)
+4. Update cache configurations as needed
+5. Apply the new cache rules
 
 Step 1: Clone the plugin
 ------------------------
@@ -56,18 +56,7 @@ Step 2: Apply core patches (if required)
 This plugin relies on [MDL-41492](https://tracker.moodle.org/browse/MDL-41492), so this patch must be applied to any Moodle prior
 to 3.9. Patches have been bundled with this plugin, to allow for quick application of the patch for various supported Moodle versions.
 
-Step 3: Enable the plugin
--------------------------
-Once the plugin is installed, it can be enabled by setting a configuration variable inside `config.php`
-```php
-$CFG->alternative_cache_factory_class = 'tool_forcedcache_cache_factory';
-```
-This will set cache configurations to be readonly, and force the configuration specified in the code.
-
-Once this has been set, you can test whether or not the plugin is enabled by visiting `admin/tool/forcedcache/index.php`. Assuming a clean install, this will apply the default plugin configurations defined in `admin/tool/forcedcache/config.json`. If there are issues at this stage, we recommend you check the previous steps, and the [Debugging](#Debugging) section below.
-
-
-Step 4: Wire up the configuration (if required)
+Step 3: Wire up the configuration (if required)
 -----------------------------------------------
 All configuration in this plugin is declared in code. You could do one of the following:
 - Set your configuration directly in a PHP `array` in config.php (Recommended)
@@ -182,6 +171,25 @@ $CFG->tool_forcedcache_config_path = 'path/to/config.json';
 ```
 If this is not supplied, the plugin will default to `config.json` inside of the plugin directory.
 Once the path is decided on, the configuration can be viewed. See [Debugging](#debugging) for more information.
+
+
+Step 4: Configure the cache settings
+-------------------------------------
+See [Configuration](#configuration) for all options.
+
+Step 5: Apply the cache rules
+-----------------------------
+__Please ensure that you have visited `admin/tool/forcedcache/index.php` and confirmed that the <ins>configuration is valid</ins> and would be <ins>applying the rules you expect</ins> BEFORE updating the factory class.__
+
+Once the plugin is installed and configured the way you want, the rules can be applied by setting a configuration variable inside `config.php`
+```php
+$CFG->alternative_cache_factory_class = 'tool_forcedcache_cache_factory';
+```
+This will set cache configurations to be readonly, and force the configuration specified in the code.
+
+Once this has been set, you can test whether or not the plugin is `active` by visiting `admin/tool/forcedcache/index.php`. With a clean install, this will apply the default plugin configurations defined in `admin/tool/forcedcache/config.json`. If there are issues at this stage, we recommend you check the previous steps, and the [Debugging](#Debugging) section below.
+
+
 
 Configuration
 -------------
