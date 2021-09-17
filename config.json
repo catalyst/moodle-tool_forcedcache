@@ -39,7 +39,7 @@
         "stores": ["file1"]
       }
     ],
-    "request": {}
+    "request": []
   },
   "definitionoverrides": {
     "core/databasemeta": {
