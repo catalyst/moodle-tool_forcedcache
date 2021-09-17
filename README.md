@@ -70,12 +70,110 @@ Once this has been set, you can test whether or not the plugin is enabled by vis
 Step 4: Wire up the configuration (if required)
 -----------------------------------------------
 All configuration in this plugin is declared in code. You could do one of the following:
-- Create your own configuration file (JSON), and specify the `path` to it in config.php
-- Or set your configuration directly in a PHP `array` in config.php
+- Set your configuration directly in a PHP `array` in config.php (Recommended)
+- Or Create your own configuration file (JSON), and specify the `path` to it in config.php
 - Or by updating the config.json that comes with the plugin,
     - as the plugin loads this by default, you may skip to the next section as the following would not apply to you.
 
 *Note: Only an `array` OR a `path` can be specified. It is not valid to declare both at once.*
+
+
+#### Defining the configuration `array` in PHP
+The caching configuration can be set inside of `config.php`, by creating an associative PHP array with the appropriate structure.
+
+Below is an example closely matching to our current production setup:
+
+```php
+$CFG->tool_forcedcache_config_array = [
+    'stores' => [
+        'APCu' => [
+            'type' => 'apcu',
+            'config' => [
+                'prefix' => 'apcu_',
+            ],
+        ],
+        'redis' => [
+            'type' => 'redis',
+            'config' => [
+                'server' => '127.0.0.1:6379',
+                'prefix' => 'mdl_',
+                'password' => '',
+                'serializer' => 1,
+                'compressor' => 2,
+            ],
+        ],
+        'local_file' => [
+            'type' => 'file',
+            'config' => [
+                'path' => '/tmp/local-cache-file',
+                'autocreate' => 1,
+            ],
+        ],
+        'stacked_file' => [
+            'type' => 'file',
+            'config' => [
+                'path' => '/mnt/path/to/shared-cache-file',
+                'autocreate' => 1,
+            ],
+        ],
+    ],
+    'rules' => [
+        'application' => [
+            [
+                'conditions' => [
+                    'name' => 'core/plugin_functions',
+                ],
+                'stores' => ['APCu', 'redis'],
+            ],
+            [
+                'conditions' => [
+                    'name' => 'core/string',
+                ],
+                'stores' => ['APCu', 'redis'],
+            ],
+            [
+                'conditions' => [
+                    'name' => 'core/langmenu',
+                ],
+                'stores' => ['APCu', 'redis'],
+            ],
+            [
+                'conditions' => [
+                    'name' => 'core/htmlpurifier',
+                ],
+                'stores' => ['local_file'],
+            ],
+            [
+                'conditions' => [
+                    'name' => 'core/coursemodinfo',
+                ],
+                'stores' => ['local_file', 'stacked_file'],
+            ],
+            [
+                'conditions' => [
+                    'canuselocalstore' => true,
+                ],
+                'stores' => ['local_file', 'redis'],
+            ],
+            [
+                'stores' => ['redis'],
+            ]
+        ],
+        'session' => [
+            [
+                'stores' => ['redis'],
+            ]
+        ],
+        'request' => [],
+    ],
+    'definitionoverrides' => [
+        'core/plugin_functions' => [
+            'canuselocalstore' => true,
+        ],
+    ],
+];
+```
+
 
 #### Set a `path` to the JSON configuration
 If you choose to define your cache configuration in a JSON file, you will need to set this to a `$CFG` variable in `config.php` as shown below, to allow the plugin to use this as the preferred path to the configuration:
@@ -84,58 +182,6 @@ $CFG->tool_forcedcache_config_path = 'path/to/config.json';
 ```
 If this is not supplied, the plugin will default to `config.json` inside of the plugin directory.
 Once the path is decided on, the configuration can be viewed. See [Debugging](#debugging) for more information.
-
-
-#### Defining the configuration `array` in PHP
-Alternatively, the caching configuration can be set inside of `config.php`, by creating an associative PHP array with an identical structure to the JSON.
-
-This will have identical behaviour to loading this config from a JSON file.
-
-```php
-$CFG->tool_forcedcache_config_array = [
-  'stores' => [
-    'apcu2' => [
-      'type' => 'apcu',
-      'config' => [
-        'prefix' => 'mdl_'
-      ]
-    ],
-    'file2' => [
-      'type' => 'file',
-      'config' => [
-        'path' => '/tmp/hardcode',
-        'autocreate' => 1
-      ]
-    ]
-  ],
-  'rules' => [
-    'application' => [
-      [
-        'conditions' => [
-          'canuselocalstore' => true
-        ],
-        'stores' => ['apcu2', 'file2']
-      ],
-      [
-        'stores' => ['file2']
-      ]
-    ],
-    'session' => [
-      [
-        'conditions' => [
-          'canuselocalstore' => true
-        ],
-        'stores' => ['apcu2', 'file2']
-      ],
-      [
-        'stores' => ['file2']
-      ]
-    ],
-    'request' => []
-  ]
-];
-```
-
 
 Configuration
 -------------
@@ -148,15 +194,15 @@ When creating a new configuration object, it must match to a certain structure, 
 
 
 #### Stores
-```json
-"stores": {
-  "apcu-example": {
-    "type": "apcu",
-    "config": {
-        "prefix": "mdl"
-    }
-  }
-}
+```php
+'stores' => [
+    'apcu-example' => [
+        'type' => 'apcu',
+        'config' => [
+            'prefix' => 'mdl'
+        ]
+    ]
+]
 ```
 `stores` fields:
 - should be a hashmap of `instance-name -> instance-configuration`.
@@ -169,32 +215,28 @@ The example store here is an APCu store with an `instance-name` of `apcu-example
 
 
 #### Rules
-```json
-"rules": {
-    "application": [
-      {
-        "conditions" : {
-          "canuselocalstore": true
-        },
-        "stores": ["apcu1","file1"]
-      },
-      {
-        "stores":["file1"]
-      }
+```php
+'rules' => [
+    'application' => [
+        [
+            'conditions' => [ 'canuselocalstore' => true ],
+            'stores' => [ 'apcu1', 'file1' ],
+        ],
+        [
+            'stores' => [ 'file1' ],
+        ],
     ],
-    "session": [
-      {
-        "conditions": {
-          "canuselocalstore": true
-        },
-        "stores": ["apcu1","file1"]
-      },
-      {
-        "stores": ["file1"]
-      }
+    'session' => [
+        [
+            'conditions' => [ 'canuselocalstore' => true ],
+            'stores' => [ 'apcu1', 'file1' ],
+        ],
+        [
+            'stores' => [ 'file1' ],
+        ],
     ],
-    "request": {}
-  }
+    'request' => [],
+],
 ```
 
 `rules` fields:
@@ -213,12 +255,12 @@ The example store here is an APCu store with an `instance-name` of `apcu-example
 
 
 #### Definition overrides
-```json
-"definitionoverrides": {
-    "core/databasemeta": {
-        "canuselocalstore": true
-    }
-}
+```php
+'definitionoverrides' => [
+    'core/plugin_functions' => [
+        'canuselocalstore' => true
+    ]
+]
 ```
 `definitionoverrides` fields:
 - a hashmap of `cache-definition -> properties (to be overridden)`
@@ -233,76 +275,76 @@ You can specify any config overrides here that should be applied to specific [ca
 Below are a list of cache stores and configuration boilerplates for cache stores that come pre-installed with Moodle.
 
 ##### APCu
-```json
-"apcu1": {
-    "type": "apcu",
-    "config": {
-        "prefix": "mdl"
-    }
-}
+```php
+'APCu' => [
+    'type' => 'apcu',
+    'config' => [
+        'prefix' => 'apcu_'
+    ]
+],
 ```
 
 ##### File Cache
-```json
-"file1": {
-    "type": "file",
-    "config": {
-        "path": "/tmp/filecache",
-        "autocreate": 1
-    }
-}
+```php
+'local_file' => [
+    'type' => 'file',
+    'config' => [
+        'path' => '/tmp/muc',
+        'autocreate' => 1
+    ]
+],
 ```
 
 ##### Memcached
-```json
-"memcached1": {
-    "type": "memcached",
-    "config": {
-        "servers": {
-            "0": {
-                "0": "127.0.0.1",
-                "1": "11211"
-            }
-        },
-        "compression": 1,
-        "serialiser": 1,
-        "prefix": "mdl",
-        "hash": 0,
-        "bufferwrites": 0,
-        "clustered": false,
-        "setservers": [],
-        "isshared": 0
-    }
-}
+```php
+'memcached' => [
+    'type' => 'memcached',
+    'config' => [
+        'servers' => [
+            [
+                '127.0.0.1',
+                '11211',
+            ]
+        ],
+        'compression' => 1,
+        'serialiser' => 1,
+        'prefix' => 'mdl',
+        'hash' => 0,
+        'bufferwrites' => 0,
+        'clustered' => false,
+        'setservers' => [],
+        'isshared' => 0
+    ]
+],
 ```
 
 ##### MongoDB
-```json
-"mongodb1": {
-    "type": "mongodb",
-    "config": {
-        "server": "mongodb://127.0.0.1:27017",
-        "database": "mcache",
-        "extendedmode": false,
-        "username": "username",
-        "password": "password",
-        "usesafe": true
-    }
-}
+```php
+'mongodb' => [
+    'type' => 'mongodb',
+    'config' => [
+        'server' => 'mongodb://127.0.0.1:27017',
+        'database' => 'mcache',
+        'extendedmode' => false,
+        'username' => 'username',
+        'password' => 'password',
+        'usesafe' => true
+    ],
+],
 ```
 
 ##### Redis
-```json
-"redis1": {
-    "type": "redis",
-    "config": {
-        "server": "127.0.0.1:6379",
-        "prefix": "mdl_",
-        "password": "password",
-        "serializer": 1,
-        "compressor": 0
-    }
-}
+```php
+'redis' => [
+    'type' => 'redis',
+    'config' => [
+        'server' => '127.0.0.1:6379',
+        'prefix' => 'mdl_',
+        'password' => 'password',
+        'serializer' => 1,
+        'compressor' => 2,
+    ],
+],
 ```
 
 ## Debugging
