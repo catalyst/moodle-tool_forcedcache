@@ -98,7 +98,7 @@ $CFG->tool_forcedcache_config_array = [
                 'autocreate' => 1,
             ],
         ],
-        'stacked_file' => [
+        'shared_file' => [
             'type' => 'file',
             'config' => [
                 'path' => '/mnt/path/to/shared-cache-file',
@@ -128,7 +128,7 @@ $CFG->tool_forcedcache_config_array = [
                 ],
                 'stores' => ['APCu', 'redis'],
             ],
-            // This is another special case similar to  coursemodinfo below,
+            // This is another special case similar to coursemodinfo below,
             // this cache has a very large number items so we would put it
             // into local and shared files, but don't due to MDL-69088.
             // In practice this doesn't matter as rebuilding these items is
@@ -145,7 +145,7 @@ $CFG->tool_forcedcache_config_array = [
                 'conditions' => [
                     'name' => 'core/coursemodinfo',
                 ],
-                'stores' => ['local_file', 'stacked_file'],
+                'stores' => ['local_file', 'shared_file'],
             ],
             // Everything else which is localizable we have in both a local
             // cache backed by a shared case to warm up the local caches faster
