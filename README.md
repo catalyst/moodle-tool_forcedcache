@@ -108,6 +108,8 @@ $CFG->tool_forcedcache_config_array = [
     ],
     'rules' => [
         'application' => [
+            // These 3 definitions are localizable, but also very small and highly
+            // requested so are great candidates for APCu.
             [
                 'conditions' => [
                     'name' => 'core/plugin_functions',
@@ -126,24 +128,36 @@ $CFG->tool_forcedcache_config_array = [
                 ],
                 'stores' => ['APCu', 'redis'],
             ],
+            // This is another special case similar to  coursemodinfo below,
+            // this cache has a very large number items so we would put it
+            // into local and shared files, but don't due to MDL-69088.
+            // In practice this doesn't matter as rebuilding these items is
+            // relatively quick, unlike coursemodinfo which is very costly.
             [
                 'conditions' => [
                     'name' => 'core/htmlpurifier',
                 ],
                 'stores' => ['local_file'],
             ],
+            // Course mod info is a special case because it is so large so we
+            // use files instead of redis for the shared stacked cache.
             [
                 'conditions' => [
                     'name' => 'core/coursemodinfo',
                 ],
                 'stores' => ['local_file', 'stacked_file'],
             ],
+            // Everything else which is localizable we have in both a local
+            // cache backed by a shared case to warm up the local caches faster
+            // while auto scaling in new front ends.
             [
                 'conditions' => [
                     'canuselocalstore' => true,
                 ],
                 'stores' => ['local_file', 'redis'],
             ],
+            // Anything left over which cannot be localized just goes into shared
+            // redis as is.
             [
                 'stores' => ['redis'],
             ]
