@@ -75,12 +75,18 @@ Below is an example closely matching to our current production setup:
 ```php
 $CFG->tool_forcedcache_config_array = [
     'stores' => [
+        // APCu is an in memory cache local to each front end.
+        // It has a limited size and doesn't like being full.
+        // See: https://docs.moodle.org/en/APC_user_cache_(APCu)
         'APCu' => [
             'type' => 'apcu',
             'config' => [
                 'prefix' => 'apcu_',
             ],
         ],
+        // Redis is an all round great workhorse cache which
+        // we use as the main shared cache.
+        // https://docs.moodle.org/en/Redis_cache_store
         'redis' => [
             'type' => 'redis',
             'config' => [
@@ -91,6 +97,9 @@ $CFG->tool_forcedcache_config_array = [
                 'compressor' => 2,
             ],
         ],
+        // This is a file cache local to each front end on fast SSD.
+        // It is conceptual similar to but should not be confused with
+        // $CFG->localcachedir which is outside of MUC.
         'local_file' => [
             'type' => 'file',
             'config' => [
@@ -98,6 +107,7 @@ $CFG->tool_forcedcache_config_array = [
                 'autocreate' => 1,
             ],
         ],
+        // This is a shared file cache inside normal $CFG->dataroot.
         'shared_file' => [
             'type' => 'file',
             'config' => [
