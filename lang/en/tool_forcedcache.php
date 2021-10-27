@@ -49,4 +49,7 @@ $string['rule_no_rulesets'] = 'No rulesets are defined for this mode.';
 $string['store_config'] = 'Name';
 $string['store_value'] = 'Value';
 
+// Check Strings.
+$string['checkforcedcache'] = 'Check that forced caching is enabled.';
+
 $string['privacy:metadata'] = 'The forced caching plugin does not store any data for any reason.';
