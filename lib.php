@@ -15,16 +15,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version info.
+ * Moodle callback integrations.
  *
- * @package    tool_forcedcache
- * @copyright  2020 Peter Burnett <peterburnett@catalyst-au.net>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     tool_forcedcache
+ * @author      Peter Burnett <peterburnett@catalyst-au.net>
+ * @copyright   Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->version   = 2020120301;
-$plugin->requires  = 2017051500;
-$plugin->component = 'tool_forcedcache'; // Full name of the plugin (used for diagnostics).
-$plugin->maturity = MATURITY_ALPHA;
+/**
+ * Add forcedcache active status check.
+ *
+ * @return array of check objects
+ */
+function tool_forcedcache_status_checks(): array {
+    return [new \tool_forcedcache\check\enabled()];
+}
