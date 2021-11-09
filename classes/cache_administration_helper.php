@@ -96,7 +96,6 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         $html .= $renderer->definition_summaries($definitionsummaries, $context);
         $html .= $renderer->lock_summaries($locks);
         $html .= $this->get_ruleset_output();
-        $html .= $this->get_mode_mappings_output();
 
         return $html;
     }
@@ -234,6 +233,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         );
 
         $counter = 1;
+        $defaultrulestr = get_string('rule_default_rule', 'tool_forcedcache');
         foreach ($rules[$ruletype] as $ruleset) {
             if (array_key_exists('conditions', $ruleset)) {
                 // Little bit of string mangling.
@@ -243,7 +243,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
                 }
                 $conditions = rtrim($conditions, ', ');
             } else {
-                $conditions = get_string('rule_noconditions', 'tool_forcedcache');
+                $conditions = $defaultrulestr;
             }
 
             $table->data[] = array(
@@ -254,50 +254,38 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
             $counter++;
         }
 
+        // Ensure there is always a default rule shown. (Either the broadest rule
+        // will be the default, or if no broad rule, it will use the system's
+        // default).
+        if (empty($table->data) || end($table->data)[1] !== $defaultrulestr) {
+            // Append a default entry to the table
+            $defaultmodemappings = tool_forcedcache_cache_config::get_default_mode_mappings();
+            $defaultstoreformode = array_filter($defaultmodemappings, function($modemapping) use ($mode) {
+                return $modemapping['mode'] === $mode;
+            });
+            $defaultstore = reset($defaultstoreformode)['store'];
+            $conditions = $defaultrulestr;
+
+            $table->data[] = array(
+                $counter,
+                $conditions,
+                implode(',', (array) $defaultstore),
+            );
+        }
+
         // Now output a header and the table.
         $formattedruletype = ucwords($ruletype);
         $html .= $OUTPUT->heading(get_string('page_mode', 'tool_forcedcache', $formattedruletype), 3);
 
         if (count($rules[$ruletype]) === 0) {
-            $html .= $OUTPUT->notification(get_string('rule_no_rulesets', 'tool_forcedcache'),
+            $html .= $OUTPUT->notification(
+                get_string('rule_no_rulesets', 'tool_forcedcache', $defaultstore),
                 \core\output\notification::NOTIFY_WARNING);
+            $html .= html_writer::table($table);
         } else {
             $html .= html_writer::table($table);
         }
         return html_writer::tag('p', $html);
-    }
-
-    public function get_mode_mappings_output() {
-        global $OUTPUT;
-        $defaultmodestores = $this->get_default_mode_stores();
-        $applicationstore = join(', ', $defaultmodestores[cache_store::MODE_APPLICATION]);
-        $sessionstore = join(', ', $defaultmodestores[cache_store::MODE_SESSION]);
-        $requeststore = join(', ', $defaultmodestores[cache_store::MODE_REQUEST]);
-        $table = new html_table();
-        $table->colclasses = array(
-            'mode',
-            'mapping',
-        );
-        $table->rowclasses = array(
-            'mode_application',
-            'mode_session',
-            'mode_request'
-        );
-        $table->head = array(
-            get_string('mode', 'cache'),
-            get_string('mappings', 'cache'),
-        );
-        $table->data = array(
-            array(get_string('mode_'.cache_store::MODE_APPLICATION, 'cache'), $applicationstore),
-            array(get_string('mode_'.cache_store::MODE_SESSION, 'cache'), $sessionstore),
-            array(get_string('mode_'.cache_store::MODE_REQUEST, 'cache'), $requeststore)
-        );
-
-        $html = html_writer::start_tag('div', array('id' => 'core-cache-mode-mappings'));
-        $html .= $OUTPUT->heading(get_string('defaultmappings', 'cache'), 3);
-        $html .= html_writer::table($table);
-        $html .= html_writer::end_tag('div');
-        return $html;
     }
 
     /**

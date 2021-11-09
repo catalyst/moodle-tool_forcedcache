@@ -103,9 +103,22 @@ class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
         $this->assertEquals($storereqsnotmet['expected'], $method->invoke($config, $storereqsnotmet['input']));
     }
 
-    public function test_mode_mappings () {
-        // TODO decide if we want mapping defaults forced, then test them here.
+    /**
+     * Test if default mappings return as expected.
+     */
+    public function test_default_mode_mappings() {
+        $defaultmodemappings = \tool_forcedcache_cache_config::get_default_mode_mappings();
 
+        // Read in the fixtures file for data.
+        include(__DIR__ . '/fixtures/mode_mappings_data.php');
+
+        $this->assertEquals($defaultsexpected, $defaultmodemappings);
+    }
+
+    /**
+     * Tests output of mode mpapings once rules included in the mix.
+     */
+    public function test_generated_mode_mappings_for_definitionmatchtopruleset() {
         $config = new \tool_forcedcache_cache_config();
         // Setup reflection for private function.
         $method = new \ReflectionMethod($config, 'generate_mode_mapping');
@@ -113,8 +126,27 @@ class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
 
         // Read in the fixtures file for data.
         include(__DIR__ . '/fixtures/mode_mappings_data.php');
+        include(__DIR__ . '/fixtures/definition_mappings_data.php');
 
-        $this->assertEquals($defaultsexpected, $method->invoke($config, array()));
+        $expected = $generatedmodemappingagainstdefinitionmatchtoprulesetexpected;
+        $rules = $definitionmatchtopruleset['rules'];
+        $this->assertEquals($expected, $method->invoke($config, $rules));
+    }
+    /**
+     * Tests output of mode mpapings once rules included in the mix.
+     */
+    public function test_generated_mode_mappings_for_definitionnoruleset() {
+        $config = new \tool_forcedcache_cache_config();
+        // Setup reflection for private function.
+        $method = new \ReflectionMethod($config, 'generate_mode_mapping');
+        $method->setAccessible(true);
+
+        // Read in the fixtures file for data.
+        include(__DIR__ . '/fixtures/mode_mappings_data.php');
+        include(__DIR__ . '/fixtures/definition_mappings_data.php');
+
+        $rules = $definitionnoruleset['rules'];
+        $this->assertEquals($defaultsexpected, $method->invoke($config, $rules));
     }
 
     public function test_generate_definition_mappings_from_rules() {

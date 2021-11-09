@@ -42,10 +42,10 @@ $string['store_not_ready'] = 'Error creating store {$a}, config may be incorrect
 $string['definition_overrides_title'] = 'Definition overrides';
 $string['definition_name'] = 'Definition';
 $string['definition_overrides'] = 'Overrides';
+$string['rule_default_rule'] = 'Default rule';
+$string['rule_no_rulesets'] = 'No rulesets are defined for this mode. The default store for this mode is: {$a}.';
 $string['rule_priority'] = 'Priority';
 $string['rule_ruleset'] = 'Ruleset';
-$string['rule_noconditions'] = 'No conditions set';
-$string['rule_no_rulesets'] = 'No rulesets are defined for this mode.';
 $string['store_config'] = 'Name';
 $string['store_value'] = 'Value';
 
