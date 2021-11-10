@@ -233,6 +233,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         );
 
         $counter = 1;
+        $defaultrulestr = get_string('rule_default_rule', 'tool_forcedcache');
         foreach ($rules[$ruletype] as $ruleset) {
             if (array_key_exists('conditions', $ruleset)) {
                 // Little bit of string mangling.
@@ -242,7 +243,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
                 }
                 $conditions = rtrim($conditions, ', ');
             } else {
-                $conditions = get_string('rule_noconditions', 'tool_forcedcache');
+                $conditions = $defaultrulestr;
             }
 
             $table->data[] = array(
@@ -253,13 +254,34 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
             $counter++;
         }
 
+        // Ensure there is always a default rule shown. (Either the broadest rule
+        // will be the default, or if no broad rule, it will use the system's
+        // default).
+        if (empty($table->data) || end($table->data)[1] !== $defaultrulestr) {
+            // Append a default entry to the table
+            $defaultmodemappings = tool_forcedcache_cache_config::get_default_mode_mappings();
+            $defaultstoreformode = array_filter($defaultmodemappings, function($modemapping) use ($mode) {
+                return $modemapping['mode'] === $mode;
+            });
+            $defaultstore = reset($defaultstoreformode)['store'];
+            $conditions = $defaultrulestr;
+
+            $table->data[] = array(
+                $counter,
+                $conditions,
+                implode(',', (array) $defaultstore),
+            );
+        }
+
         // Now output a header and the table.
         $formattedruletype = ucwords($ruletype);
         $html .= $OUTPUT->heading(get_string('page_mode', 'tool_forcedcache', $formattedruletype), 3);
 
         if (count($rules[$ruletype]) === 0) {
-            $html .= $OUTPUT->notification(get_string('rule_no_rulesets', 'tool_forcedcache'),
+            $html .= $OUTPUT->notification(
+                get_string('rule_no_rulesets', 'tool_forcedcache', $defaultstore),
                 \core\output\notification::NOTIFY_WARNING);
+            $html .= html_writer::table($table);
         } else {
             $html .= html_writer::table($table);
         }

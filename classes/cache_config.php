@@ -252,7 +252,7 @@ class tool_forcedcache_cache_config extends cache_config {
      *
      * @return array the generated default mode mappings.
      */
-    private function generate_mode_mapping() : array {
+    public static function get_default_mode_mappings() : array {
         // Use the defaults from core.
         $modemappings = array(
             array(
@@ -271,6 +271,37 @@ class tool_forcedcache_cache_config extends cache_config {
                 'sort' => -1
             )
         );
+
+        return $modemappings;
+    }
+
+    /**
+     * This function generates the mappings for each cache mode after rules are applied.
+     *
+     * @return array the generated mode mappings post-rules.
+     */
+    private function generate_mode_mapping($rules): array {
+        $modetostr = [
+            cache_store::MODE_APPLICATION => 'application',
+            cache_store::MODE_SESSION => 'session',
+            cache_store::MODE_REQUEST => 'request',
+        ];
+
+        // Use the defaults from core.
+        $modemappings = array_map(function ($modemapping) use ($rules, $modetostr) {
+            $modekey = $modetostr[$modemapping['mode']];
+            $moderules = $rules[$modekey] ?? null;
+            // Only override the default store with the last rule set for a particular mode - if one exists.
+            if (!empty($moderules)) {
+                $lastrule = end($moderules);
+                // Check if the rule has any conditions, if not it will be set
+                // as the default store as it is considered the broadest rule.
+                if (empty($lastrule['conditions'])) {
+                    $modemapping['store'] = $lastrule['stores'];
+                }
+            }
+            return $modemapping;
+        }, self::get_default_mode_mappings());
 
         return $modemappings;
     }

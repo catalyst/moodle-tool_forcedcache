@@ -33,3 +33,23 @@ $defaultsexpected = array(
         'sort' => -1
     )
 );
+
+$generatedmodemappingagainstdefinitionmatchtoprulesetexpected = array(
+    array(
+        'mode' => cache_store::MODE_APPLICATION,
+        'store' => array(
+            'file-test'
+        ),
+        'sort' => -1
+    ),
+    array(
+        'mode' => cache_store::MODE_SESSION,
+        'store' => 'default_session',
+        'sort' => -1
+    ),
+    array(
+        'mode' => cache_store::MODE_REQUEST,
+        'store' => 'default_request',
+        'sort' => -1
+    )
+);
