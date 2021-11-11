@@ -297,7 +297,7 @@ class tool_forcedcache_cache_config extends cache_config {
                 // Check if the rule has any conditions, if not it will be set
                 // as the default store as it is considered the broadest rule.
                 if (empty($lastrule['conditions'])) {
-                    $modemapping['store'] = $lastrule['stores'];
+                    $modemapping['store'] = reset($lastrule['stores']);
                 }
             }
             return $modemapping;
