@@ -258,7 +258,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         // will be the default, or if no broad rule, it will use the system's
         // default).
         if (empty($table->data) || end($table->data)[1] !== $defaultrulestr) {
-            // Append a default entry to the table
+            // Append a default entry to the table.
             $defaultmodemappings = tool_forcedcache_cache_config::get_default_mode_mappings();
             $defaultstoreformode = array_filter($defaultmodemappings, function($modemapping) use ($mode) {
                 return $modemapping['mode'] === $mode;
