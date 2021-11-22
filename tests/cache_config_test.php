@@ -29,7 +29,21 @@ defined('MOODLE_INTERNAL') || die();
 
 class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
 
-    public function test_read_config_file() {
+    /**
+     * We need to load the config files outside of the $CFG->dirroot, so it
+     * will be copied out as part of these tests.
+     *
+     * @param  string $source file
+     * @return string of the copied file, in a valid config loading location
+     */
+    public function copy_to_valid_config_location(string $source): string {
+        $this->tmpdir = sys_get_temp_dir();
+        $dest = $this->tmpdir . DIRECTORY_SEPARATOR . 'tool_forcedcache_cache_config_testcase-' . basename($source);
+        copy($source, $dest);
+        return $dest;
+    }
+
+    public function test_read_config_file_from_invalid_path() {
         global $CFG;
         $this->resetAfterTest(true);
 
@@ -44,28 +58,81 @@ class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
         $method = new \ReflectionMethod($config, 'read_config_file');
         $method->setAccessible(true);
 
-        // First use the default json file.
+        // First try loading a file in an invalid config path.
         $CFG->tool_forcedcache_config_path = __DIR__ . '/../config.json';
+        $this->expectException(\cache_exception::class);
+        $this->expectExceptionMessage(get_string('config_json_path_invalid', 'tool_forcedcache', $CFG->dirroot));
+        $method->invoke($config);
+    }
+
+    public function test_read_valid_config_file() {
+        global $CFG;
+        $this->resetAfterTest(true);
+
+        // Directly create a config.
+        $config = new \tool_forcedcache_cache_config();
+
+        // Lets unset anything that may be forced from config.php.
+        unset($CFG->tool_forcedcache_config_path);
+        unset($CFG->tool_forcedcache_config_array);
+
+        // Setup reflection for private function.
+        $method = new \ReflectionMethod($config, 'read_config_file');
+        $method->setAccessible(true);
+
+        // Next use the default json file, but from a valid path.
+        $CFG->tool_forcedcache_config_path = $this->copy_to_valid_config_location(__DIR__ . '/../config.json');
         $configarr1 = $method->invoke($config);
         $this->assertEquals(3, count($configarr1));
         $this->assertArrayHasKey('rules', $configarr1);
         $this->assertArrayHasKey('stores', $configarr1);
         $this->assertArrayHasKey('definitionoverrides', $configarr1);
+    }
+
+    public function test_read_garbled_config_file() {
+        global $CFG;
+        $this->resetAfterTest(true);
+
+        // Directly create a config.
+        $config = new \tool_forcedcache_cache_config();
+
+        // Lets unset anything that may be forced from config.php.
+        unset($CFG->tool_forcedcache_config_path);
+        unset($CFG->tool_forcedcache_config_array);
+
+        // Setup reflection for private function.
+        $method = new \ReflectionMethod($config, 'read_config_file');
+        $method->setAccessible(true);
 
         // Now lets point to a garbled file.
-        $CFG->tool_forcedcache_config_path = __DIR__ . '/../classes/cache_factory.php';
+        $CFG->tool_forcedcache_config_path = $this->copy_to_valid_config_location(__DIR__ . '/../classes/cache_factory.php');
         $this->expectException(\cache_exception::class);
         $this->expectExceptionMessage(get_string('config_json_parse_fail', 'tool_forcedcache'));
-        $configarr2 = $method->invoke($config);
-        $this->assertNull($configarr2);
+        $method->invoke($config);
+    }
+
+    public function test_read_non_existent_config_file() {
+        global $CFG;
+        $this->resetAfterTest(true);
+
+        // Directly create a config.
+        $config = new \tool_forcedcache_cache_config();
+
+        // Lets unset anything that may be forced from config.php.
+        unset($CFG->tool_forcedcache_config_path);
+        unset($CFG->tool_forcedcache_config_array);
+
+        // Setup reflection for private function.
+        $method = new \ReflectionMethod($config, 'read_config_file');
+        $method->setAccessible(true);
 
         // Now try a non-existent file.
-        $CFG->tool_forcedcache_config_path = __DIR__ . '/fake.json';
+        $CFG->tool_forcedcache_config_path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'forcedcache_cache_config-fake.json';
         $this->expectException(\cache_exception::class);
         $this->expectExceptionMessage(get_string('config_json_missing', 'tool_forcedcache'));
-        $configarr3 = $method->invoke($config);
-        $this->assertNull($configarr3);
+        $method->invoke($config);
     }
+
 
     public function test_generate_store_instance_config() {
         // Directly create a config.
