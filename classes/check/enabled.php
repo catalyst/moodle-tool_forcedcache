@@ -59,9 +59,10 @@ class enabled extends check {
         $dummy = new \tool_forcedcache_cache_config();
         $errors = $dummy->get_inclusion_errors();
 
-        if (empty($CFG->alternative_cache_factory_class) ||
-                $CFG->alternative_cache_factory_class !== 'tool_forcedcache_cache_factory' || !empty($errors)) {
-            $status = result::ERROR;
+        $forcedcacheenabled = isset($CFG->alternative_cache_factory_class) && $CFG->alternative_cache_factory_class === 'tool_forcedcache_cache_factory';
+
+        if (!$forcedcacheenabled || !empty($errors)) {
+            $status = $forcedcacheenabled ? result::ERROR : result::WARNING;
             $summary = get_string('page_not_active', 'tool_forcedcache');
         } else {
             $status = result::OK;
