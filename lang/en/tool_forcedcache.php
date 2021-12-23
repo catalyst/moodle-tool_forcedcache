@@ -30,8 +30,9 @@ $string['page_active'] = 'Forced cache configuration IS active.';
 // Exception Strings.
 $string['config_json_parse_fail'] = 'Error parsing JSON to array. JSON syntax may be malformed.';
 $string['config_array_parse_fail'] = 'Error parsing configuration array. Array syntax may be malformed.';
-$string['config_json_missing'] = 'Error reading specified JSON file. File may not exist, or path is incorrect.';
-$string['config_json_path_invalid'] = 'Invalid configuration path. Please ensure the path is outside of the {$a} directory.';
+$string['config_json_missing'] = 'Error reading JSON file. File may not exist, path is incorrect or path has not been set.';
+$string['config_json_path_invalid'] = 'Invalid configuration path. Please ensure the path {$a->path} is outside of the {$a->dirroot} directory.
+Please see https://github.com/catalyst/moodle-tool_forcedcache#set-a-path-to-the-json-configuration for further instructions.';
 $string['config_path_and_array'] = 'Detected both path to file and config array. Only one can be specified.';
 $string['definition_not_found'] = 'Definition not defined for configuration override: {$a}.';
 $string['store_missing_fields'] = 'Error reading store {$a}, it may be missing fields or malformed.';

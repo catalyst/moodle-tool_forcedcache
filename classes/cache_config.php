@@ -166,19 +166,20 @@ class tool_forcedcache_cache_config extends cache_config {
 
         } else if ($pathexists) {
             // Else decide on the path, then try to load it.
-            $path = $CFG->tool_forcedcache_config_path;
-        } else {
-            $path = __DIR__.'/../config.json';
+            $path = realpath($CFG->tool_forcedcache_config_path);
         }
 
         // If the json file path is inside dirroot, throw an exception. This
         // should not be allowed as it would expose the configuration.
         if (!empty($path) && strpos($path, $CFG->dirroot) !== false) {
-            throw new cache_exception(get_string('config_json_path_invalid', 'tool_forcedcache', $CFG->dirroot));
+            throw new cache_exception(get_string('config_json_path_invalid', 'tool_forcedcache', [
+                'path' => $path,
+                'dirroot' => $CFG->dirroot
+            ]));
         }
 
         // Now try to load the JSON.
-        if (file_exists($path)) {
+        if (isset($path) && file_exists($path)) {
             $filedata = file_get_contents($path);
             $config = json_decode($filedata, true);
             if (!empty($config)) {

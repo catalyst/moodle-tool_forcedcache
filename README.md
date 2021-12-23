@@ -32,7 +32,7 @@ For all Moodle branches please use the master branch.
 
 1. [Clone the plugin](#step-1-clone-the-plugin)
 2. [Apply core patches (if required)](#step-2-apply-core-patches-if-required)
-3. [Wire up the configuration (if required)](#step-3-wire-up-the-configuration-if-required)
+3. [Wire up the configuration](#step-3-wire-up-the-configuration-if-required)
 4. [Update cache configurations as needed](#step-4-configure-the-cache-settings)
 5. [Apply the new cache rules](#step-5-apply-the-cache-rules)
 
@@ -56,13 +56,12 @@ Step 2: Apply core patches (if required)
 This plugin relies on [MDL-41492](https://tracker.moodle.org/browse/MDL-41492), so this patch must be applied to any Moodle prior
 to 3.9. Patches have been bundled with this plugin, to allow for quick application of the patch for various supported Moodle versions.
 
-Step 3: Wire up the configuration (if required)
+Step 3: Wire up the configuration
 -----------------------------------------------
 All configuration in this plugin is declared in code. You could do one of the following:
 - Set your configuration directly in a PHP `array` in config.php (Recommended)
 - Or Create your own configuration file (JSON), and specify the `path` to it in config.php
-- Or by updating the config.json that comes with the plugin,
-    - as the plugin loads this by default, you may skip to the next section as the following would not apply to you.
+- Or by updating the config.json that comes with the plugin, then moving it to an [appropriate location](#set-a-path-to-the-json-configuration).
 
 *Note: Only an `array` OR a `path` can be specified. It is not valid to declare both at once.*
 
@@ -193,8 +192,7 @@ If you choose to define your cache configuration in a JSON file, you will need t
 ```
 $CFG->tool_forcedcache_config_path = 'path/to/config.json';
 ```
-If this is not supplied, the plugin will default to `config.json` inside of the plugin directory.
-Once the path is decided on, the configuration can be viewed. See [Debugging](#debugging) for more information.
+If this is not supplied, the plugin will default to `config.json` inside of the plugin directory. The default is not a valid production path and this file should only serve as an example. Please move this file outside the [dirroot](https://moodle.org/mod/glossary/showentry.php?eid=20&displayformat=dictionary) directory. Once the path is decided on, the configuration can be viewed. See [Debugging](#debugging) for more information.
 
 
 Step 4: Configure the cache settings

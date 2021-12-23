@@ -40,7 +40,7 @@ class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
         $this->tmpdir = sys_get_temp_dir();
         $dest = $this->tmpdir . DIRECTORY_SEPARATOR . 'tool_forcedcache_cache_config_testcase-' . basename($source);
         copy($source, $dest);
-        return $dest;
+        return realpath($dest);
     }
 
     public function test_read_config_file_from_invalid_path() {
@@ -59,9 +59,12 @@ class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
         $method->setAccessible(true);
 
         // First try loading a file in an invalid config path.
-        $CFG->tool_forcedcache_config_path = __DIR__ . '/../config.json';
+        $CFG->tool_forcedcache_config_path = realpath(__DIR__ . '/../config.json');
         $this->expectException(\cache_exception::class);
-        $this->expectExceptionMessage(get_string('config_json_path_invalid', 'tool_forcedcache', $CFG->dirroot));
+        $this->expectExceptionMessage(get_string('config_json_path_invalid', 'tool_forcedcache', [
+            'path' => $CFG->tool_forcedcache_config_path,
+            'dirroot' => $CFG->dirroot
+        ]));
         $method->invoke($config);
     }
 
