@@ -25,8 +25,6 @@
 
 namespace tool_forcedcache\tests;
 
-defined('MOODLE_INTERNAL') || die();
-
 class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
 
     /**
