@@ -23,8 +23,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace tool_forcedcache\check;
-use core\check\check,
-    core\check\result;
+use core\check\check;
+use core\check\result;
 
 class enabled extends check {
     /**
