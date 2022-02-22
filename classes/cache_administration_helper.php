@@ -24,8 +24,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 class tool_forcedcache_cache_administration_helper extends core_cache\administration_helper {
 
     /**
