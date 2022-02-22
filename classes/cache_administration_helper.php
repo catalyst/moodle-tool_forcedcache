@@ -77,10 +77,10 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
      * This function performs all of the outputting for the cache admin page,
      * with some custom tweaks for the plugin.
      *
-     * @param core_cache_renderer $renderer
+     * @param \core_cache\output\renderer $renderer
      * @return string HTML for the page;
      */
-    public function generate_admin_page(core_cache_renderer $renderer): string {
+    public function generate_admin_page(\core_cache\output\renderer $renderer): string {
         $context = context_system::instance();
         $html = '';
 
@@ -329,5 +329,32 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
             self::$instance = new tool_forcedcache_cache_administration_helper();
         }
         return self::$instance;
+    }
+
+    /**
+     * Gets usage information about the whole cache system.
+     *
+     * This is a slow function and should only be used on an admin information page.
+     *
+     * The returned array lists all cache definitions with fields 'cacheid' and 'stores'. For
+     * each store, the following fields are available:
+     *
+     * - name (store name)
+     * - class (e.g. cachestore_redis)
+     * - supported (true if we have any information)
+     * - items (number of items stored)
+     * - mean (mean size of item)
+     * - sd (standard deviation for item sizes)
+     * - margin (margin of error for mean at 95% confidence)
+     * - storetotal (total usage for store if known, otherwise null)
+     *
+     * The storetotal field will be the same for every cache that uses the same store.
+     *
+     * @param int $samplekeys Number of keys to sample when checking size of large caches
+     * @return array Details of cache usage
+     */
+    public function get_usage(int $samplekeys): array {
+        $corehelper = new core_cache\local\administration_display_helper();
+        return $corehelper->get_usage($samplekeys);
     }
 }
