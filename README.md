@@ -19,7 +19,10 @@ This has the advantage of making caching code-configurable before deployment, an
 
 ## Branches
 
-For all Moodle branches please use the master branch.
+| Moodle version    | Branch           | PHP  |
+|-------------------|------------------|------|
+| Moodle 4.0+       | MOODLE_40_STABLE | 7.3+ |
+| Moodle 3.5 - 3.11 | master           | 7.1+ |
 
 
 ## Installation
