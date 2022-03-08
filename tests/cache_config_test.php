@@ -25,11 +25,33 @@
 
 namespace tool_forcedcache\tests;
 
-defined('MOODLE_INTERNAL') || die();
-
+/**
+ * Tests for forced cache configuration.
+ *
+ * @package     tool_forcedcache
+ * @author      Peter Burnett <peterburnett@catalyst-au.net>
+ * @copyright   Catalyst IT
+ */
 class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
 
-    public function test_read_config_file() {
+    /**
+     * We need to load the config files outside of the $CFG->dirroot, so it
+     * will be copied out as part of these tests.
+     *
+     * @param  string $source file
+     * @return string of the copied file, in a valid config loading location
+     */
+    public function copy_to_valid_config_location(string $source): string {
+        $this->tmpdir = sys_get_temp_dir();
+        $dest = $this->tmpdir . DIRECTORY_SEPARATOR . 'tool_forcedcache_cache_config_testcase-' . basename($source);
+        copy($source, $dest);
+        return realpath($dest);
+    }
+
+    /**
+     * Tests reading config file from invalid path.
+     */
+    public function test_read_config_file_from_invalid_path() {
         global $CFG;
         $this->resetAfterTest(true);
 
@@ -44,29 +66,96 @@ class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
         $method = new \ReflectionMethod($config, 'read_config_file');
         $method->setAccessible(true);
 
-        // First use the default json file.
-        $CFG->tool_forcedcache_config_path = __DIR__ . '/../config.json';
+        // First try loading a file in an invalid config path.
+        $CFG->tool_forcedcache_config_path = realpath(__DIR__ . '/../config.json');
+        $this->expectException(\cache_exception::class);
+        $this->expectExceptionMessage(get_string('config_json_path_invalid', 'tool_forcedcache', [
+            'path' => $CFG->tool_forcedcache_config_path,
+            'dirroot' => $CFG->dirroot
+        ]));
+        $method->invoke($config);
+    }
+
+    /**
+     * Tests reading invalid config file.
+     */
+    public function test_read_valid_config_file() {
+        global $CFG;
+        $this->resetAfterTest(true);
+
+        // Directly create a config.
+        $config = new \tool_forcedcache_cache_config();
+
+        // Lets unset anything that may be forced from config.php.
+        unset($CFG->tool_forcedcache_config_path);
+        unset($CFG->tool_forcedcache_config_array);
+
+        // Setup reflection for private function.
+        $method = new \ReflectionMethod($config, 'read_config_file');
+        $method->setAccessible(true);
+
+        // Next use the default json file, but from a valid path.
+        $CFG->tool_forcedcache_config_path = $this->copy_to_valid_config_location(__DIR__ . '/../config.json');
         $configarr1 = $method->invoke($config);
         $this->assertEquals(3, count($configarr1));
         $this->assertArrayHasKey('rules', $configarr1);
         $this->assertArrayHasKey('stores', $configarr1);
         $this->assertArrayHasKey('definitionoverrides', $configarr1);
-
-        // Now lets point to a garbled file.
-        $CFG->tool_forcedcache_config_path = __DIR__ . '/../classes/cache_factory.php';
-        $this->expectException(\cache_exception::class);
-        $this->expectExceptionMessage(get_string('config_json_parse_fail', 'tool_forcedcache'));
-        $configarr2 = $method->invoke($config);
-        $this->assertNull($configarr2);
-
-        // Now try a non-existent file.
-        $CFG->tool_forcedcache_config_path = __DIR__ . '/fake.json';
-        $this->expectException(\cache_exception::class);
-        $this->expectExceptionMessage(get_string('config_json_missing', 'tool_forcedcache'));
-        $configarr3 = $method->invoke($config);
-        $this->assertNull($configarr3);
     }
 
+    /**
+     * Tests reading garbled config file.
+     */
+    public function test_read_garbled_config_file() {
+        global $CFG;
+        $this->resetAfterTest(true);
+
+        // Directly create a config.
+        $config = new \tool_forcedcache_cache_config();
+
+        // Lets unset anything that may be forced from config.php.
+        unset($CFG->tool_forcedcache_config_path);
+        unset($CFG->tool_forcedcache_config_array);
+
+        // Setup reflection for private function.
+        $method = new \ReflectionMethod($config, 'read_config_file');
+        $method->setAccessible(true);
+
+        // Now lets point to a garbled file.
+        $CFG->tool_forcedcache_config_path = $this->copy_to_valid_config_location(__DIR__ . '/../classes/cache_factory.php');
+        $this->expectException(\cache_exception::class);
+        $this->expectExceptionMessage(get_string('config_json_parse_fail', 'tool_forcedcache'));
+        $method->invoke($config);
+    }
+
+    /**
+     * Tests reading non-existing config file.
+     */
+    public function test_read_non_existent_config_file() {
+        global $CFG;
+        $this->resetAfterTest(true);
+
+        // Directly create a config.
+        $config = new \tool_forcedcache_cache_config();
+
+        // Lets unset anything that may be forced from config.php.
+        unset($CFG->tool_forcedcache_config_path);
+        unset($CFG->tool_forcedcache_config_array);
+
+        // Setup reflection for private function.
+        $method = new \ReflectionMethod($config, 'read_config_file');
+        $method->setAccessible(true);
+
+        // Now try a non-existent file.
+        $CFG->tool_forcedcache_config_path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'forcedcache_cache_config-fake.json';
+        $this->expectException(\cache_exception::class);
+        $this->expectExceptionMessage(get_string('config_json_missing', 'tool_forcedcache'));
+        $method->invoke($config);
+    }
+
+    /**
+     * Tests bad type of a generated store instance.
+     */
     public function test_generate_store_instance_config() {
         // Directly create a config.
         $config = new \tool_forcedcache_cache_config();
@@ -91,21 +180,44 @@ class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
         $this->expectException(\cache_exception::class);
         $this->expectExceptionMessage(get_string('store_bad_type', 'tool_forcedcache', 'faketype'));
         $storearr1 = $method->invoke($config, $storebadtype['input']);
-        $this->assertNull($storearr1);
+    }
+
+    /**
+     * Tests handling of a store with missing required fields.
+     */
+    public function test_generate_store_instance_missing_required() {
+        // Directly create a config.
+        $config = new \tool_forcedcache_cache_config();
+
+        // Setup reflection for private function.
+        $method = new \ReflectionMethod($config, 'generate_store_instance_config');
+        $method->setAccessible(true);
+
+        // Read in the fixtures file for data.
+        include(__DIR__ . '/fixtures/stores_data.php');
 
         // Now test a store with a missing required field.
         $this->expectException(\cache_exception::class);
         $this->expectExceptionMessage(get_string('store_missing_fields', 'tool_forcedcache', 'apcu-test'));
         $storearr1 = $method->invoke($config, $storemissingfields['input']);
-        $this->assertNull($storearr1);
-
-        // Now test store with where store isn't ready, don't instantiate (APCu doesn't work from CLI).
-        $this->assertEquals($storereqsnotmet['expected'], $method->invoke($config, $storereqsnotmet['input']));
     }
 
-    public function test_mode_mappings () {
-        // TODO decide if we want mapping defaults forced, then test them here.
+    /**
+     * Test if default mappings return as expected.
+     */
+    public function test_default_mode_mappings() {
+        $defaultmodemappings = \tool_forcedcache_cache_config::get_default_mode_mappings();
 
+        // Read in the fixtures file for data.
+        include(__DIR__ . '/fixtures/mode_mappings_data.php');
+
+        $this->assertEquals($defaultsexpected, $defaultmodemappings);
+    }
+
+    /**
+     * Tests output of mode mpapings once rules included in the mix.
+     */
+    public function test_generated_mode_mappings_for_definitionmatchtopruleset() {
         $config = new \tool_forcedcache_cache_config();
         // Setup reflection for private function.
         $method = new \ReflectionMethod($config, 'generate_mode_mapping');
@@ -113,10 +225,33 @@ class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
 
         // Read in the fixtures file for data.
         include(__DIR__ . '/fixtures/mode_mappings_data.php');
+        include(__DIR__ . '/fixtures/definition_mappings_data.php');
 
-        $this->assertEquals($defaultsexpected, $method->invoke($config, array()));
+        $expected = $generatedmodemappingagainstdefinitionmatchtoprulesetexpected;
+        $rules = $definitionmatchtopruleset['rules'];
+        $this->assertEquals($expected, $method->invoke($config, $rules));
     }
 
+    /**
+     * Tests output of mode mpapings once rules included in the mix.
+     */
+    public function test_generated_mode_mappings_for_definitionnoruleset() {
+        $config = new \tool_forcedcache_cache_config();
+        // Setup reflection for private function.
+        $method = new \ReflectionMethod($config, 'generate_mode_mapping');
+        $method->setAccessible(true);
+
+        // Read in the fixtures file for data.
+        include(__DIR__ . '/fixtures/mode_mappings_data.php');
+        include(__DIR__ . '/fixtures/definition_mappings_data.php');
+
+        $rules = $definitionnoruleset['rules'];
+        $this->assertEquals($defaultsexpected, $method->invoke($config, $rules));
+    }
+
+    /**
+     * Tests definition mappings generated from rules.
+     */
     public function test_generate_definition_mappings_from_rules() {
         $config = new \tool_forcedcache_cache_config();
 
