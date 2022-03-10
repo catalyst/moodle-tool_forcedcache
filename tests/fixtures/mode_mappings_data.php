@@ -34,7 +34,7 @@ $defaultsexpected = array(
     )
 );
 
-$generatedmodemappingagainstdefinitionmatchtoprulesetexpected = array(
+$generatedmodemapping = array(
     array(
         'mode' => cache_store::MODE_APPLICATION,
         'store' => 'file-test',

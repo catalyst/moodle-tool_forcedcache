@@ -290,6 +290,21 @@ $storereqsnotmet = array (
                 'default' => true,
                 'class' => 'cachestore_static',
                 'lock' => 'cachelock_file_default',
-            )
+            ),
+        'apcutest' =>
+            array (
+                'name' => 'apcutest',
+                'plugin' => 'apcu',
+                'configuration' =>
+                array (
+                    'prefix' => 'test_',
+                ),
+                'class' => 'cachestore_apcu',
+                'features' => 4,
+                'modes' => 3,
+                'default' => false,
+                'mappingsonly' => false,
+                'lock' => 'cachelock_file_default',
+            ),
     )
 );
