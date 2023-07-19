@@ -1,9 +1,15 @@
 name: ci
 
-on: [push, pull_request]
+env:
+  PLUGIN: tool_forcedcache
+
+on:
+  push:
+    tags:
+      - '*'
 
 jobs:
-  test:
-    uses: catalyst/catalyst-moodle-workflows/.github/workflows/group-40-plus-ci.yml@main
+  ci:
+    uses: catalyst/catalyst-moodle-workflows/.github/workflows/ci.yml@main
     with:
       disable_behat: true
