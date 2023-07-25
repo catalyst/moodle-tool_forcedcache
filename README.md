@@ -1,8 +1,6 @@
-<a href="https://travis-ci.org/catalyst/moodle-tool_forcedcache">
-<img src="https://travis-ci.org/catalyst/moodle-tool_forcedcache.svg?branch=master">
-</a>
-
 # moodle-tool_forcedcache
+
+![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/catalyst/moodle-tool_forcedcache/ci.yml?label=ci&branch=MOODLE_40_STABLE)
 
 * [What is this?](#what-is-this)
 * [Branches](#branches)
