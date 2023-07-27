@@ -1,12 +1,10 @@
+# .github/workflows/ci.yml
 name: ci
 
 env:
   PLUGIN: tool_forcedcache
 
-on:
-  push:
-    tags:
-      - '*'
+on: [push, pull_request]
 
 jobs:
   ci:
