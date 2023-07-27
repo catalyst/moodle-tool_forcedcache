@@ -15,16 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This cache_config class extends the first one, and generates the
- * configuration array from reading a hardcoded JSON file instead of
- * the configuration file on shared disk.
+ * This cache_config class generates the configuration array from reading a hardcoded JSON file
+ *
+ * Instead of the configuration file on shared disk.
  *
  * @package     tool_forcedcache
  * @author      Peter Burnett <peterburnett@catalyst-au.net>
  * @copyright   Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class tool_forcedcache_cache_config extends cache_config {
 
     /**
@@ -283,9 +282,10 @@ class tool_forcedcache_cache_config extends cache_config {
     /**
      * This function generates the mappings for each cache mode after rules are applied.
      *
+     * @param array $rules
      * @return array the generated mode mappings post-rules.
      */
-    private function generate_mode_mapping($rules): array {
+    private function generate_mode_mapping(array $rules): array {
         $modetostr = [
             cache_store::MODE_APPLICATION => 'application',
             cache_store::MODE_SESSION => 'session',

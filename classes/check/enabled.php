@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_forcedcache\check;
+use core\check\check;
+use core\check\result;
+
 /**
  * Forcedcache enabled check
  *
@@ -22,10 +26,6 @@
  * @copyright   Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace tool_forcedcache\check;
-use core\check\check;
-use core\check\result;
-
 class enabled extends check {
     /**
      * Get the short check name
@@ -58,7 +58,8 @@ class enabled extends check {
         $dummy = new \tool_forcedcache_cache_config();
         $errors = $dummy->get_inclusion_errors();
 
-        $forcedcacheenabled = isset($CFG->alternative_cache_factory_class) && $CFG->alternative_cache_factory_class === 'tool_forcedcache_cache_factory';
+        $forcedcacheenabled = isset($CFG->alternative_cache_factory_class)
+            && $CFG->alternative_cache_factory_class === 'tool_forcedcache_cache_factory';
 
         if (!$forcedcacheenabled || !empty($errors)) {
             $status = $forcedcacheenabled ? result::ERROR : result::WARNING;

@@ -14,18 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_forcedcache;
+
 /**
- * Test file for tool_forcedcache_cache_config.
+ * Tests for tool_forcedcache_cache_config.
  *
  * @package     tool_forcedcache
  * @author      Peter Burnett <peterburnett@catalyst-au.net>
  * @copyright   Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers      \tool_forcedcache_cache_config
  */
-
-namespace tool_forcedcache\tests;
-
-class tool_forcedcache_cache_config_testcase extends \advanced_testcase {
+class cache_config_test extends \advanced_testcase {
 
     /**
      * We need to load the config files outside of the $CFG->dirroot, so it
