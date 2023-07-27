@@ -22,14 +22,15 @@
  * @copyright   Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class tool_forcedcache_cache_factory extends cache_factory {
 
     /**
      * This is a copy of the core class, with the classes swapped out.
      * TODO: Refactor core method to accept class param, and call parent with param.
+     *
+     * @param bool $writer
      */
-    public function create_config_instance($writer = false) {
+    public function create_config_instance(bool $writer = false) {
         global $CFG;
 
         // The class to use.

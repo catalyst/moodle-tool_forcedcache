@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_forcedcache\privacy;
+
 /**
  * Plugin privacy provider
  *
@@ -21,9 +23,6 @@
  * @copyright  2020 Peter Burnett <peterburnett@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace tool_forcedcache\privacy;
-
 class provider implements
     // This plugin does not store any personal user data.
     \core_privacy\local\metadata\null_provider {

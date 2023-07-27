@@ -15,15 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This class changes the actions that are available to various stores,
- * and changes the layout slightly
+ * This class changes the actions that are available to various stores, and changes the layout slightly
  *
  * @package     tool_forcedcache
  * @author      Peter Burnett <peterburnett@catalyst-au.net>
  * @copyright   Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class tool_forcedcache_cache_administration_helper extends core_cache\administration_helper {
 
     /**
@@ -133,7 +131,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
     /**
      * Generates a config table for the selected caching store
      *
-     * @param integer $mode the mode to generate the table for.
+     * @param string $name def table name (prefix)
      * @param array $config the config array from the JSON.
      * @return string HTML for the table.
      */
@@ -197,7 +195,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
     /**
      * Generates a ruleset table for the selected caching mode.
      *
-     * @param integer $mode the mode to generate the table for.
+     * @param int $mode the mode to generate the table for.
      * @param array $config the config array from the JSON.
      * @return string HTML for the table.
      */
