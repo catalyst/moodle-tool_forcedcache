@@ -30,7 +30,7 @@ class tool_forcedcache_cache_factory extends cache_factory {
      *
      * @param bool $writer
      */
-    public function create_config_instance(bool $writer = false) {
+    public function create_config_instance($writer = false) {
         global $CFG;
 
         // The class to use.
