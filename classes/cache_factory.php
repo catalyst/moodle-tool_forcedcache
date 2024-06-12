@@ -60,7 +60,15 @@ class tool_forcedcache_cache_factory extends cache_factory {
             $this->configs[$class]->load();
         }
 
-        $this->set_state(self::STATE_READY);
+        // We need the siteid in order to use the caches, but the siteid
+        // is also looked up from the caches so we have a chicken and egg
+        // situation in the bootstrap. This first time we configure the
+        // caches but disable them so the siteid can warm up correctly.
+        if (empty($CFG->siteidentifier)) {
+            $this->set_state(self::STATE_STORES_DISABLED);
+        } else {
+            $this->set_state(self::STATE_READY);
+        }
 
         // Return the instance.
         return $this->configs[$class];
