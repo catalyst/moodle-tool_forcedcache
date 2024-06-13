@@ -112,23 +112,24 @@ class tool_forcedcache_cache_config extends cache_config {
         // Generate locks.
         $locks = $this->generate_locks();
 
-        // Get the siteidentifier. Copies pattern from cache_config.
-        // Uses 'forcedcache' if not known.
-        if (!empty($CFG->siteidentifier)) {
-            $siteidentifier = md5((string) $CFG->siteidentifier);
-        } else {
-            $siteidentifier = 'forcedcache';
-        }
-
         // Throw it all into an array and return.
-        return array(
-            'siteidentifier' => $siteidentifier,
+        $config = [
             'stores' => $stores,
             'modemappings' => $modemappings,
             'definitions' => $definitions,
             'definitionmappings' => $definitionmappings,
             'locks' => $locks
-        );
+        ];
+
+        // Get the siteidentifier. Copies pattern from cache_config.
+        // If the siteid is not yet known then we do not want it set which
+        // means the caches will be disabled further down the chain.
+        if (!empty($CFG->siteidentifier)) {
+            $config['siteidentifier'] = md5((string) $CFG->siteidentifier);
+        }
+
+        return $config;
+
     }
 
     /**
