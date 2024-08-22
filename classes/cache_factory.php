@@ -67,7 +67,10 @@ class tool_forcedcache_cache_factory extends cache_factory {
         if (empty($CFG->siteidentifier)) {
             $this->set_state(self::STATE_STORES_DISABLED);
         } else {
-            $this->set_state(self::STATE_READY);
+            // We cannot directly set the state to enabled from disabled.
+            // So we instead start and finish an update.
+            $this->updating_started();
+            $this->updating_finished();
         }
 
         // Return the instance.
