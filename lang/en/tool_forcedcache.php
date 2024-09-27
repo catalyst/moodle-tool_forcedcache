@@ -35,6 +35,8 @@ $string['config_json_path_invalid'] = 'Invalid configuration path. Please ensure
 Please see https://github.com/catalyst/moodle-tool_forcedcache#set-a-path-to-the-json-configuration for further instructions.';
 $string['config_path_and_array'] = 'Detected both path to file and config array. Only one can be specified.';
 $string['definition_not_found'] = 'Definition not defined for configuration override: {$a}.';
+$string['lock_bad_type'] = 'Error loading lock {$a}. Lock may not exist or type is malformed.';
+$string['lock_missing_fields'] = 'Error reading lock {$a}, it may be missing field or malformed.';
 $string['store_missing_fields'] = 'Error reading store {$a}, it may be missing fields or malformed.';
 $string['store_bad_type'] = 'Error loading store {$a}. Store may not exist or type is malformed.';
 $string['store_not_ready'] = 'Error creating store {$a}, config may be incorrect or missing required fields.';
