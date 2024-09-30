@@ -26,10 +26,9 @@ This has the advantage of making caching code-configurable before deployment, an
 ## Installation
 
 1. [Clone the plugin](#step-1-clone-the-plugin)
-2. [Apply core patches (if required)](#step-2-apply-core-patches-if-required)
-3. [Wire up the configuration](#step-3-wire-up-the-configuration-if-required)
-4. [Update cache configurations as needed](#step-4-configure-the-cache-settings)
-5. [Apply the new cache rules](#step-5-apply-the-cache-rules)
+2. [Wire up the configuration](#step-3-wire-up-the-configuration-if-required)
+3. [Update cache configurations as needed](#step-4-configure-the-cache-settings)
+4. [Apply the new cache rules](#step-5-apply-the-cache-rules)
 
 Step 1: Clone the plugin
 ------------------------
