@@ -15,8 +15,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 defined('MOODLE_INTERNAL') || die();
-// Manually require locallib as it isn't autoloaded.
-require_once(__DIR__.'/../../../../cache/locallib.php');
 
 /**
  * This config_writer is readonly, and provides public access to some protected methods.
