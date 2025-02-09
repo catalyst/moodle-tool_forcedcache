@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace tool_forcedcache;
-
 /**
  * Tests for tool_forcedcache_cache_config.
  *
@@ -25,7 +23,7 @@ namespace tool_forcedcache;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers      \tool_forcedcache_cache_config
  */
-class cache_config_test extends \advanced_testcase {
+class tool_forcedcache_cache_config_test extends \core_phpunit\testcase {
 
     /**
      * We need to load the config files outside of the $CFG->dirroot, so it
