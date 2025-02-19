@@ -15,12 +15,18 @@ This is a moodle plugin that will override Moodle's default options for caching 
 This allows for deterministic configuration, based on a lightweight configuration and rules stored in code.
 This has the advantage of making caching code-configurable before deployment, and allows for more control of the cache configurations throughout your fleet.
 
-## Branches
+## Moodle supported branches
 
-| Moodle version    | Branch           | PHP  |
+| Version    | Branch           | PHP  |
 |-------------------|------------------|------|
 | Moodle 4.5+       | MOODLE_405_STABLE | 7.3+ |
 | Moodle 4.0-4.4    | MOODLE_40_STABLE  | 7.3+ |
+
+## Totara supported branches
+| Version    | Branch           | PHP  |
+|-------------------|------------------|------|
+| Totara 19+ | TOTARA_19 | 8.1+ |
+| Moodle 18  | MOODLE_40_STABLE  | 7.3+ |
 
 
 ## Installation
