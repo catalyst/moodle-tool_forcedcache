@@ -132,8 +132,31 @@ class tool_forcedcache_cache_config_test extends \core_phpunit\testcase {
         $method->invoke($config);
     }
 
-
     public function test_generate_store_instance_config() {
+        // Directly create a config.
+        $config = new \tool_forcedcache_cache_config();
+
+        // Setup reflection for private function.
+        $method = new \ReflectionMethod($config, 'generate_store_instance_config');
+        $method->setAccessible(true);
+
+        // Read in the fixtures file for data.
+        include(__DIR__ . '/fixtures/stores_data.php');
+
+        // First test with 1 store.
+        $this->assertEquals($storeone['expected'], $method->invoke($config, $storeone['input']));
+
+        // Now a second store.
+        $this->assertEquals($storetwo['expected'], $method->invoke($config, $storetwo['input']));
+
+        // Now test with 0 stores declared and confirm its just the defaults.
+        $this->assertEquals($storezero['expected'], $method->invoke($config, $storezero['input']));
+
+        // Now test store with where store isn't ready, don't instantiate (APCu doesn't work from CLI).
+        $this->assertEquals($storereqsnotmet['expected'], $method->invoke($config, $storereqsnotmet['input']));
+    }
+
+    public function test_generate_store_instance_config_badtype() {
         // Directly create a config.
         $config = new \tool_forcedcache_cache_config();
 
@@ -157,16 +180,32 @@ class tool_forcedcache_cache_config_test extends \core_phpunit\testcase {
         $this->expectException(\cache_exception::class);
         $this->expectExceptionMessage(get_string('store_bad_type', 'tool_forcedcache', 'faketype'));
         $storearr1 = $method->invoke($config, $storebadtype['input']);
-        $this->assertNull($storearr1);
+    }
+
+    public function test_generate_store_instance_config_missingfield() {
+        // Directly create a config.
+        $config = new \tool_forcedcache_cache_config();
+
+        // Setup reflection for private function.
+        $method = new \ReflectionMethod($config, 'generate_store_instance_config');
+        $method->setAccessible(true);
+
+        // Read in the fixtures file for data.
+        include(__DIR__ . '/fixtures/stores_data.php');
+
+        // First test with 1 store.
+        $this->assertEquals($storeone['expected'], $method->invoke($config, $storeone['input']));
+
+        // Now a second store.
+        $this->assertEquals($storetwo['expected'], $method->invoke($config, $storetwo['input']));
+
+        // Now test with 0 stores declared and confirm its just the defaults.
+        $this->assertEquals($storezero['expected'], $method->invoke($config, $storezero['input']));
 
         // Now test a store with a missing required field.
         $this->expectException(\cache_exception::class);
         $this->expectExceptionMessage(get_string('store_missing_fields', 'tool_forcedcache', 'apcu-test'));
         $storearr1 = $method->invoke($config, $storemissingfields['input']);
-        $this->assertNull($storearr1);
-
-        // Now test store with where store isn't ready, don't instantiate (APCu doesn't work from CLI).
-        $this->assertEquals($storereqsnotmet['expected'], $method->invoke($config, $storereqsnotmet['input']));
     }
 
     /**
