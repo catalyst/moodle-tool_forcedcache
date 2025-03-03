@@ -204,8 +204,8 @@ class tool_forcedcache_cache_config_test extends \core_phpunit\testcase {
 
         // Now test a store with a missing required field.
         $this->expectException(\cache_exception::class);
-        $this->expectExceptionMessage(get_string('store_missing_fields', 'tool_forcedcache', 'apcu-test'));
-        $storearr1 = $method->invoke($config, $storemissingfields['input']);
+        $this->expectExceptionMessage(get_string('store_missing_fields', 'tool_forcedcache', 'apcutest'));
+        $storearr1 = $method->invoke($config, $storemissingfield['input']);
     }
 
     /**
