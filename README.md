@@ -26,7 +26,7 @@ This has the advantage of making caching code-configurable before deployment, an
 | Version    | Branch           | PHP  |
 |-------------------|------------------|------|
 | Totara 19+ | TOTARA_19 | 8.1+ |
-| Moodle 18  | MOODLE_40_STABLE  | 7.3+ |
+| Totara 18  | MOODLE_40_STABLE  | 7.3+ |
 
 
 ## Installation
