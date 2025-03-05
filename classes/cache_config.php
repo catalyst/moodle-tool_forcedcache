@@ -238,12 +238,17 @@ class tool_forcedcache_cache_config extends cache_config {
 
             // Create instance from this definition and confirm it instantiates correctly.
             $classinstance = new $classname($storearr['name'], $storearr['configuration']);
-            if (!$classinstance->is_ready()) {
+            $isready = $classinstance->is_ready();
+            if (PHPUNIT_TEST && $storearr['name'] == 'apcutest') {
+                $isready = false;
+            }
+            if ($isready) {
+                $storesarr[$name] = $storearr;
+            } else {
                 // Store the errored store here. Later we will check if it can be safely removed from the array,
                 // If its mappings are exclusively localisable.
                 $this->storeerrors[] = $name;
             }
-            $storesarr[$name] = $storearr;
         }
 
         // Now instantiate the default stores (Must always exist).
