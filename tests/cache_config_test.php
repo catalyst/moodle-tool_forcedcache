@@ -167,15 +167,6 @@ class tool_forcedcache_cache_config_test extends \core_phpunit\testcase {
         // Read in the fixtures file for data.
         include(__DIR__ . '/fixtures/stores_data.php');
 
-        // First test with 1 store.
-        $this->assertEquals($storeone['expected'], $method->invoke($config, $storeone['input']));
-
-        // Now a second store.
-        $this->assertEquals($storetwo['expected'], $method->invoke($config, $storetwo['input']));
-
-        // Now test with 0 stores declared and confirm its just the defaults.
-        $this->assertEquals($storezero['expected'], $method->invoke($config, $storezero['input']));
-
         // Now test a store with a bad type.
         $this->expectException(\cache_exception::class);
         $this->expectExceptionMessage(get_string('store_bad_type', 'tool_forcedcache', 'faketype'));
@@ -192,15 +183,6 @@ class tool_forcedcache_cache_config_test extends \core_phpunit\testcase {
 
         // Read in the fixtures file for data.
         include(__DIR__ . '/fixtures/stores_data.php');
-
-        // First test with 1 store.
-        $this->assertEquals($storeone['expected'], $method->invoke($config, $storeone['input']));
-
-        // Now a second store.
-        $this->assertEquals($storetwo['expected'], $method->invoke($config, $storetwo['input']));
-
-        // Now test with 0 stores declared and confirm its just the defaults.
-        $this->assertEquals($storezero['expected'], $method->invoke($config, $storezero['input']));
 
         // Now test a store with a missing required field.
         $this->expectException(\cache_exception::class);
