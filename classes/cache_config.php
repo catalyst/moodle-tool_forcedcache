@@ -208,7 +208,7 @@ class tool_forcedcache_cache_config extends cache_config {
         foreach ($stores as $name => $store) {
 
             // First check that all the required fields are present in the store.
-            if (!(array_key_exists('type', $store) ||
+            if (!(array_key_exists('type', $store) &&
                   array_key_exists('config', $store))) {
                 throw new cache_exception(get_string('store_missing_fields', 'tool_forcedcache', $name));
             }
