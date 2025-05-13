@@ -26,6 +26,13 @@
 class tool_forcedcache_cache_config_test extends \core_phpunit\testcase {
 
     /**
+     * Temporary directory for loading config into
+     *
+     * @var string
+     */
+    private $tmpdir;
+
+    /**
      * We need to load the config files outside of the $CFG->dirroot, so it
      * will be copied out as part of these tests.
      *
