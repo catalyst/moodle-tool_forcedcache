@@ -28,6 +28,13 @@ namespace tool_forcedcache;
 class cache_config_test extends \advanced_testcase {
 
     /**
+     * Temporary directory for loading config into
+     *
+     * @var string
+     */
+    private $tmpdir;
+
+    /**
      * We need to load the config files outside of the $CFG->dirroot, so it
      * will be copied out as part of these tests.
      *
