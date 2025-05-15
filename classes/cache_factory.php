@@ -55,6 +55,10 @@ class tool_forcedcache_cache_factory extends cache_factory {
 
         if (!array_key_exists($class, $this->configs)) {
             // Create a new instance and call it to load it.
+            // As part of generating store instance config we test the initialisation of stores.
+            // Testing this may initialise DI, which will attempt to use cache for hookcallbacks.
+            // Setting the state to initialising will make it use ad-hoc cache for that request.
+            self::set_state(self::STATE_INITIALISING);
             $this->configs[$class] = new $class;
             $this->configs[$class]->load();
         }
@@ -67,7 +71,7 @@ class tool_forcedcache_cache_factory extends cache_factory {
             $this->set_state(self::STATE_STORES_DISABLED);
         } else {
             // We cannot directly set the state to enabled from disabled.
-            // So we instead start and finish an update.
+            // So we instead start and finish an update to set STATE_READY.
             $this->updating_started();
             $this->updating_finished();
         }
