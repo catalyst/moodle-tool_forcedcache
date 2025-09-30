@@ -46,6 +46,11 @@ class tool_forcedcache_cache_config_test extends \core_phpunit\testcase {
         return realpath($dest);
     }
 
+    protected function tearDown(): void {
+        $this->tmpdir = null;
+        parent::tearDown();
+    }
+
     public function test_read_config_file_from_invalid_path() {
         global $CFG;
         $this->resetAfterTest(true);
