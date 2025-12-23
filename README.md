@@ -17,16 +17,17 @@ This has the advantage of making caching code-configurable before deployment, an
 
 ## Moodle supported branches
 
-| Version    | Branch           | PHP  |
-|-------------------|------------------|------|
-| Moodle 4.5+       | MOODLE_405_STABLE | 7.3+ |
+| Version           | Branch            | PHP  |
+|-------------------|-------------------|------|
+| Moodle 5.1+       | MOODLE_501_STABLE | 8.2+ |
+| Moodle 4.5-5.0    | MOODLE_405_STABLE | 7.3+ |
 | Moodle 4.0-4.4    | MOODLE_40_STABLE  | 7.3+ |
 
 ## Totara supported branches
 | Version    | Branch           | PHP  |
-|-------------------|------------------|------|
-| Totara 19+ | TOTARA_19 | 8.1+ |
-| Totara 18  | MOODLE_40_STABLE  | 7.3+ |
+|------------|------------------|------|
+| Totara 19+ | TOTARA_19        | 8.1+ |
+| Totara 18  | MOODLE_40_STABLE | 7.3+ |
 
 
 ## Installation
