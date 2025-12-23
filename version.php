@@ -24,9 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2024093000;
-$plugin->release   = "2024093000";
-$plugin->requires  = 2024092700; // Requires 4.5.
+$plugin->version   = 2025122400;
+$plugin->release   = 2025122400;
+$plugin->requires  = 2025100600; // Requires 5.1.
 $plugin->component = 'tool_forcedcache'; // Full name of the plugin (used for diagnostics).
 $plugin->maturity = MATURITY_STABLE;
-$plugin->supported  = [405, 405];
+$plugin->supported  = [501, 501];
