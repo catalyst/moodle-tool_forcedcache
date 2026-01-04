@@ -14,12 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Test fixture
+ *
+ * @package     tool_forcedcache
+ * @author      Peter Burnett <peterburnett@catalyst-au.net>
+ * @copyright   Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 defined('MOODLE_INTERNAL') || die();
 
-$definitionmatchtopruleset = array (
-    'definition' => array (
+$definitionmatchtopruleset = [
+    'definition' => [
         'core/string' =>
-        array (
+         [
         'mode' => 1,
         'simplekeys' => true,
         'simpledata' => true,
@@ -31,49 +40,49 @@ $definitionmatchtopruleset = array (
         'selectedsharingoption' => 2,
         'userinputsharingkey' => '',
         'sharingoptions' => 15,
-        ),
-    ),
-    'rules' => array (
-        'application' => array (
-            array (
-                'conditions' => array (
+        ],
+    ],
+    'rules' => [
+        'application' => [
+             [
+                'conditions' => [
                     'canuselocalstore' => true,
-                    'name' => 'core/string'
-                ),
-                'stores' => array(
+                    'name' => 'core/string',
+                ],
+                'stores' => [
                     'apcu-test',
-                    'file-test'
-                )
-            ),
-            array (
-                'stores' => array (
-                    'file-test'
-                )
-            )
-        ),
-        'session' => array(),
-        'request' => array()
-    ),
-    'expected' => array (
+                    'file-test',
+                ],
+             ],
+              [
+                'stores' => [
+                    'file-test',
+                ],
+             ],
+        ],
+        'session' => [],
+        'request' => [],
+    ],
+    'expected' => [
         1 =>
-        array (
+         [
           'store' => 'apcu-test',
           'definition' => 'core/string',
           'sort' => 2,
-        ),
+        ],
         2 =>
-        array (
+         [
           'store' => 'file-test',
           'definition' => 'core/string',
           'sort' => 1,
-        )
-    )
-);
+        ],
+    ],
+];
 
-$definitionnonmatchtopruleset = array (
-    'definition' => array (
+$definitionnonmatchtopruleset = [
+    'definition' => [
         'core/string' =>
-        array (
+         [
         'mode' => 1,
         'simplekeys' => true,
         'simpledata' => true,
@@ -85,43 +94,43 @@ $definitionnonmatchtopruleset = array (
         'selectedsharingoption' => 2,
         'userinputsharingkey' => '',
         'sharingoptions' => 15,
-        ),
-    ),
-    'rules' => array (
-        'application' => array (
-            array (
-                'conditions' => array (
+        ],
+    ],
+    'rules' => [
+        'application' => [
+             [
+                'conditions' => [
                     'canuselocalstore' => true,
-                    'name' => 'core/fakename'
-                ),
-                'stores' => array(
+                    'name' => 'core/fakename',
+                ],
+                'stores' => [
                     'apcu-test',
-                    'file-test'
-                )
-            ),
-            array (
-                'stores' => array (
-                    'file-test'
-                )
-            )
-        ),
-        'session' => array(),
-        'request' => array()
-    ),
-    'expected' => array (
+                    'file-test',
+                ],
+             ],
+              [
+                'stores' => [
+                    'file-test',
+                ],
+             ],
+        ],
+        'session' => [],
+        'request' => [],
+    ],
+    'expected' => [
         1 =>
-        array (
+         [
           'store' => 'file-test',
           'definition' => 'core/string',
           'sort' => 1,
-        )
-    )
-);
+        ],
+    ],
+];
 
-$definitionbottomruleset = array (
-    'definition' => array (
+$definitionbottomruleset = [
+    'definition' => [
         'core/string' =>
-        array (
+         [
         'mode' => 1,
         'simplekeys' => true,
         'simpledata' => true,
@@ -133,53 +142,53 @@ $definitionbottomruleset = array (
         'selectedsharingoption' => 2,
         'userinputsharingkey' => '',
         'sharingoptions' => 15,
-        ),
-    ),
-    'rules' => array (
-        'application' => array (
-            array (
-                'conditions' => array (
+        ],
+    ],
+    'rules' => [
+        'application' => [
+             [
+                'conditions' => [
                     'canuselocalstore' => true,
-                    'name' => 'core/fakename'
-                ),
-                'stores' => array(
+                    'name' => 'core/fakename',
+                ],
+                'stores' => [
                     'apcu-test',
-                    'file-test'
-                )
-            ),
-            array (
-                'conditions' => array (
+                    'file-test',
+                ],
+             ],
+             [
+                'conditions' => [
                     'canuselocalstore' => false,
-                    'name' => 'core/fakename'
-                ),
-                'stores' => array(
+                    'name' => 'core/fakename',
+                ],
+                'stores' => [
                     'apcu-test',
-                    'file-test'
-                )
-            ),
-            array (
-                'stores' => array (
-                    'redis-test'
-                )
-            )
-        ),
-        'session' => array(),
-        'request' => array()
-    ),
-    'expected' => array (
+                    'file-test',
+                ],
+             ],
+              [
+                'stores' => [
+                    'redis-test',
+                ],
+             ],
+        ],
+        'session' => [],
+        'request' => [],
+    ],
+    'expected' => [
         1 =>
-        array (
+         [
           'store' => 'redis-test',
           'definition' => 'core/string',
           'sort' => 1,
-        )
-    )
-);
+        ],
+    ],
+];
 
-$definitionnoruleset = array (
-    'definition' => array (
+$definitionnoruleset = [
+    'definition' => [
         'core/string' =>
-        array (
+         [
         'mode' => 1,
         'simplekeys' => true,
         'simpledata' => true,
@@ -191,43 +200,43 @@ $definitionnoruleset = array (
         'selectedsharingoption' => 2,
         'userinputsharingkey' => '',
         'sharingoptions' => 15,
-        ),
-    ),
-    'rules' => array (
-        'application' => array (
-            array (
-                'conditions' => array (
+        ],
+    ],
+    'rules' => [
+        'application' => [
+             [
+                'conditions' => [
                     'canuselocalstore' => true,
-                    'name' => 'core/fakename'
-                ),
-                'stores' => array(
+                    'name' => 'core/fakename',
+                ],
+                'stores' => [
                     'apcu-test',
-                    'file-test'
-                )
-            ),
-            array (
-                'conditions' => array (
+                    'file-test',
+                ],
+             ],
+             [
+                'conditions' => [
                     'canuselocalstore' => false,
-                    'name' => 'core/fakename'
-                ),
-                'stores' => array(
+                    'name' => 'core/fakename',
+                ],
+                'stores' => [
                     'apcu-test',
-                    'file-test'
-                )
-            ),
-            array (
-                'conditions' => array (
+                    'file-test',
+                ],
+             ],
+              [
+                'conditions' => [
                     'canuselocalstore' => false,
-                    'name' => 'core/differentfakename'
-                ),
-                'stores' => array (
-                    'redis-test'
-                )
-            )
-        ),
-        'session' => array(),
-        'request' => array()
-    ),
-    'expected' => array (
-    )
-);
+                    'name' => 'core/differentfakename',
+                ],
+                'stores' => [
+                    'redis-test',
+                ],
+             ],
+        ],
+        'session' => [],
+        'request' => [],
+    ],
+    'expected' => [
+    ],
+];

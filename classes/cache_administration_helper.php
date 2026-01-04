@@ -40,11 +40,11 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
      */
     public function get_store_instance_actions(string $name, array $storedetails): array {
         global $OUTPUT;
-        $actions = array();
+        $actions = [];
         if (has_capability('moodle/site:config', context_system::instance())) {
-            $baseurl = new moodle_url('/cache/admin.php', array('store' => $name, 'sesskey' => sesskey()));
+            $baseurl = new moodle_url('/cache/admin.php', ['store' => $name, 'sesskey' => sesskey()]);
             $actions[] = $OUTPUT->action_link(
-                new moodle_url($baseurl, array('action' => 'purgestore')),
+                new moodle_url($baseurl, ['action' => 'purgestore']),
                 get_string('purge', 'cache')
             );
         }
@@ -60,11 +60,11 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
      */
     public function get_definition_actions(context $context, array $definitionsummary): array {
         global $OUTPUT;
-        $actions = array();
+        $actions = [];
         if (has_capability('moodle/site:config', $context)) {
             $actions[] = $OUTPUT->action_link(
-                new moodle_url('/cache/admin.php', array('action' => 'purgedefinition',
-                    'definition' => $definitionsummary['id'], 'sesskey' => sesskey())),
+                new moodle_url('/cache/admin.php', ['action' => 'purgedefinition',
+                    'definition' => $definitionsummary['id'], 'sesskey' => sesskey()]),
                 get_string('purge', 'cache')
             );
         }
@@ -143,10 +143,10 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         $table = new html_table();
         $table->id = $name . '_def_table';
         $table->attributes['class'] = 'generaltable table table-bordered table-sm w-auto';
-        $table->head = array (
+        $table->head = [
             get_string('store_config', 'tool_forcedcache'),
             get_string('store_value', 'tool_forcedcache'),
-        );
+        ];
         $table->data = [];
         foreach ($config['config'] as $key => $value) {
             $table->data[] = [$key, $value];
@@ -174,10 +174,10 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         $table = new html_table();
         $table->id = 'def_override_table';
         $table->attributes['class'] = 'generaltable table table-bordered table-sm w-auto';
-        $table->head = array (
+        $table->head = [
             get_string('definition_name', 'tool_forcedcache'),
             get_string('definition_overrides', 'tool_forcedcache'),
-        );
+        ];
         $table->data = [];
         foreach ($overrides as $definition => $items) {
             $itemstring = '';
@@ -222,11 +222,11 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         $table = new html_table();
         $table->id = $mode . '_rule_table';
         $table->attributes['class'] = 'generaltable table table-bordered table-sm w-auto';
-        $table->head = array (
+        $table->head = [
             get_string('rule_priority', 'tool_forcedcache'),
             get_string('rule_ruleset', 'tool_forcedcache'),
-            get_string('mappings', 'cache')
-        );
+            get_string('mappings', 'cache'),
+        ];
 
         $counter = 1;
         $defaultrulestr = get_string('rule_default_rule', 'tool_forcedcache');
@@ -242,11 +242,11 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
                 $conditions = $defaultrulestr;
             }
 
-            $table->data[] = array(
+            $table->data[] = [
                 $counter,
                 $conditions,
                 implode(',', $ruleset['stores']),
-            );
+            ];
             $counter++;
         }
 
@@ -262,11 +262,11 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
             $defaultstore = reset($defaultstoreformode)['store'];
             $conditions = $defaultrulestr;
 
-            $table->data[] = array(
+            $table->data[] = [
                 $counter,
                 $conditions,
                 implode(',', (array) $defaultstore),
-            );
+            ];
         }
 
         // Now output a header and the table.

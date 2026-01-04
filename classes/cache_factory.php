@@ -93,7 +93,7 @@ class tool_forcedcache_cache_factory extends cache_factory {
      *
      * @return core_cache\administration_helper
      */
-    public static function get_administration_display_helper() : core_cache\administration_helper {
+    public static function get_administration_display_helper(): core_cache\administration_helper {
         // Check if there was a config error.
         global $SESSION;
 

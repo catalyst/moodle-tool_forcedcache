@@ -68,7 +68,7 @@ class cache_config_test extends \advanced_testcase {
         $this->expectException(\cache_exception::class);
         $this->expectExceptionMessage(get_string('config_json_path_invalid', 'tool_forcedcache', [
             'path' => $CFG->tool_forcedcache_config_path,
-            'dirroot' => $CFG->dirroot
+            'dirroot' => $CFG->dirroot,
         ]));
         $method->invoke($config);
     }
