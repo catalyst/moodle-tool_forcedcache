@@ -26,7 +26,12 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
-    $ADMIN->add('cache', new admin_externalpage('tool_forcedcache_status',
-        get_string('page_status', 'tool_forcedcache'),
-        new moodle_url('/admin/tool/forcedcache/index.php')));
+    $ADMIN->add(
+        'cache',
+        new admin_externalpage(
+            'tool_forcedcache_status',
+            get_string('page_status', 'tool_forcedcache'),
+            new moodle_url('/admin/tool/forcedcache/index.php')
+        )
+    );
 }

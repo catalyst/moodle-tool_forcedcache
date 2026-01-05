@@ -23,7 +23,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_forcedcache_cache_administration_helper extends core_cache\administration_helper {
-
     /**
      * Empty constructor so cache_helper::__construct isn't called.
      */
@@ -107,7 +106,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         if (!empty($CFG->tool_forcedcache_config_path)) {
             $path = $CFG->tool_forcedcache_config_path;
         } else {
-            $path = __DIR__.'/../config.json';
+            $path = __DIR__ . '/../config.json';
         }
         // We dont need safety here, if we reach this point,
         // Its already been included and working.
@@ -256,7 +255,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         if (empty($table->data) || end($table->data)[1] !== $defaultrulestr) {
             // Append a default entry to the table.
             $defaultmodemappings = tool_forcedcache_cache_config::get_default_mode_mappings();
-            $defaultstoreformode = array_filter($defaultmodemappings, function($modemapping) use ($mode) {
+            $defaultstoreformode = array_filter($defaultmodemappings, function ($modemapping) use ($mode) {
                 return $modemapping['mode'] === $mode;
             });
             $defaultstore = reset($defaultstoreformode)['store'];
@@ -276,7 +275,8 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         if (count($rules[$ruletype]) === 0) {
             $html .= $OUTPUT->notification(
                 get_string('rule_no_rulesets', 'tool_forcedcache', $defaultstore),
-                \core\output\notification::NOTIFY_WARNING);
+                \core\output\notification::NOTIFY_WARNING
+            );
             $html .= html_writer::table($table);
         } else {
             $html .= html_writer::table($table);
