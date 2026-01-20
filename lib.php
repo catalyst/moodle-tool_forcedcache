@@ -28,6 +28,6 @@
  *
  * @return array of check objects
  */
-function tool_forcedcache_status_checks(): array {
+function tool_forcedcache_performance_checks(): array {
     return [new \tool_forcedcache\check\enabled()];
 }
