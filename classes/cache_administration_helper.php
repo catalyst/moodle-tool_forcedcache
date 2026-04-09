@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+// Manually require locallib as class isn't autoloaded.
+require_once($CFG->dirroot . '/cache/locallib.php');
+
 /**
  * This class changes the actions that are available to various stores, and changes the layout slightly
  *
@@ -22,7 +26,7 @@
  * @copyright   Catalyst IT
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class tool_forcedcache_cache_administration_helper extends core_cache\administration_helper {
+class tool_forcedcache_cache_administration_helper extends cache_administration_helper {
 
     /**
      * Empty constructor so cache_helper::__construct isn't called.
@@ -38,7 +42,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
      * @param array $storedetails details of the store instance.
      * @return array array of store instance actions.
      */
-    public function get_store_instance_actions(string $name, array $storedetails): array {
+    public static function get_store_instance_actions($name, array $storedetails): array {
         global $OUTPUT;
         $actions = array();
         if (has_capability('moodle/site:config', context_system::instance())) {
@@ -58,7 +62,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
      * @param array $definitionsummary summary of definition.
      * @return array array of definition actions.
      */
-    public function get_definition_actions(context $context, array $definitionsummary): array {
+    public static function get_definition_actions(context $context, array $definitionsummary): array {
         global $OUTPUT;
         $actions = array();
         if (has_capability('moodle/site:config', $context)) {
@@ -285,44 +289,13 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
     }
 
     /**
-     * This function processes the actions available on the cache_admin page.
-     * The only allowed actions are purges and rescans, as the config is read-only.
-     * forminfo is required for compatability with parent function signature.
-     *
-     * @param string $action the action to perform
-     * @param array $forminfo empty array to be passed through function
-     * @return array empty array
-     */
-    public function perform_cache_actions(string $action, array $forminfo): array {
-        // Purge actions will statically reference the core implementation.
-        $corehelper = new core_cache\local\administration_display_helper();
-
-        switch ($action) {
-            case 'rescandefinitions':
-                $corehelper->action_rescan_definition();
-                break;
-
-            case 'purgedefinition':
-                $corehelper->action_purgedefinition();
-                break;
-
-            case 'purgestore':
-            case 'purge':
-                $corehelper->action_purge();
-                break;
-        }
-
-        return $forminfo;
-    }
-
-    /**
      * Gets an instance of the custom administration helper.
      * This shouldn't be called directly, use cache_administration_helper::instance()
      * This is used by the plugin status page to get some renderer functionality.
      *
-     * @return core_cache\administration_helper
+     * @return cache_administration_helper
      */
-    public static function instance(): core_cache\administration_helper {
+    public static function instance(): cache_administration_helper {
         if (is_null(self::$instance)) {
             self::$instance = new tool_forcedcache_cache_administration_helper();
         }
