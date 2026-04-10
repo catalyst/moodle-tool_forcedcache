@@ -32,7 +32,7 @@ This has the advantage of making caching code-configurable before deployment, an
 ## Installation
 
 #### Requirements:
-- If you are on Moodle < 3.9, you must have the changes in [MDL-41492](https://tracker.moodle.org/browse/MDL-41492), applied in your project as this plugin uses those interface points created.
+- If you are on Moodle < 3.9 or Totara, you must have the changes in [MDL-41492](https://tracker.moodle.org/browse/MDL-41492), applied in your project as this plugin uses those interface points created.
 
 #### Recommendations:
 - We recommended to have [MDL-70233](https://tracker.moodle.org/browse/MDL-70233), installed to prevent default cache creation during CACHING_DISABLED conditions such as system upgrade.
