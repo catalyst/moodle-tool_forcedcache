@@ -148,7 +148,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         ];
         $table->data = [];
         foreach ($config['config'] as $key => $value) {
-            $table->data[] = [$key, $value];
+            $table->data[] = [s($key), s($value)];
         }
         $html .= html_writer::table($table);
 
@@ -181,10 +181,10 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         foreach ($overrides as $definition => $items) {
             $itemstring = '';
             foreach ($items as $setting => $value) {
-                $itemstring .= "{$setting}: {$value} <br>";
+                $itemstring .= s($setting) . ": " . s($value);
             }
 
-            $table->data[] = [$definition, $itemstring];
+            $table->data[] = [s($definition), $itemstring];
         }
         $html .= html_writer::table($table);
 
@@ -234,7 +234,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
                 // Little bit of string mangling.
                 $conditions = '';
                 foreach ($ruleset['conditions'] as $condition => $value) {
-                    $conditions .= $condition . ' = ' . $value . ', ';
+                    $conditions .= s($condition) . ' = ' . s($value) . ', ';
                 }
                 $conditions = rtrim($conditions, ', ');
             } else {
@@ -244,7 +244,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
             $table->data[] = [
                 $counter,
                 $conditions,
-                implode(',', $ruleset['stores']),
+                s(implode(',', $ruleset['stores'])),
             ];
             $counter++;
         }
