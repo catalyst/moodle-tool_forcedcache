@@ -225,9 +225,18 @@ class tool_forcedcache_cache_config extends cache_config {
 
             // Now for the derived config from the store information provided.
             // Manually require the cache/lib.php file to get cache classes.
-            $cachepath = __DIR__ . '/../../../../cache/stores/' . $store['type'] . '/lib.php';
-            if (!file_exists($cachepath)) {
-                throw new cache_exception(get_string('store_bad_type', 'tool_forcedcache', $store['type']));
+            $cachepath = realpath(__DIR__ . '/../../../../cache/stores/' . basename($store['type']) . '/lib.php');
+            $expectedbase = realpath(__DIR__ . '/../../../../cache/stores/');
+
+            // Cache path with the supplied type must still be within the expected base, to avoid fs traversal.
+            if (
+                $cachepath === false ||
+                strpos($cachepath, $expectedbase) !== 0 ||
+                !file_exists($cachepath)
+            ) {
+                throw new cache_exception(
+                    get_string('store_bad_type', 'tool_forcedcache', $store['type'])
+                );
             }
             require_once($cachepath);
             $storearr['features'] = $classname::get_supported_features();

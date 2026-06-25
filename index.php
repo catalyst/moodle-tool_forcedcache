@@ -36,7 +36,6 @@ echo $OUTPUT->header();
 $dummy = new tool_forcedcache_cache_config();
 $errors = $dummy->get_inclusion_errors();
 
-
 if (
     empty($CFG->alternative_cache_factory_class) ||
     $CFG->alternative_cache_factory_class !== 'tool_forcedcache_cache_factory' ||
@@ -49,7 +48,7 @@ if (
 
 if (!empty($errors)) {
     echo html_writer::tag('h3', get_string('page_config_broken', 'tool_forcedcache'));
-    $error = html_writer::tag('pre', $errors);
+    $error = html_writer::tag('pre', s($errors));
     echo html_writer::tag('p', get_string('page_config_broken_details', 'tool_forcedcache', $error));
 } else {
     echo $OUTPUT->notification(get_string('page_config_ok', 'tool_forcedcache'), \core\output\notification::NOTIFY_SUCCESS);
