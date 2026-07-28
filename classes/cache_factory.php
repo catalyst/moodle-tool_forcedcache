@@ -53,14 +53,21 @@ class tool_forcedcache_cache_factory extends cache_factory {
             }
         }
 
+        $config = null;
+
         if (!array_key_exists($class, $this->configs)) {
             // Create a new instance and call it to load it.
             // As part of generating store instance config we test the initialisation of stores.
             // Testing this may initialise DI, which will attempt to use cache for hookcallbacks.
             // Setting the state to initialising will make it use ad-hoc cache for that request.
             self::set_state(self::STATE_INITIALISING);
-            $this->configs[$class] = new $class;
-            $this->configs[$class]->load();
+            $config = new $class();
+            $config->load();
+
+            // Re-register after load in case anything reset $this->configs.
+            $this->configs[$class] = $config;
+        } else {
+            $config = $this->configs[$class];
         }
 
         // We need the siteid in order to use the caches, but the siteid
@@ -77,7 +84,7 @@ class tool_forcedcache_cache_factory extends cache_factory {
         }
 
         // Return the instance.
-        return $this->configs[$class];
+        return $config;
     }
 
     /**
