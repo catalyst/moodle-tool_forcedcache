@@ -51,7 +51,7 @@ class enabled extends check {
      *
      * @return result
      */
-    public function get_result() : result {
+    public function get_result(): result {
         global $CFG;
 
         // Create a dummy cache config instance and check for errors in instantiation.

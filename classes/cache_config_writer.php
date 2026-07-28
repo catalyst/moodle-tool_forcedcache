@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * This config_writer is readonly, and provides public access to some protected methods.
  *
@@ -25,7 +23,6 @@ defined('MOODLE_INTERNAL') || die();
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_forcedcache_cache_config_writer extends cache_config_writer {
-
     /**
      * Overriding this means nothing gets Written.
      * This must still work if we fallback to core caching.

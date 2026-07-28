@@ -25,7 +25,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_forcedcache_cache_config extends cache_config {
-
     /**
      * Array to track errors thrown during store instantiation.
      *
@@ -70,8 +69,10 @@ class tool_forcedcache_cache_config extends cache_config {
             }
 
             // If plugin is supposed to be active, rethrow exception, can't continue with broken config.
-            if (!empty($CFG->alternative_cache_factory_class)
-                && $CFG->alternative_cache_factory_class === 'tool_forcedcache_cache_factory') {
+            if (
+                !empty($CFG->alternative_cache_factory_class)
+                && $CFG->alternative_cache_factory_class === 'tool_forcedcache_cache_factory'
+            ) {
                 throw $e;
             }
         }
@@ -98,8 +99,10 @@ class tool_forcedcache_cache_config extends cache_config {
         $modemappings = $this->generate_mode_mapping($config['rules']);
 
         // Get the definitions.
-        $definitions = $this->apply_definition_overrides(tool_forcedcache_cache_config_writer::locate_definitions(),
-            $config['definitionoverrides']);
+        $definitions = $this->apply_definition_overrides(
+            tool_forcedcache_cache_config_writer::locate_definitions(),
+            $config['definitionoverrides']
+        );
 
         // Generate definition mappings from rulesets.
         $definitionmappings = $this->generate_definition_mappings_from_rules($config['rules'], $definitions);
@@ -118,7 +121,7 @@ class tool_forcedcache_cache_config extends cache_config {
             'modemappings' => $modemappings,
             'definitions' => $definitions,
             'definitionmappings' => $definitionmappings,
-            'locks' => $locks
+            'locks' => $locks,
         ];
 
         // Get the siteidentifier. Copies pattern from cache_config.
@@ -129,7 +132,6 @@ class tool_forcedcache_cache_config extends cache_config {
         }
 
         return $config;
-
     }
 
     /**
@@ -161,7 +163,6 @@ class tool_forcedcache_cache_config extends cache_config {
 
             // Return config array.
             return $array;
-
         } else if ($pathexists) {
             // Else decide on the path, then try to load it.
             $path = realpath($CFG->tool_forcedcache_config_path);
@@ -172,7 +173,7 @@ class tool_forcedcache_cache_config extends cache_config {
         if (!empty($path) && strpos($path, $CFG->dirroot) !== false) {
             throw new cache_exception(get_string('config_json_path_invalid', 'tool_forcedcache', [
                 'path' => $path,
-                'dirroot' => $CFG->dirroot
+                'dirroot' => $CFG->dirroot,
             ]));
         }
 
@@ -204,21 +205,22 @@ class tool_forcedcache_cache_config extends cache_config {
      * @throws cache_exception
      */
     private function generate_store_instance_config(array $stores): array {
-        $storesarr = array();
+        $storesarr = [];
         foreach ($stores as $name => $store) {
-
             // First check that all the required fields are present in the store.
-            if (!(array_key_exists('type', $store) &&
-                  array_key_exists('config', $store))) {
+            if (
+                !(array_key_exists('type', $store) &&
+                  array_key_exists('config', $store))
+            ) {
                 throw new cache_exception(get_string('store_missing_fields', 'tool_forcedcache', $name));
             }
 
-            $storearr = array();
+            $storearr = [];
             $storearr['name'] = $name;
             $storearr['plugin'] = $store['type'];
             // Assume all configuration is correct.
             $storearr['configuration'] = $store['config'];
-            $classname = 'cachestore_'.$store['type'];
+            $classname = 'cachestore_' . $store['type'];
             $storearr['class'] = $classname;
 
             // Now for the derived config from the store information provided.
@@ -233,7 +235,7 @@ class tool_forcedcache_cache_config extends cache_config {
                 !file_exists($cachepath)
             ) {
                 throw new cache_exception(
-                    get_string('store_bad_type','tool_forcedcache', $store['type'])
+                    get_string('store_bad_type', 'tool_forcedcache', $store['type'])
                 );
             }
             require_once($cachepath);
@@ -271,25 +273,25 @@ class tool_forcedcache_cache_config extends cache_config {
      *
      * @return array the generated default mode mappings.
      */
-    public static function get_default_mode_mappings() : array {
+    public static function get_default_mode_mappings(): array {
         // Use the defaults from core.
-        $modemappings = array(
-            array(
+        $modemappings = [
+            [
                 'mode' => cache_store::MODE_APPLICATION,
                 'store' => 'default_application',
-                'sort' => -1
-            ),
-            array(
+                'sort' => -1,
+            ],
+            [
                 'mode' => cache_store::MODE_SESSION,
                 'store' => 'default_session',
-                'sort' => -1
-            ),
-            array(
+                'sort' => -1,
+            ],
+            [
                 'mode' => cache_store::MODE_REQUEST,
                 'store' => 'default_request',
-                'sort' => -1
-            )
-        );
+                'sort' => -1,
+            ],
+        ];
 
         return $modemappings;
     }
@@ -337,7 +339,7 @@ class tool_forcedcache_cache_config extends cache_config {
      * @return array an array of ordered mappings for every definition to its ruleset.
      */
     private function generate_definition_mappings_from_rules(array $rules, array $definitions): array {
-        $defmappings = array();
+        $defmappings = [];
         $num = 1;
         foreach ($definitions as $defname => $definition) {
             // Find the mode of the definition to discover the mappings.
@@ -364,7 +366,7 @@ class tool_forcedcache_cache_config extends cache_config {
             }
 
             // Now decide on the ruleset that matches.
-            $stores = array();
+            $stores = [];
             foreach ($ruleset as $rule) {
                 if (array_key_exists('conditions', $rule)) {
                     foreach ($rule['conditions'] as $condition => $value) {
@@ -390,7 +392,7 @@ class tool_forcedcache_cache_config extends cache_config {
             $sort = count($stores);
             foreach ($stores as $store) {
                 // Create the mapping for the definition -> store and add to the master list.
-                $mappingarr = array();
+                $mappingarr = [];
                 $mappingarr['store'] = $store;
                 $mappingarr['definition'] = $defname;
                 $mappingarr['sort'] = $sort;
@@ -438,15 +440,15 @@ class tool_forcedcache_cache_config extends cache_config {
      *
      * @return array array of locks to use.
      */
-    private function generate_locks() : array {
-        return array(
-            'default_file_lock' => array(
+    private function generate_locks(): array {
+        return [
+            'default_file_lock' => [
                 'name' => 'cachelock_file_default',
                 'type' => 'cachelock_file',
                 'dir' => 'filelocks',
-                'default' => true
-            )
-        );
+                'default' => true,
+            ],
+        ];
     }
 
     /**

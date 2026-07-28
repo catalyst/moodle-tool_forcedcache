@@ -23,7 +23,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_forcedcache_cache_factory extends cache_factory {
-
     /**
      * This is a copy of the core class, with the classes swapped out.
      * TODO: Refactor core method to accept class param, and call parent with param.
@@ -40,7 +39,7 @@ class tool_forcedcache_cache_factory extends cache_factory {
 
         // Check if this is a PHPUnit test and redirect to the phpunit config classes if it is.
         if ($testing) {
-            require_once($CFG->dirroot.'/cache/tests/fixtures/lib.php');
+            require_once($CFG->dirroot . '/cache/tests/fixtures/lib.php');
             // We have just a single class for PHP unit tests. We don't care enough about its
             // performance to do otherwise and having a single method allows us to inject things into it
             // while testing.
@@ -93,7 +92,7 @@ class tool_forcedcache_cache_factory extends cache_factory {
      *
      * @return core_cache\administration_helper
      */
-    public static function get_administration_display_helper() : core_cache\administration_helper {
+    public static function get_administration_display_helper(): core_cache\administration_helper {
         // Check if there was a config error.
         global $SESSION;
 

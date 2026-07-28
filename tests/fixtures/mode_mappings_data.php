@@ -14,40 +14,48 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Test fixture data for mode mappings.
+ *
+ * @package    tool_forcedcache
+ * @copyright  2020 Peter Burnett <peterburnett@catalyst-au.net>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 defined('MOODLE_INTERNAL') || die();
 
-$defaultsexpected = array(
-    array(
+$defaultsexpected = [
+    [
         'mode' => cache_store::MODE_APPLICATION,
         'store' => 'default_application',
-        'sort' => -1
-    ),
-    array(
+        'sort' => -1,
+    ],
+    [
         'mode' => cache_store::MODE_SESSION,
         'store' => 'default_session',
-        'sort' => -1
-    ),
-    array(
+        'sort' => -1,
+    ],
+    [
         'mode' => cache_store::MODE_REQUEST,
         'store' => 'default_request',
-        'sort' => -1
-    )
-);
+        'sort' => -1,
+    ],
+];
 
-$generatedmodemappingagainstdefinitionmatchtoprulesetexpected = array(
-    array(
+$generatedmodemappingagainstdefinitionmatchtoprulesetexpected = [
+    [
         'mode' => cache_store::MODE_APPLICATION,
         'store' => 'file-test',
-        'sort' => -1
-    ),
-    array(
+        'sort' => -1,
+    ],
+    [
         'mode' => cache_store::MODE_SESSION,
         'store' => 'default_session',
-        'sort' => -1
-    ),
-    array(
+        'sort' => -1,
+    ],
+    [
         'mode' => cache_store::MODE_REQUEST,
         'store' => 'default_request',
-        'sort' => -1
-    )
-);
+        'sort' => -1,
+    ],
+];
