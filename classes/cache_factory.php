@@ -23,7 +23,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_forcedcache_cache_factory extends cache_factory {
-
     /**
      * This is a copy of the core class, with the classes swapped out.
      * TODO: Refactor core method to accept class param, and call parent with param.
@@ -40,7 +39,7 @@ class tool_forcedcache_cache_factory extends cache_factory {
 
         // Check if this is a PHPUnit test and redirect to the phpunit config classes if it is.
         if ($testing) {
-            require_once($CFG->dirroot.'/cache/tests/fixtures/lib.php');
+            require_once($CFG->dirroot . '/cache/tests/fixtures/lib.php');
             // We have just a single class for PHP unit tests. We don't care enough about its
             // performance to do otherwise and having a single method allows us to inject things into it
             // while testing.
@@ -53,14 +52,21 @@ class tool_forcedcache_cache_factory extends cache_factory {
             }
         }
 
+        $config = null;
+
         if (!array_key_exists($class, $this->configs)) {
             // Create a new instance and call it to load it.
             // As part of generating store instance config we test the initialisation of stores.
             // Testing this may initialise DI, which will attempt to use cache for hookcallbacks.
             // Setting the state to initialising will make it use ad-hoc cache for that request.
             self::set_state(self::STATE_INITIALISING);
-            $this->configs[$class] = new $class;
-            $this->configs[$class]->load();
+            $config = new $class();
+            $config->load();
+
+            // Re-register after load in case anything reset $this->configs.
+            $this->configs[$class] = $config;
+        } else {
+            $config = $this->configs[$class];
         }
 
         // We need the siteid in order to use the caches, but the siteid
@@ -77,7 +83,7 @@ class tool_forcedcache_cache_factory extends cache_factory {
         }
 
         // Return the instance.
-        return $this->configs[$class];
+        return $config;
     }
 
     /**
@@ -86,7 +92,7 @@ class tool_forcedcache_cache_factory extends cache_factory {
      *
      * @return core_cache\administration_helper
      */
-    public static function get_administration_display_helper() : core_cache\administration_helper {
+    public static function get_administration_display_helper(): core_cache\administration_helper {
         // Check if there was a config error.
         global $SESSION;
 

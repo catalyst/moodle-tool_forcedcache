@@ -23,7 +23,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_forcedcache_cache_administration_helper extends core_cache\administration_helper {
-
     /**
      * Empty constructor so cache_helper::__construct isn't called.
      */
@@ -40,11 +39,11 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
      */
     public function get_store_instance_actions(string $name, array $storedetails): array {
         global $OUTPUT;
-        $actions = array();
+        $actions = [];
         if (has_capability('moodle/site:config', context_system::instance())) {
-            $baseurl = new moodle_url('/cache/admin.php', array('store' => $name, 'sesskey' => sesskey()));
+            $baseurl = new moodle_url('/cache/admin.php', ['store' => $name, 'sesskey' => sesskey()]);
             $actions[] = $OUTPUT->action_link(
-                new moodle_url($baseurl, array('action' => 'purgestore')),
+                new moodle_url($baseurl, ['action' => 'purgestore']),
                 get_string('purge', 'cache')
             );
         }
@@ -60,11 +59,11 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
      */
     public function get_definition_actions(context $context, array $definitionsummary): array {
         global $OUTPUT;
-        $actions = array();
+        $actions = [];
         if (has_capability('moodle/site:config', $context)) {
             $actions[] = $OUTPUT->action_link(
-                new moodle_url('/cache/admin.php', array('action' => 'purgedefinition',
-                    'definition' => $definitionsummary['id'], 'sesskey' => sesskey())),
+                new moodle_url('/cache/admin.php', ['action' => 'purgedefinition',
+                    'definition' => $definitionsummary['id'], 'sesskey' => sesskey()]),
                 get_string('purge', 'cache')
             );
         }
@@ -107,7 +106,7 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         if (!empty($CFG->tool_forcedcache_config_path)) {
             $path = $CFG->tool_forcedcache_config_path;
         } else {
-            $path = __DIR__.'/../config.json';
+            $path = __DIR__ . '/../config.json';
         }
         // We dont need safety here, if we reach this point,
         // Its already been included and working.
@@ -143,10 +142,10 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         $table = new html_table();
         $table->id = $name . '_def_table';
         $table->attributes['class'] = 'generaltable table table-bordered table-sm w-auto';
-        $table->head = array (
+        $table->head = [
             get_string('store_config', 'tool_forcedcache'),
             get_string('store_value', 'tool_forcedcache'),
-        );
+        ];
         $table->data = [];
         foreach ($config['config'] as $key => $value) {
             $table->data[] = [s($key), s($value)];
@@ -174,10 +173,10 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         $table = new html_table();
         $table->id = 'def_override_table';
         $table->attributes['class'] = 'generaltable table table-bordered table-sm w-auto';
-        $table->head = array (
+        $table->head = [
             get_string('definition_name', 'tool_forcedcache'),
             get_string('definition_overrides', 'tool_forcedcache'),
-        );
+        ];
         $table->data = [];
         foreach ($overrides as $definition => $items) {
             $itemstring = '';
@@ -222,11 +221,11 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         $table = new html_table();
         $table->id = $mode . '_rule_table';
         $table->attributes['class'] = 'generaltable table table-bordered table-sm w-auto';
-        $table->head = array (
+        $table->head = [
             get_string('rule_priority', 'tool_forcedcache'),
             get_string('rule_ruleset', 'tool_forcedcache'),
-            get_string('mappings', 'cache')
-        );
+            get_string('mappings', 'cache'),
+        ];
 
         $counter = 1;
         $defaultrulestr = get_string('rule_default_rule', 'tool_forcedcache');
@@ -242,11 +241,11 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
                 $conditions = $defaultrulestr;
             }
 
-            $table->data[] = array(
+            $table->data[] = [
                 $counter,
                 $conditions,
                 s(implode(',', $ruleset['stores'])),
-            );
+            ];
             $counter++;
         }
 
@@ -256,17 +255,17 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         if (empty($table->data) || end($table->data)[1] !== $defaultrulestr) {
             // Append a default entry to the table.
             $defaultmodemappings = tool_forcedcache_cache_config::get_default_mode_mappings();
-            $defaultstoreformode = array_filter($defaultmodemappings, function($modemapping) use ($mode) {
+            $defaultstoreformode = array_filter($defaultmodemappings, function ($modemapping) use ($mode) {
                 return $modemapping['mode'] === $mode;
             });
             $defaultstore = reset($defaultstoreformode)['store'];
             $conditions = $defaultrulestr;
 
-            $table->data[] = array(
+            $table->data[] = [
                 $counter,
                 $conditions,
                 implode(',', (array) $defaultstore),
-            );
+            ];
         }
 
         // Now output a header and the table.
@@ -276,7 +275,8 @@ class tool_forcedcache_cache_administration_helper extends core_cache\administra
         if (count($rules[$ruletype]) === 0) {
             $html .= $OUTPUT->notification(
                 get_string('rule_no_rulesets', 'tool_forcedcache', $defaultstore),
-                \core\output\notification::NOTIFY_WARNING);
+                \core\output\notification::NOTIFY_WARNING
+            );
             $html .= html_writer::table($table);
         } else {
             $html .= html_writer::table($table);

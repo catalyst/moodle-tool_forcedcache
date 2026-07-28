@@ -23,7 +23,7 @@
  */
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once($CFG->libdir . '/adminlib.php');
 
 admin_externalpage_setup('tool_forcedcache_status');
 
@@ -36,9 +36,11 @@ echo $OUTPUT->header();
 $dummy = new tool_forcedcache_cache_config();
 $errors = $dummy->get_inclusion_errors();
 
-if (empty($CFG->alternative_cache_factory_class) ||
+if (
+    empty($CFG->alternative_cache_factory_class) ||
     $CFG->alternative_cache_factory_class !== 'tool_forcedcache_cache_factory' ||
-    !empty($errors)) {
+    !empty($errors)
+) {
     echo $OUTPUT->notification(get_string('page_not_active', 'tool_forcedcache'), \core\output\notification::NOTIFY_ERROR);
 } else {
     echo $OUTPUT->notification(get_string('page_active', 'tool_forcedcache'), \core\output\notification::NOTIFY_SUCCESS);

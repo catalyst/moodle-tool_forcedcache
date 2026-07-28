@@ -25,8 +25,7 @@ namespace tool_forcedcache;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @covers      \tool_forcedcache_cache_config
  */
-class cache_config_test extends \advanced_testcase {
-
+final class cache_config_test extends \advanced_testcase {
     /**
      * Temporary directory for loading config into
      *
@@ -48,7 +47,7 @@ class cache_config_test extends \advanced_testcase {
         return realpath($dest);
     }
 
-    public function test_read_config_file_from_invalid_path() {
+    public function test_read_config_file_from_invalid_path(): void {
         global $CFG;
         $this->resetAfterTest(true);
 
@@ -68,12 +67,12 @@ class cache_config_test extends \advanced_testcase {
         $this->expectException(\cache_exception::class);
         $this->expectExceptionMessage(get_string('config_json_path_invalid', 'tool_forcedcache', [
             'path' => $CFG->tool_forcedcache_config_path,
-            'dirroot' => $CFG->dirroot
+            'dirroot' => $CFG->dirroot,
         ]));
         $method->invoke($config);
     }
 
-    public function test_read_valid_config_file() {
+    public function test_read_valid_config_file(): void {
         global $CFG;
         $this->resetAfterTest(true);
 
@@ -97,7 +96,7 @@ class cache_config_test extends \advanced_testcase {
         $this->assertArrayHasKey('definitionoverrides', $configarr1);
     }
 
-    public function test_read_garbled_config_file() {
+    public function test_read_garbled_config_file(): void {
         global $CFG;
         $this->resetAfterTest(true);
 
@@ -119,7 +118,7 @@ class cache_config_test extends \advanced_testcase {
         $method->invoke($config);
     }
 
-    public function test_read_non_existent_config_file() {
+    public function test_read_non_existent_config_file(): void {
         global $CFG;
         $this->resetAfterTest(true);
 
@@ -141,7 +140,7 @@ class cache_config_test extends \advanced_testcase {
         $method->invoke($config);
     }
 
-    public function test_generate_store_instance_config() {
+    public function test_generate_store_instance_config(): void {
         // Directly create a config.
         $config = new \tool_forcedcache_cache_config();
 
@@ -165,7 +164,7 @@ class cache_config_test extends \advanced_testcase {
         $this->assertEquals($storereqsnotmet['expected'], $method->invoke($config, $storereqsnotmet['input']));
     }
 
-    public function test_generate_store_instance_config_badtype() {
+    public function test_generate_store_instance_config_badtype(): void {
         // Directly create a config.
         $config = new \tool_forcedcache_cache_config();
 
@@ -183,7 +182,7 @@ class cache_config_test extends \advanced_testcase {
         $this->assertNull($storearr1);
     }
 
-    public function test_generate_store_instance_config_missingfield() {
+    public function test_generate_store_instance_config_missingfield(): void {
         // Directly create a config.
         $config = new \tool_forcedcache_cache_config();
 
@@ -204,7 +203,7 @@ class cache_config_test extends \advanced_testcase {
     /**
      * Test if default mappings return as expected.
      */
-    public function test_default_mode_mappings() {
+    public function test_default_mode_mappings(): void {
         $defaultmodemappings = \tool_forcedcache_cache_config::get_default_mode_mappings();
 
         // Read in the fixtures file for data.
@@ -216,7 +215,7 @@ class cache_config_test extends \advanced_testcase {
     /**
      * Tests output of mode mpapings once rules included in the mix.
      */
-    public function test_generated_mode_mappings_for_definitionmatchtopruleset() {
+    public function test_generated_mode_mappings_for_definitionmatchtopruleset(): void {
         $config = new \tool_forcedcache_cache_config();
         // Setup reflection for private function.
         $method = new \ReflectionMethod($config, 'generate_mode_mapping');
@@ -233,7 +232,7 @@ class cache_config_test extends \advanced_testcase {
     /**
      * Tests output of mode mpapings once rules included in the mix.
      */
-    public function test_generated_mode_mappings_for_definitionnoruleset() {
+    public function test_generated_mode_mappings_for_definitionnoruleset(): void {
         $config = new \tool_forcedcache_cache_config();
         // Setup reflection for private function.
         $method = new \ReflectionMethod($config, 'generate_mode_mapping');
@@ -247,7 +246,7 @@ class cache_config_test extends \advanced_testcase {
         $this->assertEquals($defaultsexpected, $method->invoke($config, $rules));
     }
 
-    public function test_generate_definition_mappings_from_rules() {
+    public function test_generate_definition_mappings_from_rules(): void {
         $config = new \tool_forcedcache_cache_config();
 
         // Setup reflection for private function.
@@ -258,19 +257,27 @@ class cache_config_test extends \advanced_testcase {
         include(__DIR__ . '/fixtures/definition_mappings_data.php');
 
         // Test when a condition and the name match.
-        $this->assertEquals($definitionmatchtopruleset['expected'],
-            $method->invoke($config, $definitionmatchtopruleset['rules'], $definitionmatchtopruleset['definition']));
+        $this->assertEquals(
+            $definitionmatchtopruleset['expected'],
+            $method->invoke($config, $definitionmatchtopruleset['rules'], $definitionmatchtopruleset['definition'])
+        );
 
         // Test when 1 condition fails in a set, fallthrough occurs.
-        $this->assertEquals($definitionnonmatchtopruleset['expected'],
-            $method->invoke($config, $definitionnonmatchtopruleset['rules'], $definitionnonmatchtopruleset['definition']));
+        $this->assertEquals(
+            $definitionnonmatchtopruleset['expected'],
+            $method->invoke($config, $definitionnonmatchtopruleset['rules'], $definitionnonmatchtopruleset['definition'])
+        );
 
         // Test when failing 2 rulesets, fall through to 3rd.
-        $this->assertEquals($definitionbottomruleset['expected'],
-            $method->invoke($config, $definitionbottomruleset['rules'], $definitionbottomruleset['definition']));
+        $this->assertEquals(
+            $definitionbottomruleset['expected'],
+            $method->invoke($config, $definitionbottomruleset['rules'], $definitionbottomruleset['definition'])
+        );
 
         // Test when all rulesets fail (no mappings).
-        $this->assertEquals($definitionnoruleset['expected'],
-            $method->invoke($config, $definitionnoruleset['rules'], $definitionnoruleset['definition']));
+        $this->assertEquals(
+            $definitionnoruleset['expected'],
+            $method->invoke($config, $definitionnoruleset['rules'], $definitionnoruleset['definition'])
+        );
     }
 }
