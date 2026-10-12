@@ -76,6 +76,17 @@ class tool_forcedcache_cache_factory extends cache_factory {
         if (empty($CFG->siteidentifier)) {
             $this->set_state(self::STATE_STORES_DISABLED);
         } else {
+            // If stores were previously disabled (siteid not yet known), any
+            // definitions/caches created in that window may have their cache
+            // key permanently baked with an 'unknown' siteid, as definition key
+            // prefixes are generated once and then cached for the remainder of
+            // the request. Now that the siteid is known, throw those away so
+            // they are rebuilt with the correct siteid before real stores are used.
+            if ($this->stores_disabled()) {
+                $this->definitions = [];
+                $this->reset_cache_instances();
+            }
+
             // We cannot directly set the state to enabled from disabled.
             // So we instead start and finish an update to set STATE_READY.
             $this->updating_started();
